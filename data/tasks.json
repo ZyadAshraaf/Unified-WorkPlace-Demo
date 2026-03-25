@@ -376,5 +376,33 @@
     "comments": [],
     "escalated": true,
     "delegatedFrom": null
+  },
+  {
+    "id": "T6F8DBCEB",
+    "title": "Approve Leave Request — Sara Hassan",
+    "description": "Sara Hassan has requested annual leave for 3 day(s) (2026-03-27 to 2026-03-31). Reason: bbb",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-03-27",
+    "createdAt": "2026-03-25T14:47:03.085Z",
+    "updatedAt": "2026-03-25T14:47:03.085Z",
+    "metadata": {
+      "leaveId": "LE88C37A0"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-03-25T14:47:03.085Z",
+        "note": "Leave request submitted"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
   }
 ]

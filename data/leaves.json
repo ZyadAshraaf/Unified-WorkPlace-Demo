@@ -103,5 +103,20 @@
     "reviewedBy": null,
     "reviewedAt": null,
     "reviewNote": ""
+  },
+  {
+    "id": "LE88C37A0",
+    "userId": "u004",
+    "type": "annual",
+    "startDate": "2026-03-27",
+    "endDate": "2026-03-31",
+    "days": 3,
+    "reason": "bbb",
+    "status": "pending",
+    "taskId": "T6F8DBCEB",
+    "submittedAt": "2026-03-25T14:47:03.084Z",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "reviewNote": ""
   }
 ]

@@ -10,33 +10,205 @@
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/css/global.css">
   <style>
-    .welcome-banner { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); border-radius: var(--radius-lg); padding: 28px 32px; color: white; margin-bottom: 24px; position: relative; overflow: hidden; }
-    .welcome-banner::after { content: ''; position: absolute; right: -30px; top: -30px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.06); }
-    .welcome-banner::before { content: ''; position: absolute; right: 60px; bottom: -50px; width: 130px; height: 130px; border-radius: 50%; background: rgba(255,255,255,0.04); }
-    .welcome-greeting { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-    .welcome-sub { font-size: 14px; opacity: 0.8; }
-    .welcome-date { font-size: 13px; opacity: 0.7; margin-top: 8px; }
-    .shortcut-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
-    .shortcut-item { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px 12px; text-align: center; text-decoration: none; color: var(--color-text); transition: all 0.2s; cursor: pointer; }
-    .shortcut-item:hover { border-color: var(--color-primary); background: var(--color-primary-faint); color: var(--color-primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
-    .shortcut-item i { font-size: 26px; display: block; margin-bottom: 8px; color: var(--color-primary); }
-    .shortcut-item span { font-size: 12px; font-weight: 600; }
-    .task-row-mini { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--color-border-light); }
-    .task-row-mini:last-child { border-bottom: none; }
-    .task-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .task-dot.pending { background: var(--color-warning); }
-    .task-dot.in-progress { background: var(--color-info); }
-    .task-dot.escalated { background: var(--color-danger); }
-    .news-item { padding: 14px 0; border-bottom: 1px solid var(--color-border-light); }
+    /* ── Page background override ───────────────────────── */
+    .content { background: #ffffff !important; padding: 24px !important; }
+
+    /* ── Two-column layout ──────────────────────────────── */
+    .home-layout { display: flex; gap: 22px; align-items: flex-start; }
+    .home-main   { flex: 1; min-width: 0; }
+    .home-aside  { width: 248px; flex-shrink: 0; position: sticky; top: 78px; }
+
+    /* ── Welcome banner ─────────────────────────────────── */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-light) 100%);
+      border-radius: 18px; padding: 24px 28px; color: white;
+      margin-bottom: 20px; position: relative; overflow: hidden;
+    }
+    .welcome-banner::after {
+      content:''; position:absolute; right:-40px; top:-40px;
+      width:180px; height:180px; border-radius:50%;
+      background:rgba(255,255,255,0.07);
+    }
+    .welcome-banner::before {
+      content:''; position:absolute; right:60px; bottom:-50px;
+      width:130px; height:130px; border-radius:50%;
+      background:rgba(255,255,255,0.05);
+    }
+    .welcome-greeting { font-size: 20px; font-weight: 700; margin-bottom: 3px; }
+    .welcome-sub      { font-size: 13px; opacity: 0.85; }
+    .welcome-date     { font-size: 12px; opacity: 0.65; margin-top: 6px; }
+    .breadcrumb-bar   { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+    .breadcrumb-bar span { color: rgba(255,255,255,0.9); font-weight: 600; }
+
+    /* ── Metric cards (CryptoBoard-style) ───────────────── */
+    .metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 20px; }
+    .metric-card {
+      border-radius: 18px; padding: 20px; color: white;
+      position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .metric-card:hover { transform: translateY(-3px); }
+    .metric-card.purple { background: linear-gradient(135deg,var(--color-primary-dark),var(--color-primary-light)); box-shadow:0 8px 24px rgba(25,141,135,.35); }
+    .metric-card.teal   { background: linear-gradient(135deg,#00B4D8,#0096C7); box-shadow:0 8px 24px rgba(0,180,216,.3); }
+    .metric-card.green  { background: linear-gradient(135deg,#00B894,#00A381); box-shadow:0 8px 24px rgba(0,184,148,.3); }
+    .metric-card.coral  { background: linear-gradient(135deg,#E17055,#D63031); box-shadow:0 8px 24px rgba(214,48,49,.3); }
+
+    .metric-label  { font-size: 12px; opacity: 0.8; margin-bottom: 6px; font-weight: 500; }
+    .metric-value  { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 10px; }
+    .metric-footer { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.85; }
+    .metric-footer .mf-item { display: flex; flex-direction: column; gap: 1px; }
+    .metric-footer .mf-val  { font-weight: 700; font-size: 12px; }
+    .metric-footer .mf-lbl  { opacity: 0.7; font-size: 10px; }
+    .metric-sparkline { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); opacity: 0.3; }
+
+    /* ── Section header ─────────────────────────────────── */
+    .section-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .section-hdr h6 {
+      font-size: 14px; font-weight: 700; color: #0E5C59; margin: 0;
+      letter-spacing: 0.3px;
+    }
+    .section-hdr a {
+      font-size: 12px; color: var(--color-primary); text-decoration: none; font-weight: 600;
+    }
+    .section-hdr a:hover { text-decoration: underline; }
+
+    /* ── Activity table (dark) ──────────────────────────── */
+    .activity-card {
+      background: #0E5C59; border-radius: 18px; overflow: hidden;
+      margin-bottom: 20px; box-shadow: 0 8px 32px rgba(45,43,85,.2);
+    }
+    .activity-card .activity-head {
+      padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .activity-card .activity-head h6 {
+      color: white; font-size: 14px; font-weight: 700; margin: 0;
+    }
+    .activity-card .activity-head a {
+      color: var(--color-primary-lighter); font-size: 12px; text-decoration: none; font-weight: 600;
+    }
+    .act-table { width: 100%; border-collapse: collapse; }
+    .act-table thead th {
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5);
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.8px; padding: 10px 20px;
+    }
+    .act-table tbody tr { border-top: 1px solid rgba(255,255,255,0.06); transition: background 0.15s; }
+    .act-table tbody tr:hover { background: rgba(255,255,255,0.04); }
+    .act-table td { padding: 13px 20px; vertical-align: middle; }
+    .act-icon {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(255,255,255,0.12); display: flex; align-items: center;
+      justify-content: center; font-size: 14px; color: var(--color-primary-lighter); flex-shrink: 0;
+    }
+    .act-title { font-size: 13px; font-weight: 600; color: white; }
+    .act-sub   { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+    .act-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+    }
+    .act-badge.pending  { background: rgba(230,168,23,.15); color: #f3cc62; }
+    .act-badge.progress { background: rgba(0,180,216,.15);  color: #54d8f5; }
+    .act-badge.done     { background: rgba(0,184,148,.15);  color: #55efc4; }
+    .act-badge.escalated{ background: rgba(220,53,69,.15);  color: #ff7675; }
+    .act-text { color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 500; }
+    .act-text-muted { color: rgba(255,255,255,0.4); font-size: 12px; }
+
+    /* ── Quick access grid ──────────────────────────────── */
+    .quick-card {
+      background: white; border-radius: 18px; padding: 20px;
+      margin-bottom: 20px; box-shadow: 0 2px 12px rgba(25,141,135,.08);
+    }
+    .shortcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .shortcut-item {
+      background: var(--color-primary-faint); border-radius: 12px; padding: 14px 8px;
+      text-align: center; text-decoration: none; color: #0E5C59;
+      transition: all 0.2s; border: 1.5px solid transparent;
+    }
+    .shortcut-item:hover {
+      border-color: var(--color-primary); background: var(--color-surface-alt);
+      color: var(--color-primary); transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(25,141,135,.15);
+    }
+    .shortcut-item i { font-size: 22px; display: block; margin-bottom: 6px; color: var(--color-primary); }
+    .shortcut-item span { font-size: 11px; font-weight: 600; }
+
+    /* ── Announcements ──────────────────────────────────── */
+    .announce-card {
+      background: white; border-radius: 18px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(25,141,135,.08);
+    }
+    .news-item { padding: 14px 20px; border-bottom: 1px solid var(--color-border-light); }
     .news-item:last-child { border-bottom: none; }
-    .news-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--color-primary-faint); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-    .news-title { font-size: 13px; font-weight: 600; color: var(--color-text); margin-bottom: 2px; }
+    .news-icon {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: var(--color-surface-alt); color: var(--color-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+    .news-title   { font-size: 13px; font-weight: 600; color: #0E5C59; margin-bottom: 2px; }
     .news-summary { font-size: 12px; color: var(--color-text-muted); line-height: 1.4; }
-    .news-time { font-size: 11px; color: var(--color-text-light); }
+    .news-time    { font-size: 11px; color: var(--color-text-light); margin-top: 3px; }
+
+    /* ── Right panel ────────────────────────────────────── */
+    .profile-card {
+      background: white; border-radius: 18px; padding: 22px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.08); margin-bottom: 16px;
+    }
+    .profile-card h6 {
+      font-size: 13px; font-weight: 700; color: #0E5C59;
+      margin-bottom: 16px; letter-spacing: 0.3px;
+    }
+    .profile-avatar {
+      width: 62px; height: 62px; border-radius: 50%;
+      background: linear-gradient(135deg,var(--color-primary),var(--color-primary-lighter));
+      color: white; font-size: 24px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px; text-transform: uppercase;
+    }
+    .profile-name { font-size: 15px; font-weight: 700; color: #0E5C59; text-align: center; }
+    .profile-role { font-size: 12px; color: var(--color-primary); text-align: center; margin-top: 2px; font-weight: 500; }
+    .profile-divider { border: none; border-top: 1px solid var(--color-border-light); margin: 16px 0; }
+    .profile-row {
+      display: flex; justify-content: space-between;
+      font-size: 12px; margin-bottom: 10px;
+    }
+    .profile-row:last-child { margin-bottom: 0; }
+    .profile-row .pr-label { color: var(--color-text-light); font-weight: 500; }
+    .profile-row .pr-val   { color: #0E5C59; font-weight: 600; }
+
+    .stat-breakdown {
+      background: white; border-radius: 18px; padding: 20px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.08);
+    }
+    .stat-breakdown h6 {
+      font-size: 13px; font-weight: 700; color: #0E5C59; margin-bottom: 14px;
+    }
+    .sb-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--color-border-light);
+    }
+    .sb-row:last-child { border-bottom: none; }
+    .sb-name  { font-size: 13px; color: #0E5C59; font-weight: 500; }
+    .sb-val   { font-size: 13px; color: var(--color-primary); font-weight: 700; }
+    .sb-sub   { font-size: 11px; color: var(--color-text-light); }
+
+    /* ── Loading spinner override ───────────────────────── */
+    .act-loading { text-align: center; padding: 28px; color: rgba(255,255,255,0.4); }
+    .news-loading { text-align: center; padding: 28px; color: var(--color-text-light); }
+
+    /* ── Responsive ─────────────────────────────────────── */
+    @media (max-width: 1100px) { .home-aside { display: none; } }
+    @media (max-width: 767px)  { .metric-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px)  { .metric-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 <div class="app-wrapper">
+
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
@@ -44,12 +216,12 @@
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">
-        <a href="/" class="nav-item" data-page="landing"><i class="bi bi-house-door"></i><span>Home</span></a>
+        <a href="/" class="nav-item active" data-page="landing"><i class="bi bi-house-door"></i><span>Home</span></a>
         <a href="/tasks" class="nav-item" data-page="tasks"><i class="bi bi-check2-square"></i><span>My Tasks</span><span class="nav-badge d-none" id="tasksBadge">0</span></a>
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Self-Service</div>
-        <a href="/leaves" class="nav-item" data-page="leaves"><i class="bi bi-calendar-check"></i><span>Leave Requests</span></a>
+        <a href="/services" class="nav-item" data-page="services"><i class="bi bi-grid-3x3-gap"></i><span>Self Services</span></a>
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Insights</div>
@@ -78,7 +250,7 @@
   </aside>
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- Main -->
+  <!-- Main wrapper -->
   <div class="main-wrapper">
     <header class="topbar">
       <button class="topbar-toggle" id="sidebarToggle"><i class="bi bi-list"></i></button>
@@ -109,127 +281,201 @@
     </header>
 
     <main class="content">
-      <!-- Welcome Banner -->
-      <div class="welcome-banner">
-        <div class="welcome-greeting" id="welcomeGreeting">Good morning! 👋</div>
-        <div class="welcome-sub" id="welcomeSub">Here's what's on your plate today.</div>
-        <div class="welcome-date" id="welcomeDate"></div>
-      </div>
+      <div class="home-layout">
 
-      <!-- Stats Row -->
-      <div class="row g-3 mb-4">
-        <div class="col-6 col-lg-3">
-          <div class="stat-card">
-            <div class="stat-icon warning"><i class="bi bi-check2-square"></i></div>
-            <div>
-              <div class="stat-value" id="statPendingTasks">—</div>
-              <div class="stat-label">Pending Tasks</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-6 col-lg-3">
-          <div class="stat-card">
-            <div class="stat-icon primary"><i class="bi bi-calendar3"></i></div>
-            <div>
-              <div class="stat-value" id="statLeaveBalance">—</div>
-              <div class="stat-label">Leave Days Left</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-6 col-lg-3">
-          <div class="stat-card">
-            <div class="stat-icon success"><i class="bi bi-person-check"></i></div>
-            <div>
-              <div class="stat-value" id="statPresentDays">—</div>
-              <div class="stat-label">Days Present (Month)</div>
-            </div>
-          </div>
-        </div>
-        <div class="col-6 col-lg-3">
-          <div class="stat-card">
-            <div class="stat-icon info"><i class="bi bi-headset"></i></div>
-            <div>
-              <div class="stat-value" id="statOpenTickets">—</div>
-              <div class="stat-label">Open Tickets</div>
-            </div>
-          </div>
-        </div>
-      </div>
+        <!-- ── Left / Main ────────────────────────────────── -->
+        <div class="home-main">
 
-      <!-- Analytics Row -->
-      <div class="row g-3 mb-4">
-        <!-- Task Status Donut -->
-        <div class="col-12 col-md-4">
-          <div class="card h-100">
-            <div class="card-header">
-              <span><i class="bi bi-pie-chart text-primary me-2"></i>Task Overview</span>
-            </div>
-            <div class="card-body d-flex flex-column align-items-center justify-content-center" style="min-height:220px">
-              <canvas id="chartTaskStatus" style="max-height:180px"></canvas>
-              <div id="chartTaskStatusLegend" class="d-flex flex-wrap justify-content-center gap-2 mt-3 fs-xs"></div>
-            </div>
+          <!-- Welcome Banner -->
+          <div class="welcome-banner">
+            <div class="breadcrumb-bar">Dashboard &rsaquo; <span>Home</span></div>
+            <div class="welcome-greeting" id="welcomeGreeting">Good morning! 👋</div>
+            <div class="welcome-sub" id="welcomeSub">Here's what's on your plate today.</div>
+            <div class="welcome-date" id="welcomeDate"></div>
           </div>
-        </div>
 
-        <!-- Tasks by System Bar -->
-        <div class="col-12 col-md-4">
-          <div class="card h-100">
-            <div class="card-header">
-              <span><i class="bi bi-bar-chart text-primary me-2"></i>Tasks by System</span>
+          <!-- Metric Cards -->
+          <div class="metric-grid">
+            <!-- Pending Tasks -->
+            <div class="metric-card purple">
+              <div class="metric-label">Pending Tasks</div>
+              <div class="metric-value" id="statPendingTasks">—</div>
+              <div class="metric-footer">
+                <div class="mf-item"><span class="mf-val" id="mfInProgress">—</span><span class="mf-lbl">In Progress</span></div>
+                <div class="mf-item"><span class="mf-val" id="mfEscalated">—</span><span class="mf-lbl">Escalated</span></div>
+                <div class="mf-item"><span class="mf-val" id="mfCompleted">—</span><span class="mf-lbl">Completed</span></div>
+              </div>
+              <div class="metric-sparkline">
+                <svg width="70" height="40" viewBox="0 0 70 40" fill="none">
+                  <polyline points="0,32 12,22 24,28 36,14 48,20 60,8 70,14" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
             </div>
-            <div class="card-body d-flex align-items-center" style="min-height:220px">
-              <canvas id="chartTaskSystem" style="width:100%;max-height:190px"></canvas>
-            </div>
-          </div>
-        </div>
 
-        <!-- Quick Access -->
-        <div class="col-12 col-md-4">
-          <div class="card h-100">
-            <div class="card-header">
-              <span><i class="bi bi-lightning text-primary me-2"></i>Quick Access</span>
+            <!-- Leave Balance -->
+            <div class="metric-card teal">
+              <div class="metric-label">Leave Days Left</div>
+              <div class="metric-value" id="statLeaveBalance">—</div>
+              <div class="metric-footer">
+                <div class="mf-item"><span class="mf-val" id="mfSick">—</span><span class="mf-lbl">Sick Days</span></div>
+                <div class="mf-item"><span class="mf-val">—</span><span class="mf-lbl">Used YTD</span></div>
+              </div>
+              <div class="metric-sparkline">
+                <svg width="70" height="40" viewBox="0 0 70 40" fill="none">
+                  <polyline points="0,20 14,28 28,12 40,18 54,6 70,16" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
             </div>
-            <div class="card-body">
-              <div class="shortcut-grid">
-                <a href="/tasks" class="shortcut-item"><i class="bi bi-check2-square"></i><span>My Tasks</span></a>
-                <a href="/leaves" class="shortcut-item"><i class="bi bi-calendar-plus"></i><span>Request Leave</span></a>
-                <a href="/analytics" class="shortcut-item"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
-                <a href="/goals" class="shortcut-item"><i class="bi bi-bullseye"></i><span>My Goals</span></a>
-                <a href="/appraisal" class="shortcut-item"><i class="bi bi-star-half"></i><span>Performance</span></a>
-                <a href="/attendance" class="shortcut-item"><i class="bi bi-clock-history"></i><span>Attendance</span></a>
-                <a href="/policy" class="shortcut-item"><i class="bi bi-robot"></i><span>Policy AI</span></a>
-                <a href="/helpdesk" class="shortcut-item"><i class="bi bi-ticket-detailed"></i><span>Help Desk</span></a>
-                <a href="/directory" class="shortcut-item"><i class="bi bi-people"></i><span>Directory</span></a>
+
+            <!-- Attendance -->
+            <div class="metric-card green">
+              <div class="metric-label">Days Present (Month)</div>
+              <div class="metric-value" id="statPresentDays">—</div>
+              <div class="metric-footer">
+                <div class="mf-item"><span class="mf-val">—</span><span class="mf-lbl">Late</span></div>
+                <div class="mf-item"><span class="mf-val">—</span><span class="mf-lbl">Absent</span></div>
+              </div>
+              <div class="metric-sparkline">
+                <svg width="70" height="40" viewBox="0 0 70 40" fill="none">
+                  <polyline points="0,30 10,22 22,26 34,10 46,16 58,4 70,10" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Help Desk -->
+            <div class="metric-card coral">
+              <div class="metric-label">Open Tickets</div>
+              <div class="metric-value" id="statOpenTickets">—</div>
+              <div class="metric-footer">
+                <div class="mf-item"><span class="mf-val">—</span><span class="mf-lbl">High Priority</span></div>
+                <div class="mf-item"><span class="mf-val">—</span><span class="mf-lbl">Pending</span></div>
+              </div>
+              <div class="metric-sparkline">
+                <svg width="70" height="40" viewBox="0 0 70 40" fill="none">
+                  <polyline points="0,10 12,18 24,12 38,24 50,16 62,28 70,20" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Recent Tasks -->
-      <div class="card mb-4">
-        <div class="card-header">
-          <span><i class="bi bi-check2-square text-primary me-2"></i>My Recent Tasks</span>
-          <a href="/tasks" class="btn btn-sm btn-outline-primary">View All</a>
-        </div>
-        <div class="card-body p-0">
-          <div id="recentTasksList" style="padding: 8px 16px;">
-            <div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm" style="color:var(--color-primary)"></div></div>
+          <!-- Quick Access -->
+          <div class="quick-card">
+            <div class="section-hdr">
+              <h6><i class="bi bi-lightning-fill me-2" style="color:var(--color-primary)"></i>Quick Access</h6>
+            </div>
+            <div class="shortcut-grid">
+              <a href="/tasks"      class="shortcut-item"><i class="bi bi-check2-square"></i><span>My Tasks</span></a>
+              <a href="/leaves"     class="shortcut-item"><i class="bi bi-calendar-plus"></i><span>Leave</span></a>
+              <a href="/analytics"  class="shortcut-item"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
+              <a href="/goals"      class="shortcut-item"><i class="bi bi-bullseye"></i><span>Goals</span></a>
+              <a href="/appraisal"  class="shortcut-item"><i class="bi bi-star-half"></i><span>Performance</span></a>
+              <a href="/attendance" class="shortcut-item"><i class="bi bi-clock-history"></i><span>Attendance</span></a>
+              <a href="/policy"     class="shortcut-item"><i class="bi bi-robot"></i><span>Policy AI</span></a>
+              <a href="/helpdesk"   class="shortcut-item"><i class="bi bi-ticket-detailed"></i><span>Help Desk</span></a>
+              <a href="/directory"  class="shortcut-item"><i class="bi bi-people"></i><span>Directory</span></a>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Announcements -->
-      <div class="card mt-4">
-        <div class="card-header">
-          <span><i class="bi bi-megaphone text-primary me-2"></i>Announcements</span>
-        </div>
-        <div class="card-body p-0">
-          <div id="newsList" style="padding: 4px 16px;">
-            <div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm" style="color:var(--color-primary)"></div></div>
+          <!-- Recent Tasks (dark activity table) -->
+          <div>
+            <div class="section-hdr">
+              <h6>Recent Activity</h6>
+              <a href="/tasks">View All &rarr;</a>
+            </div>
+            <div class="activity-card">
+              <div class="activity-head">
+                <h6><i class="bi bi-check2-square me-2"></i>My Recent Tasks</h6>
+                <a href="/tasks">More Activity &rarr;</a>
+              </div>
+              <table class="act-table">
+                <thead>
+                  <tr>
+                    <th>Task</th>
+                    <th>System</th>
+                    <th>Status</th>
+                    <th>Due</th>
+                  </tr>
+                </thead>
+                <tbody id="recentTasksList">
+                  <tr><td colspan="4" class="act-loading"><div class="spinner-border spinner-border-sm" style="color:var(--color-primary-lighter)"></div></td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </div>
+
+          <!-- Announcements -->
+          <div>
+            <div class="section-hdr">
+              <h6>Announcements</h6>
+            </div>
+            <div class="announce-card">
+              <div id="newsList">
+                <div class="news-loading"><div class="spinner-border spinner-border-sm" style="color:var(--color-primary)"></div></div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /home-main -->
+
+        <!-- ── Right panel ────────────────────────────────── -->
+        <div class="home-aside">
+
+          <!-- Profile card -->
+          <div class="profile-card">
+            <h6>Employee Profile</h6>
+            <div class="profile-avatar" id="profileAvatar">A</div>
+            <div class="profile-name" id="profileName">Loading...</div>
+            <div class="profile-role" id="profileRole">--</div>
+            <hr class="profile-divider">
+            <div class="profile-row">
+              <span class="pr-label">Department</span>
+              <span class="pr-val" id="profileDept">--</span>
+            </div>
+            <div class="profile-row">
+              <span class="pr-label">Status</span>
+              <span class="pr-val" style="color:#00B894">● Active</span>
+            </div>
+            <div class="profile-row">
+              <span class="pr-label">Today</span>
+              <span class="pr-val" id="profileDate">--</span>
+            </div>
+          </div>
+
+          <!-- Stats breakdown -->
+          <div class="stat-breakdown">
+            <h6>Overview</h6>
+            <div class="sb-row">
+              <div>
+                <div class="sb-name">Pending Tasks</div>
+                <div class="sb-sub">Requires attention</div>
+              </div>
+              <div class="sb-val" id="sbPending">—</div>
+            </div>
+            <div class="sb-row">
+              <div>
+                <div class="sb-name">Leave Balance</div>
+                <div class="sb-sub">Annual days left</div>
+              </div>
+              <div class="sb-val" id="sbLeave" style="color:#00B4D8">—</div>
+            </div>
+            <div class="sb-row">
+              <div>
+                <div class="sb-name">Attendance</div>
+                <div class="sb-sub">This month</div>
+              </div>
+              <div class="sb-val" id="sbAttend" style="color:#00B894">—</div>
+            </div>
+            <div class="sb-row">
+              <div>
+                <div class="sb-name">Open Tickets</div>
+                <div class="sb-sub">Helpdesk</div>
+              </div>
+              <div class="sb-val" id="sbTickets" style="color:#E17055">—</div>
+            </div>
+          </div>
+
+        </div><!-- /home-aside -->
+      </div><!-- /home-layout -->
     </main>
   </div>
 </div>
@@ -237,6 +483,112 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="/js/api.js"></script>
-<script src="/js/landing.js"></script>
+<script>
+/* ── Inline landing controller (replaces landing.js for new design) ── */
+document.addEventListener('DOMContentLoaded', async () => {
+  await Layout.init('landing');
+  setWelcome();
+  await Promise.all([loadSummary(), loadRecentTasks(), loadNews()]);
+});
+
+function setWelcome() {
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const user = Layout.user;
+  const name = user?.name?.split(' ')[0] || '';
+  document.getElementById('welcomeGreeting').textContent = `${greeting}, ${name}! 👋`;
+  document.getElementById('welcomeSub').textContent = "Here's what's on your plate today.";
+  const dateStr = new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('welcomeDate').textContent = dateStr;
+
+  /* Profile panel */
+  if (user) {
+    document.getElementById('profileAvatar').textContent = (user.name || 'U')[0].toUpperCase();
+    document.getElementById('profileName').textContent   = user.name || '—';
+    document.getElementById('profileRole').textContent   = user.role || '—';
+    document.getElementById('profileDept').textContent   = user.department || '—';
+    document.getElementById('profileDate').textContent   = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  }
+}
+
+async function loadSummary() {
+  const data = await API.get('/api/analytics/summary');
+  if (!data?.success) return;
+  const s = data.summary;
+  document.getElementById('statPendingTasks').textContent = s.pendingTasks ?? '—';
+  document.getElementById('statLeaveBalance').textContent = s.leaveBalance?.annual ?? '—';
+  document.getElementById('statPresentDays').textContent  = s.attendance?.presentDays ?? '—';
+  document.getElementById('statOpenTickets').textContent  = s.openTickets ?? '—';
+  if (s.leaveBalance?.sick !== undefined) document.getElementById('mfSick').textContent = s.leaveBalance.sick;
+  /* right panel mirror */
+  document.getElementById('sbPending').textContent = s.pendingTasks ?? '—';
+  document.getElementById('sbLeave').textContent   = (s.leaveBalance?.annual ?? '—') + ' days';
+  document.getElementById('sbAttend').textContent  = (s.attendance?.presentDays ?? '—') + ' days';
+  document.getElementById('sbTickets').textContent = s.openTickets ?? '—';
+}
+
+async function loadRecentTasks() {
+  const data = await API.get('/api/tasks');
+  const tbody = document.getElementById('recentTasksList');
+  if (!data?.success) {
+    tbody.innerHTML = `<tr><td colspan="4" class="act-loading" style="color:#ff7675">Failed to load.</td></tr>`;
+    return;
+  }
+  const tasks = data.tasks.filter(t => t.status !== 'completed').slice(0, 6);
+  if (!tasks.length) {
+    tbody.innerHTML = `<tr><td colspan="4" class="act-loading"><i class="bi bi-check2-all me-2"></i>All caught up — no pending tasks!</td></tr>`;
+    return;
+  }
+  const badgeClass = { pending:'pending', 'in-progress':'progress', escalated:'escalated', completed:'done' };
+  const badgeLabel = { pending:'Pending', 'in-progress':'In Progress', escalated:'Escalated', completed:'Done' };
+  const iconMap = { HR:'bi-people', Accounting:'bi-cash-stack', CRM:'bi-person-rolodex', Warehouse:'bi-box-seam', IT:'bi-pc-display', Manual:'bi-pencil' };
+
+  tbody.innerHTML = tasks.map(t => {
+    const isOverdue = t.dueDate && new Date(t.dueDate) < new Date();
+    const icon = iconMap[t.sourceSystem] || 'bi-check2-square';
+    const bc   = badgeClass[t.status] || 'pending';
+    const bl   = badgeLabel[t.status] || t.status;
+    const due  = t.dueDate ? new Date(t.dueDate).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}) : '—';
+    return `
+      <tr>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div class="act-icon"><i class="bi ${icon}"></i></div>
+            <div>
+              <div class="act-title" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</div>
+              <div class="act-sub">${t.sourceSystem || '—'}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="act-text-muted">${t.sourceSystem || '—'}</span></td>
+        <td><span class="act-badge ${bc}">${bl}</span></td>
+        <td><span class="${isOverdue ? 'act-badge escalated' : 'act-text-muted'}">${isOverdue ? 'Overdue' : due}</span></td>
+      </tr>`;
+  }).join('');
+}
+
+async function loadNews() {
+  const data = await API.get('/api/news');
+  const el   = document.getElementById('newsList');
+  if (!data?.success || !data.news?.length) {
+    el.innerHTML = '<div class="news-loading" style="color:var(--color-text-light)">No announcements.</div>';
+    return;
+  }
+  el.innerHTML = data.news.slice(0, 4).map(n => {
+    const ago = UI.timeAgo ? UI.timeAgo(n.postedAt) : n.postedAt;
+    return `
+      <div class="news-item">
+        <div class="d-flex gap-3 align-items-start">
+          <div class="news-icon"><i class="bi ${n.icon || 'bi-megaphone'}"></i></div>
+          <div style="flex:1;min-width:0">
+            <div class="news-title">${n.title}</div>
+            <div class="news-summary">${n.summary}</div>
+            <div class="news-time mt-1">${ago}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+</script>
 </body>
 </html>
