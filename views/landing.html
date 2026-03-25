@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home — Unified Workspace</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <style>
+    .welcome-banner { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); border-radius: var(--radius-lg); padding: 28px 32px; color: white; margin-bottom: 24px; position: relative; overflow: hidden; }
+    .welcome-banner::after { content: ''; position: absolute; right: -30px; top: -30px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+    .welcome-banner::before { content: ''; position: absolute; right: 60px; bottom: -50px; width: 130px; height: 130px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+    .welcome-greeting { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .welcome-sub { font-size: 14px; opacity: 0.8; }
+    .welcome-date { font-size: 13px; opacity: 0.7; margin-top: 8px; }
+    .shortcut-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+    .shortcut-item { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px 12px; text-align: center; text-decoration: none; color: var(--color-text); transition: all 0.2s; cursor: pointer; }
+    .shortcut-item:hover { border-color: var(--color-primary); background: var(--color-primary-faint); color: var(--color-primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .shortcut-item i { font-size: 26px; display: block; margin-bottom: 8px; color: var(--color-primary); }
+    .shortcut-item span { font-size: 12px; font-weight: 600; }
+    .task-row-mini { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--color-border-light); }
+    .task-row-mini:last-child { border-bottom: none; }
+    .task-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .task-dot.pending { background: var(--color-warning); }
+    .task-dot.in-progress { background: var(--color-info); }
+    .task-dot.escalated { background: var(--color-danger); }
+    .news-item { padding: 14px 0; border-bottom: 1px solid var(--color-border-light); }
+    .news-item:last-child { border-bottom: none; }
+    .news-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--color-primary-faint); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .news-title { font-size: 13px; font-weight: 600; color: var(--color-text); margin-bottom: 2px; }
+    .news-summary { font-size: 12px; color: var(--color-text-muted); line-height: 1.4; }
+    .news-time { font-size: 11px; color: var(--color-text-light); }
+  </style>
+</head>
+<body>
+<div class="app-wrapper">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <img src="/assets/logo.png" alt="WIND-IS" class="sidebar-logo">
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <a href="/" class="nav-item" data-page="landing"><i class="bi bi-house-door"></i><span>Home</span></a>
+        <a href="/tasks" class="nav-item" data-page="tasks"><i class="bi bi-check2-square"></i><span>My Tasks</span><span class="nav-badge d-none" id="tasksBadge">0</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Self-Service</div>
+        <a href="/leaves" class="nav-item" data-page="leaves"><i class="bi bi-calendar-check"></i><span>Leave Requests</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Insights</div>
+        <a href="/analytics" class="nav-item" data-page="analytics"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
+        <a href="/goals" class="nav-item" data-page="goals"><i class="bi bi-bullseye"></i><span>Goals & OKR</span></a>
+        <a href="/appraisal" class="nav-item" data-page="appraisal"><i class="bi bi-star-half"></i><span>Performance</span></a>
+        <a href="/attendance" class="nav-item" data-page="attendance"><i class="bi bi-clock-history"></i><span>Attendance</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Support</div>
+        <a href="/policy" class="nav-item" data-page="policy"><i class="bi bi-robot"></i><span>Policy AI</span></a>
+        <a href="/helpdesk" class="nav-item" data-page="helpdesk"><i class="bi bi-headset"></i><span>Help Desk</span></a>
+        <a href="/directory" class="nav-item" data-page="directory"><i class="bi bi-people"></i><span>Directory</span></a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar-sidebar" id="sidebarAvatar">A</div>
+        <div class="sidebar-user-details">
+          <div class="sidebar-user-name" id="sidebarUserName">Loading...</div>
+          <div class="sidebar-user-role" id="sidebarUserRole">--</div>
+        </div>
+      </div>
+      <a href="/api/auth/logout" class="sidebar-logout" title="Sign Out"><i class="bi bi-box-arrow-right"></i></a>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main -->
+  <div class="main-wrapper">
+    <header class="topbar">
+      <button class="topbar-toggle" id="sidebarToggle"><i class="bi bi-list"></i></button>
+      <img src="/assets/logo.png" alt="Logo" class="topbar-logo" id="topbarLogo">
+      <h1 class="page-title">Home</h1>
+      <div class="topbar-right">
+        <div class="topbar-search">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Search...">
+        </div>
+        <button class="icon-btn" title="Notifications">
+          <i class="bi bi-bell"></i>
+          <span class="notif-dot d-none" id="notifDot"></span>
+        </button>
+        <div class="dropdown">
+          <div class="topbar-user" data-bs-toggle="dropdown">
+            <div class="user-avatar-sm" id="topbarAvatar">A</div>
+            <span class="topbar-user-name" id="topbarUserName">User</span>
+            <i class="bi bi-chevron-down fs-xs text-muted ms-1"></i>
+          </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <li><a class="dropdown-item" href="/customize"><i class="bi bi-palette2 me-2" style="color:var(--color-primary)"></i>Customize</a></li>
+            <li><hr class="dropdown-divider my-1"></li>
+            <li><a class="dropdown-item" href="/api/auth/logout"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Sign Out</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-greeting" id="welcomeGreeting">Good morning! 👋</div>
+        <div class="welcome-sub" id="welcomeSub">Here's what's on your plate today.</div>
+        <div class="welcome-date" id="welcomeDate"></div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon warning"><i class="bi bi-check2-square"></i></div>
+            <div>
+              <div class="stat-value" id="statPendingTasks">—</div>
+              <div class="stat-label">Pending Tasks</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon primary"><i class="bi bi-calendar3"></i></div>
+            <div>
+              <div class="stat-value" id="statLeaveBalance">—</div>
+              <div class="stat-label">Leave Days Left</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon success"><i class="bi bi-person-check"></i></div>
+            <div>
+              <div class="stat-value" id="statPresentDays">—</div>
+              <div class="stat-label">Days Present (Month)</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-icon info"><i class="bi bi-headset"></i></div>
+            <div>
+              <div class="stat-value" id="statOpenTickets">—</div>
+              <div class="stat-label">Open Tickets</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics Row -->
+      <div class="row g-3 mb-4">
+        <!-- Task Status Donut -->
+        <div class="col-12 col-md-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <span><i class="bi bi-pie-chart text-primary me-2"></i>Task Overview</span>
+            </div>
+            <div class="card-body d-flex flex-column align-items-center justify-content-center" style="min-height:220px">
+              <canvas id="chartTaskStatus" style="max-height:180px"></canvas>
+              <div id="chartTaskStatusLegend" class="d-flex flex-wrap justify-content-center gap-2 mt-3 fs-xs"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tasks by System Bar -->
+        <div class="col-12 col-md-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <span><i class="bi bi-bar-chart text-primary me-2"></i>Tasks by System</span>
+            </div>
+            <div class="card-body d-flex align-items-center" style="min-height:220px">
+              <canvas id="chartTaskSystem" style="width:100%;max-height:190px"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Access -->
+        <div class="col-12 col-md-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <span><i class="bi bi-lightning text-primary me-2"></i>Quick Access</span>
+            </div>
+            <div class="card-body">
+              <div class="shortcut-grid">
+                <a href="/tasks" class="shortcut-item"><i class="bi bi-check2-square"></i><span>My Tasks</span></a>
+                <a href="/leaves" class="shortcut-item"><i class="bi bi-calendar-plus"></i><span>Request Leave</span></a>
+                <a href="/analytics" class="shortcut-item"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
+                <a href="/goals" class="shortcut-item"><i class="bi bi-bullseye"></i><span>My Goals</span></a>
+                <a href="/appraisal" class="shortcut-item"><i class="bi bi-star-half"></i><span>Performance</span></a>
+                <a href="/attendance" class="shortcut-item"><i class="bi bi-clock-history"></i><span>Attendance</span></a>
+                <a href="/policy" class="shortcut-item"><i class="bi bi-robot"></i><span>Policy AI</span></a>
+                <a href="/helpdesk" class="shortcut-item"><i class="bi bi-ticket-detailed"></i><span>Help Desk</span></a>
+                <a href="/directory" class="shortcut-item"><i class="bi bi-people"></i><span>Directory</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Tasks -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <span><i class="bi bi-check2-square text-primary me-2"></i>My Recent Tasks</span>
+          <a href="/tasks" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        <div class="card-body p-0">
+          <div id="recentTasksList" style="padding: 8px 16px;">
+            <div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm" style="color:var(--color-primary)"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Announcements -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <span><i class="bi bi-megaphone text-primary me-2"></i>Announcements</span>
+        </div>
+        <div class="card-body p-0">
+          <div id="newsList" style="padding: 4px 16px;">
+            <div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm" style="color:var(--color-primary)"></div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/landing.js"></script>
+</body>
+</html>

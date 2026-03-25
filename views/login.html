@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Unified Workspace</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/variables.css">
+  <style>
+    body { background: var(--color-surface); font-family: var(--font-family); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .login-wrap { width: 100%; max-width: 420px; padding: 24px; }
+    .login-card { background: white; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); overflow: hidden; }
+    .login-header { background: var(--color-primary); padding: 36px 32px 28px; text-align: center; }
+    .login-logo { display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .login-title { color: white; font-weight: 700; font-size: 22px; margin: 0 0 4px; }
+    .login-sub   { color: rgba(255,255,255,0.75); font-size: 13px; margin: 0; }
+    .login-body  { padding: 32px; }
+    .login-body .form-control { border-radius: var(--radius-md); font-size: 14px; padding: 10px 14px; }
+    .login-body .form-control:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(25,141,135,0.15); }
+    .btn-login { background: var(--color-primary); border: none; border-radius: var(--radius-md); padding: 11px; font-size: 15px; font-weight: 600; color: white; width: 100%; transition: background 0.2s; }
+    .btn-login:hover { background: var(--color-primary-dark); }
+    .demo-accounts { margin-top: 20px; padding: 14px 16px; background: var(--color-surface); border-radius: var(--radius-md); border: 1px solid var(--color-border); }
+    .demo-accounts h6 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); margin-bottom: 10px; font-weight: 600; }
+    .demo-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 3px 0; cursor: pointer; border-radius: 4px; transition: color 0.15s; }
+    .demo-row:hover { color: var(--color-primary); }
+    .demo-row span { color: var(--color-text-muted); }
+    .input-group-text { background: var(--color-surface); border-color: #dee2e6; }
+    .alert-danger { font-size: 13px; border-radius: var(--radius-md); }
+  </style>
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo"><img src="/assets/logo.png" alt="WIND-IS" style="height:80px;width:auto;filter:brightness(0) invert(1)"></div>
+        <h1 class="login-title">Unified Workspace</h1>
+        <p class="login-sub">Enterprise Self-Service Portal</p>
+      </div>
+      <div class="login-body">
+        <div id="loginError" class="alert alert-danger d-none" role="alert"></div>
+        <form id="loginForm">
+          <div class="mb-3">
+            <label class="form-label fw-600" for="email">Email Address</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-envelope text-muted"></i></span>
+              <input type="email" class="form-control" id="email" placeholder="name@company.com" autocomplete="email" required>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-600" for="password">Password</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-lock text-muted"></i></span>
+              <input type="password" class="form-control" id="password" placeholder="Enter your password" autocomplete="current-password" required>
+              <button type="button" class="input-group-text" id="togglePass" style="cursor:pointer">
+                <i class="bi bi-eye" id="togglePassIcon"></i>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn-login" id="loginBtn">
+            <span id="loginBtnText">Sign In</span>
+            <span id="loginSpinner" class="spinner-border spinner-border-sm ms-2 d-none"></span>
+          </button>
+        </form>
+
+        <div class="demo-accounts mt-3">
+          <h6>Demo Accounts — click to fill</h6>
+          <div class="demo-row" onclick="fillDemo('ahmed@company.com','demo123')">
+            <strong>Ahmed Al-Rashidi</strong> <span>Admin</span>
+          </div>
+          <div class="demo-row" onclick="fillDemo('khalid@company.com','demo123')">
+            <strong>Khalid Al-Mansouri</strong> <span>Manager</span>
+          </div>
+          <div class="demo-row" onclick="fillDemo('fatima@company.com','demo123')">
+            <strong>Fatima Al-Zahra</strong> <span>HR Manager</span>
+          </div>
+          <div class="demo-row" onclick="fillDemo('sara@company.com','demo123')">
+            <strong>Sara Hassan</strong> <span>Employee</span>
+          </div>
+          <div class="demo-row" onclick="fillDemo('omar@company.com','demo123')">
+            <strong>Omar Al-Farsi</strong> <span>Employee</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="text-center mt-3 fs-sm text-muted">© 2026 Unified Workspace. All rights reserved.</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function fillDemo(email, pass) {
+      document.getElementById('email').value    = email;
+      document.getElementById('password').value = pass;
+    }
+
+    document.getElementById('togglePass').addEventListener('click', function () {
+      const inp  = document.getElementById('password');
+      const icon = document.getElementById('togglePassIcon');
+      if (inp.type === 'password') { inp.type = 'text'; icon.className = 'bi bi-eye-slash'; }
+      else { inp.type = 'password'; icon.className = 'bi bi-eye'; }
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const btn  = document.getElementById('loginBtn');
+      const spin = document.getElementById('loginSpinner');
+      const err  = document.getElementById('loginError');
+      const text = document.getElementById('loginBtnText');
+
+      text.textContent = 'Signing in...';
+      spin.classList.remove('d-none');
+      btn.disabled = true;
+      err.classList.add('d-none');
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email:    document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value
+          })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          window.location.href = '/';
+        } else {
+          err.textContent = data.message || 'Invalid credentials. Please try again.';
+          err.classList.remove('d-none');
+        }
+      } catch {
+        err.textContent = 'Connection error. Please try again.';
+        err.classList.remove('d-none');
+      } finally {
+        text.textContent = 'Sign In';
+        spin.classList.add('d-none');
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

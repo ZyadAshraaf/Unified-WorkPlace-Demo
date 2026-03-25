@@ -1,0 +1,380 @@
+[
+  {
+    "id": "t001",
+    "title": "Approve Leave Request — Sara Hassan",
+    "description": "Sara Hassan has submitted an annual leave request for 5 days (April 1–5, 2026). Please review and approve or reject.",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "high",
+    "status": "completed",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-03-26",
+    "createdAt": "2026-03-20T09:00:00Z",
+    "updatedAt": "2026-03-25T10:03:29.489Z",
+    "metadata": {
+      "leaveId": "l001"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-03-20T09:00:00Z",
+        "note": "Leave request submitted by Sara Hassan"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-03-25T10:03:29.489Z",
+        "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "t002",
+    "title": "Submit Q1 2026 Budget Report",
+    "description": "Compile and submit the Q1 2026 departmental budget report to Finance Director by end of March.",
+    "sourceSystem": "Accounting",
+    "type": "task",
+    "priority": "critical",
+    "status": "in-progress",
+    "assignedTo": "u004",
+    "createdBy": "u002",
+    "dueDate": "2026-03-31",
+    "createdAt": "2026-03-01T08:00:00Z",
+    "updatedAt": "2026-03-22T14:30:00Z",
+    "metadata": {},
+    "history": [
+      {
+        "action": "created",
+        "by": "u002",
+        "at": "2026-03-01T08:00:00Z",
+        "note": "Task assigned to Sara Hassan"
+      },
+      {
+        "action": "status-changed",
+        "by": "u004",
+        "at": "2026-03-15T10:00:00Z",
+        "note": "Started working on the report"
+      }
+    ],
+    "comments": [
+      {
+        "by": "u002",
+        "at": "2026-03-22T14:30:00Z",
+        "text": "Please include the variance analysis in the report."
+      }
+    ],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "t003",
+    "title": "Review CRM Opportunity — Al-Farhan Deal",
+    "description": "Review the Al-Farhan Group opportunity in CRM. Deal value: SAR 2.4M. Approval required before proposal submission.",
+    "sourceSystem": "CRM",
+    "type": "approval",
+    "priority": "high",
+    "status": "pending",
+    "assignedTo": "u002",
+    "createdBy": "u006",
+    "dueDate": "2026-03-28",
+    "createdAt": "2026-03-19T11:00:00Z",
+    "updatedAt": "2026-03-19T11:00:00Z",
+    "metadata": {
+      "dealValue": "2400000",
+      "currency": "SAR"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u006",
+        "at": "2026-03-19T11:00:00Z",
+        "note": "Opportunity created and pending manager review"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "t004",
+    "title": "Quarterly Inventory Count — Warehouse Zone B",
+    "description": "Conduct physical inventory count for Warehouse Zone B and reconcile with system records.",
+    "sourceSystem": "Warehouse",
+    "type": "task",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u005",
+    "createdBy": "u006",
+    "dueDate": "2026-03-30",
+    "createdAt": "2026-03-18T09:00:00Z",
+    "updatedAt": "2026-03-18T09:00:00Z",
+    "metadata": {
+      "zone": "B",
+      "sku_count": 847
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u006",
+        "at": "2026-03-18T09:00:00Z",
+        "note": "Quarterly count initiated"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "t005",
+    "title": "Renew Microsoft 365 License",
+    "description": "Corporate Microsoft 365 license expires April 15, 2026. Initiate renewal process and obtain management approval.",
+    "sourceSystem": "IT",
+    "type": "task",
+    "priority": "high",
+    "status": "in-progress",
+    "assignedTo": "u005",
+    "createdBy": "u001",
+    "dueDate": "2026-04-10",
+    "createdAt": "2026-03-10T08:00:00Z",
+    "updatedAt": "2026-03-21T10:00:00Z",
+    "metadata": {
+      "licenseType": "Microsoft 365 E3",
+      "seats": 150
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-03-10T08:00:00Z",
+        "note": "Renewal task initiated"
+      },
+      {
+        "action": "status-changed",
+        "by": "u005",
+        "at": "2026-03-21T10:00:00Z",
+        "note": "Quote requested from Microsoft partner"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "t006",
+    "title": "Complete New Employee Onboarding Checklist",
+    "description": "Complete all items on the onboarding checklist: system access setup, policy acknowledgment, orientation sessions, and equipment assignment.",
+    "sourceSystem": "HR",
+    "type": "task",
+    "priority": "medium",
+    "status": "in-progress",
+    "assignedTo": "u005",
+    "createdBy": "u003",
+    "dueDate": "2026-03-25",
+    "createdAt": "2026-02-15T09:00:00Z",
+    "updatedAt": "2026-03-20T11:00:00Z",
+    "metadata": {
+      "progress": 75
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u003",
+        "at": "2026-02-15T09:00:00Z",
+        "note": "Onboarding initiated for Omar Al-Farsi"
+      }
+    ],
+    "comments": [
+      {
+        "by": "u003",
+        "at": "2026-03-20T11:00:00Z",
+        "text": "Please complete the IT Security Awareness training."
+      }
+    ],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "t007",
+    "title": "Approve Overtime Request — Omar Al-Farsi",
+    "description": "Omar Al-Farsi has requested overtime approval for weekend work (March 22–23) related to server migration project.",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u003",
+    "createdBy": "u005",
+    "dueDate": "2026-03-24",
+    "createdAt": "2026-03-21T16:00:00Z",
+    "updatedAt": "2026-03-21T16:00:00Z",
+    "metadata": {
+      "overtimeHours": 16
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u005",
+        "at": "2026-03-21T16:00:00Z",
+        "note": "Overtime request submitted"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "t008",
+    "title": "Process Vendor Invoice — Vendor #2847",
+    "description": "Process and approve payment for Vendor #2847 (Al-Khalid Supplies). Invoice amount: SAR 48,500.",
+    "sourceSystem": "Accounting",
+    "type": "approval",
+    "priority": "high",
+    "status": "completed",
+    "assignedTo": "u004",
+    "createdBy": "u002",
+    "dueDate": "2026-03-20",
+    "createdAt": "2026-03-15T10:00:00Z",
+    "updatedAt": "2026-03-19T15:30:00Z",
+    "metadata": {
+      "invoiceAmount": 48500,
+      "vendorId": "V2847"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u002",
+        "at": "2026-03-15T10:00:00Z",
+        "note": "Invoice received and assigned for processing"
+      },
+      {
+        "action": "completed",
+        "by": "u004",
+        "at": "2026-03-19T15:30:00Z",
+        "note": "Invoice processed and payment initiated"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "t009",
+    "title": "Schedule Q1 Performance Review Meetings",
+    "description": "Coordinate and schedule individual performance review meetings with all direct reports for Q1 2026.",
+    "sourceSystem": "HR",
+    "type": "task",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u002",
+    "createdBy": "u003",
+    "dueDate": "2026-04-05",
+    "createdAt": "2026-03-22T09:00:00Z",
+    "updatedAt": "2026-03-22T09:00:00Z",
+    "metadata": {
+      "directReports": 3
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u003",
+        "at": "2026-03-22T09:00:00Z",
+        "note": "Q1 review cycle initiated by HR"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "t010",
+    "title": "Update Emergency Contact Information",
+    "description": "Please update your emergency contact information in the HR system as part of the annual records update.",
+    "sourceSystem": "HR",
+    "type": "task",
+    "priority": "low",
+    "status": "pending",
+    "assignedTo": "u004",
+    "createdBy": "u003",
+    "dueDate": "2026-03-31",
+    "createdAt": "2026-03-20T08:00:00Z",
+    "updatedAt": "2026-03-20T08:00:00Z",
+    "metadata": {},
+    "history": [
+      {
+        "action": "created",
+        "by": "u003",
+        "at": "2026-03-20T08:00:00Z",
+        "note": "Annual records update campaign"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "t011",
+    "title": "Review and Sign IT Security Policy 2026",
+    "description": "The updated IT Security Policy for 2026 requires your review and digital acknowledgment before March 31.",
+    "sourceSystem": "IT",
+    "type": "task",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u004",
+    "createdBy": "u001",
+    "dueDate": "2026-03-31",
+    "createdAt": "2026-03-18T08:00:00Z",
+    "updatedAt": "2026-03-18T08:00:00Z",
+    "metadata": {
+      "policyVersion": "2026.1"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-03-18T08:00:00Z",
+        "note": "Policy acknowledgment required from all staff"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "t012",
+    "title": "Submit Q1 Travel Expense Report",
+    "description": "Submit expense report for Q1 travel to Jeddah branch (Feb 14–16). Total claimed: SAR 3,850.",
+    "sourceSystem": "Accounting",
+    "type": "task",
+    "priority": "medium",
+    "status": "escalated",
+    "assignedTo": "u004",
+    "createdBy": "u004",
+    "dueDate": "2026-03-15",
+    "createdAt": "2026-03-01T09:00:00Z",
+    "updatedAt": "2026-03-23T09:00:00Z",
+    "metadata": {
+      "amount": 3850
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-03-01T09:00:00Z",
+        "note": "Expense report created"
+      },
+      {
+        "action": "escalated",
+        "by": "u002",
+        "at": "2026-03-23T09:00:00Z",
+        "note": "Task overdue — escalated to HR for follow-up"
+      }
+    ],
+    "comments": [],
+    "escalated": true,
+    "delegatedFrom": null
+  }
+]

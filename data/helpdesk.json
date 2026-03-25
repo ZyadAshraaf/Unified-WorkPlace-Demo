@@ -1,0 +1,65 @@
+[
+  {
+    "id": "hd001",
+    "ticketNo": "TKT-2026-001",
+    "title": "Cannot Access CRM System",
+    "description": "I receive an 'Access Denied' error when trying to log into the CRM system. This started happening today after my password was reset.",
+    "category": "Access & Permissions",
+    "priority": "high",
+    "status": "open",
+    "submittedBy": "u004",
+    "assignedTo": "u005",
+    "createdAt": "2026-03-24T08:30:00Z",
+    "updatedAt": "2026-03-24T08:30:00Z",
+    "comments": []
+  },
+  {
+    "id": "hd002",
+    "ticketNo": "TKT-2026-002",
+    "title": "Laptop Keyboard Not Working",
+    "description": "Several keys on my laptop keyboard have stopped responding. This is severely impacting my productivity. Need urgent replacement or repair.",
+    "category": "Hardware",
+    "priority": "high",
+    "status": "in-progress",
+    "submittedBy": "u005",
+    "assignedTo": "u005",
+    "createdAt": "2026-03-22T14:00:00Z",
+    "updatedAt": "2026-03-23T10:00:00Z",
+    "comments": [
+      { "by": "u005", "at": "2026-03-23T10:00:00Z", "text": "Replacement keyboard ordered from supplier. Expected delivery: March 26th.", "isInternal": false }
+    ]
+  },
+  {
+    "id": "hd003",
+    "ticketNo": "TKT-2026-003",
+    "title": "Need Training on Advanced Excel Functions",
+    "description": "I would like to request Excel training specifically on pivot tables, VLOOKUP, and Power Query to improve my reporting efficiency.",
+    "category": "Training",
+    "priority": "low",
+    "status": "resolved",
+    "submittedBy": "u004",
+    "assignedTo": "u003",
+    "createdAt": "2026-03-10T09:00:00Z",
+    "updatedAt": "2026-03-18T11:00:00Z",
+    "comments": [
+      { "by": "u003", "at": "2026-03-12T10:00:00Z", "text": "Training session scheduled for March 18th, 2:00 PM.", "isInternal": false },
+      { "by": "u004", "at": "2026-03-18T15:00:00Z", "text": "Training completed. Very helpful, thank you!", "isInternal": false }
+    ]
+  },
+  {
+    "id": "hd004",
+    "ticketNo": "TKT-2026-004",
+    "title": "Network Drive Unavailable — Finance Share",
+    "description": "The Finance department shared network drive (\\\\fileserver\\Finance) is unavailable. The entire team cannot access shared documents.",
+    "category": "Network",
+    "priority": "critical",
+    "status": "open",
+    "submittedBy": "u002",
+    "assignedTo": "u001",
+    "createdAt": "2026-03-24T07:45:00Z",
+    "updatedAt": "2026-03-24T07:45:00Z",
+    "comments": [
+      { "by": "u001", "at": "2026-03-24T08:00:00Z", "text": "Investigating the issue. Likely related to last night's maintenance.", "isInternal": true }
+    ]
+  }
+]
