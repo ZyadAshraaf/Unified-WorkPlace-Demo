@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/css/variables.css">
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/pages.css">
   <style>
     .chat-wrap { display: flex; gap: 20px; height: calc(100vh - 140px); }
     .policy-sidebar { width: 260px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
@@ -60,7 +61,7 @@
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Self-Service</div>
-        <a href="/leaves" class="nav-item" data-page="leaves"><i class="bi bi-calendar-check"></i><span>Leave Requests</span></a>
+        <a href="/services" class="nav-item" data-page="services"><i class="bi bi-grid-3x3-gap"></i><span>Self Services</span></a>
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Insights</div>
@@ -113,6 +114,11 @@
     </header>
 
     <main class="content">
+      <div class="page-hero" style="margin-bottom:18px">
+        <div class="page-hero-bc">Dashboard &rsaquo; <span>Policy AI</span></div>
+        <div class="page-hero-title"><i class="bi bi-robot me-2"></i>Policy AI Assistant</div>
+        <div class="page-hero-sub">Ask anything about company policies — leave, remote work, conduct and more.</div>
+      </div>
       <div class="chat-wrap">
         <!-- Policy List Sidebar -->
         <div class="policy-sidebar">

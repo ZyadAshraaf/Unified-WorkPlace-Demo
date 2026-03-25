@@ -43,7 +43,7 @@ function renderMyLeaves() {
   }
 
   tbody.innerHTML = mine.map(l => `
-    <tr>
+    <tr onclick="openLeaveDrawer('${l.id}')" title="Click to view details">
       <td><span class="badge-custom" style="background:var(--color-primary-faint);color:var(--color-primary);text-transform:capitalize">${l.type}</span></td>
       <td class="fs-sm">${UI.formatDate(l.startDate)}</td>
       <td class="fs-sm">${UI.formatDate(l.endDate)}</td>
@@ -54,6 +54,100 @@ function renderMyLeaves() {
       <td class="fs-sm text-muted" style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.reviewNote || '—'}</td>
     </tr>`).join('');
 }
+
+/* ── Leave Detail Drawer ── */
+function openLeaveDrawer(id) {
+  const l = allLeaves.find(x => x.id === id);
+  if (!l) return;
+
+  const typeIcons = { annual: 'bi-sun', sick: 'bi-heart-pulse', emergency: 'bi-lightning', unpaid: 'bi-wallet2' };
+  const statusConfig = {
+    approved: { icon: 'bi-check-circle-fill', sub: 'This request has been approved' },
+    pending:  { icon: 'bi-clock-fill',        sub: 'Awaiting manager review' },
+    rejected: { icon: 'bi-x-circle-fill',     sub: 'This request was not approved' }
+  };
+  const sc = statusConfig[l.status] || statusConfig.pending;
+
+  // Header
+  document.getElementById('ldTypeIcon').innerHTML = `<i class="bi ${typeIcons[l.type] || 'bi-calendar-check'}"></i>`;
+  document.getElementById('ldTitle').textContent    = `${l.type.charAt(0).toUpperCase() + l.type.slice(1)} Leave`;
+  document.getElementById('ldSubtitle').textContent = `#${l.id.slice(0,8).toUpperCase()}`;
+
+  // Status banner
+  const banner = document.getElementById('ldStatusBanner');
+  banner.className = `ld-status-banner ${l.status}`;
+  document.getElementById('ldStatusIcon').className = `ld-status-icon bi ${sc.icon} ${l.status}`;
+  document.getElementById('ldStatusText').className = `ld-status-text ${l.status}`;
+  document.getElementById('ldStatusText').textContent = l.status.charAt(0).toUpperCase() + l.status.slice(1);
+  document.getElementById('ldStatusSub').textContent  = sc.sub;
+
+  // Duration
+  document.getElementById('ldDays').textContent      = l.days;
+  document.getElementById('ldDateRange').textContent = `${UI.formatDate(l.startDate)} → ${UI.formatDate(l.endDate)}`;
+
+  // Info grid
+  document.getElementById('ldType').textContent      = l.type.charAt(0).toUpperCase() + l.type.slice(1);
+  document.getElementById('ldStart').textContent     = UI.formatDate(l.startDate);
+  document.getElementById('ldEnd').textContent       = UI.formatDate(l.endDate);
+  document.getElementById('ldSubmitted').textContent = l.createdAt ? UI.formatDate(l.createdAt.split('T')[0]) : '—';
+
+  // Reason
+  document.getElementById('ldReason').textContent = l.reason || 'No reason provided.';
+
+  // Reviewer
+  const reviewSection = document.getElementById('ldReviewSection');
+  if (l.reviewerName) {
+    reviewSection.style.display = '';
+    document.getElementById('ldReviewerAvatar').textContent = l.reviewerName.charAt(0).toUpperCase();
+    document.getElementById('ldReviewerName').textContent   = l.reviewerName;
+    const noteEl = document.getElementById('ldReviewNote');
+    if (l.reviewNote) {
+      noteEl.textContent    = `"${l.reviewNote}"`;
+      noteEl.style.display  = '';
+    } else {
+      noteEl.style.display  = 'none';
+    }
+  } else {
+    reviewSection.style.display = 'none';
+  }
+
+  // Timeline
+  const steps = [
+    { label: 'Request Submitted',  sub: l.createdAt ? UI.formatDate(l.createdAt.split('T')[0]) : 'Submitted', done: true },
+    { label: 'Under Review',       sub: 'Manager notified', done: l.status !== 'pending', active: l.status === 'pending' },
+    { label: l.status === 'rejected' ? 'Request Rejected' : 'Request Approved',
+      sub: l.reviewerName ? `By ${l.reviewerName}` : 'Pending',
+      done: l.status === 'approved' || l.status === 'rejected',
+      active: false,
+      danger: l.status === 'rejected' }
+  ];
+  document.getElementById('ldTimeline').innerHTML = steps.map(s => `
+    <div class="ld-tl-item">
+      <div class="ld-tl-dot ${s.danger ? 'done' : s.done ? 'done' : s.active ? 'active' : 'grey'}"
+           style="${s.danger ? 'background:#dc3545' : ''}">
+        <i class="bi ${s.done ? (s.danger ? 'bi-x' : 'bi-check') : s.active ? 'bi-clock' : 'bi-circle'}"></i>
+      </div>
+      <div class="ld-tl-content">
+        <div class="ld-tl-label">${s.label}</div>
+        <div class="ld-tl-sub">${s.sub}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Open
+  document.getElementById('leaveDrawer').classList.add('open');
+  document.getElementById('leaveDrawerOverlay').classList.add('open');
+}
+
+function closeLeaveDrawer() {
+  document.getElementById('leaveDrawer').classList.remove('open');
+  document.getElementById('leaveDrawerOverlay').classList.remove('open');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('leaveDrawerClose')?.addEventListener('click', closeLeaveDrawer);
+  document.getElementById('leaveDrawerOverlay')?.addEventListener('click', closeLeaveDrawer);
+});
 
 function renderPendingApprovals() {
   const user    = Layout.user;

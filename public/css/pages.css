@@ -1,0 +1,107 @@
+/* ============================================================
+   UNIFIED WORKSPACE — SHARED MODERN PAGE STYLES
+   Applied across all pages for a consistent modern look.
+   ============================================================ */
+
+/* ── White content background ────────────────────────────── */
+.content { background: #ffffff !important; }
+
+/* ── Upgrade card radius globally ─────────────────────────── */
+.card              { border-radius: 18px !important; }
+.stat-card         { border-radius: 18px !important; }
+.balance-card      { border-radius: 18px !important; box-shadow: 0 8px 40px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.08) !important; }
+.goal-card         { border-radius: 18px !important; box-shadow: 0 8px 40px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.08) !important; }
+.ticket-card       { border-radius: 18px !important; box-shadow: 0 8px 40px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.08) !important; }
+.emp-card          { border-radius: 18px !important; box-shadow: 0 8px 40px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.08) !important; }
+.appraisal-hist-card { border-radius: 18px !important; box-shadow: 0 8px 40px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.08) !important; }
+.policy-card       { border-radius: 14px !important; box-shadow: 0 4px 20px rgba(0,0,0,.08) !important; }
+.chat-main         { border-radius: 18px !important; box-shadow: 0 8px 40px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.08) !important; }
+.today-card        { border-radius: 18px !important; }
+.task-table-wrap   { border-radius: 18px !important; box-shadow: 0 8px 40px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.08) !important; }
+.filter-bar        { border-radius: 18px !important; box-shadow: 0 4px 16px rgba(0,0,0,.07) !important; }
+
+/* ── Page hero banner ─────────────────────────────────────── */
+.page-hero {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-light) 100%);
+  border-radius: 18px;
+  padding: 22px 28px;
+  color: white;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::after {
+  content: '';
+  position: absolute; right: -40px; top: -40px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+}
+.page-hero::before {
+  content: '';
+  position: absolute; right: 60px; bottom: -50px;
+  width: 130px; height: 130px; border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+.page-hero-bc   { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 6px; }
+.page-hero-bc span { color: rgba(255,255,255,0.9); font-weight: 600; }
+.page-hero-title { font-size: 20px; font-weight: 700; margin-bottom: 3px; }
+.page-hero-sub   { font-size: 13px; opacity: 0.8; }
+
+/* ── Dark table card ──────────────────────────────────────── */
+.dark-table-card {
+  background: #0E5C59;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(14,92,89,.25);
+  margin-bottom: 20px;
+}
+.dark-table-card .dark-table-head {
+  padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.dark-table-card .dark-table-head h6 {
+  color: white; font-size: 14px; font-weight: 700; margin: 0;
+}
+.dark-table-card .dark-table-head a {
+  color: var(--color-primary-lighter); font-size: 12px; text-decoration: none; font-weight: 600;
+}
+.dark-table-card .table-custom thead th {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.dark-table-card .table-custom tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.dark-table-card .table-custom tbody tr:hover {
+  background: rgba(255,255,255,0.04);
+}
+.dark-table-card .table-custom td {
+  color: rgba(255,255,255,0.85);
+}
+.dark-table-card .table-custom td .badge-custom,
+.dark-table-card .table-custom td span {
+  /* keep badge colours visible */
+}
+.dark-table-card .text-muted,
+.dark-table-card .fs-sm { color: rgba(255,255,255,0.45) !important; }
+.dark-table-card .spinner-border { color: var(--color-primary-lighter) !important; }
+
+/* ── Section headers ──────────────────────────────────────── */
+.section-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.section-hdr h6 {
+  font-size: 14px; font-weight: 700; color: var(--color-text); margin: 0;
+}
+.section-hdr a {
+  font-size: 12px; color: var(--color-primary); text-decoration: none; font-weight: 600;
+}
+.section-hdr a:hover { text-decoration: underline; }
+
+/* ── Stat pills (tasks page) ──────────────────────────────── */
+.stat-pill {
+  border-radius: 20px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}

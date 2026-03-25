@@ -7,15 +7,30 @@
     "category": "Operational",
     "startDate": "2026-01-01",
     "dueDate": "2026-06-30",
-    "progress": 65,
+    "progress": 70,
     "status": "on-track",
     "keyResults": [
-      { "id": "kr001", "title": "Automate 3 manual reporting processes", "progress": 100, "done": true },
-      { "id": "kr002", "title": "Reduce report generation time by 50%", "progress": 70, "done": false },
-      { "id": "kr003", "title": "Implement digital approval workflow", "progress": 40, "done": false }
+      {
+        "id": "kr001",
+        "title": "Automate 3 manual reporting processes",
+        "progress": 100,
+        "done": true
+      },
+      {
+        "id": "kr002",
+        "title": "Reduce report generation time by 50%",
+        "progress": 70,
+        "done": false
+      },
+      {
+        "id": "kr003",
+        "title": "Implement digital approval workflow",
+        "progress": 40,
+        "done": false
+      }
     ],
     "createdAt": "2026-01-01T08:00:00Z",
-    "updatedAt": "2026-03-20T10:00:00Z"
+    "updatedAt": "2026-03-25T13:35:34.639Z"
   },
   {
     "id": "g002",
@@ -25,15 +40,30 @@
     "category": "Personal Development",
     "startDate": "2026-01-15",
     "dueDate": "2026-09-30",
-    "progress": 30,
+    "progress": 75,
     "status": "on-track",
     "keyResults": [
-      { "id": "kr004", "title": "Complete Part 1 study materials", "progress": 60, "done": false },
-      { "id": "kr005", "title": "Pass Part 1 exam", "progress": 0, "done": false },
-      { "id": "kr006", "title": "Complete Part 2 study materials", "progress": 0, "done": false }
+      {
+        "id": "kr004",
+        "title": "Complete Part 1 study materials",
+        "progress": 60,
+        "done": false
+      },
+      {
+        "id": "kr005",
+        "title": "Pass Part 1 exam",
+        "progress": 0,
+        "done": false
+      },
+      {
+        "id": "kr006",
+        "title": "Complete Part 2 study materials",
+        "progress": 0,
+        "done": false
+      }
     ],
     "createdAt": "2026-01-15T09:00:00Z",
-    "updatedAt": "2026-03-15T09:00:00Z"
+    "updatedAt": "2026-03-25T13:35:42.255Z"
   },
   {
     "id": "g003",
@@ -46,9 +76,24 @@
     "progress": 80,
     "status": "on-track",
     "keyResults": [
-      { "id": "kr007", "title": "Build IT knowledge base with 50+ articles", "progress": 90, "done": false },
-      { "id": "kr008", "title": "Implement automated ticket triage", "progress": 100, "done": true },
-      { "id": "kr009", "title": "Achieve avg resolution under 38h", "progress": 60, "done": false }
+      {
+        "id": "kr007",
+        "title": "Build IT knowledge base with 50+ articles",
+        "progress": 90,
+        "done": false
+      },
+      {
+        "id": "kr008",
+        "title": "Implement automated ticket triage",
+        "progress": 100,
+        "done": true
+      },
+      {
+        "id": "kr009",
+        "title": "Achieve avg resolution under 38h",
+        "progress": 60,
+        "done": false
+      }
     ],
     "createdAt": "2026-01-01T08:00:00Z",
     "updatedAt": "2026-03-22T11:00:00Z"
@@ -64,9 +109,24 @@
     "progress": 88,
     "status": "on-track",
     "keyResults": [
-      { "id": "kr010", "title": "Audit all employee files", "progress": 100, "done": true },
-      { "id": "kr011", "title": "Update missing emergency contacts", "progress": 75, "done": false },
-      { "id": "kr012", "title": "Complete medical insurance enrollments", "progress": 95, "done": false }
+      {
+        "id": "kr010",
+        "title": "Audit all employee files",
+        "progress": 100,
+        "done": true
+      },
+      {
+        "id": "kr011",
+        "title": "Update missing emergency contacts",
+        "progress": 75,
+        "done": false
+      },
+      {
+        "id": "kr012",
+        "title": "Complete medical insurance enrollments",
+        "progress": 95,
+        "done": false
+      }
     ],
     "createdAt": "2026-01-01T08:00:00Z",
     "updatedAt": "2026-03-23T08:00:00Z"
@@ -82,9 +142,24 @@
     "progress": 25,
     "status": "at-risk",
     "keyResults": [
-      { "id": "kr013", "title": "Survey employees on wellness needs", "progress": 100, "done": true },
-      { "id": "kr014", "title": "Partner with 2 wellness vendors", "progress": 0, "done": false },
-      { "id": "kr015", "title": "Launch program to 80%+ of employees", "progress": 0, "done": false }
+      {
+        "id": "kr013",
+        "title": "Survey employees on wellness needs",
+        "progress": 100,
+        "done": true
+      },
+      {
+        "id": "kr014",
+        "title": "Partner with 2 wellness vendors",
+        "progress": 0,
+        "done": false
+      },
+      {
+        "id": "kr015",
+        "title": "Launch program to 80%+ of employees",
+        "progress": 0,
+        "done": false
+      }
     ],
     "createdAt": "2026-02-01T09:00:00Z",
     "updatedAt": "2026-03-10T09:00:00Z"

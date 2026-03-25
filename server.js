@@ -110,7 +110,7 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-const pages = ['', 'tasks', 'leaves', 'analytics', 'goals', 'appraisal', 'attendance', 'policy', 'helpdesk', 'directory', 'customize'];
+const pages = ['', 'tasks', 'leaves', 'services', 'analytics', 'goals', 'appraisal', 'attendance', 'policy', 'helpdesk', 'directory', 'customize'];
 
 pages.forEach(page => {
   const route = page === '' ? '/' : `/${page}`;
