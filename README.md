@@ -410,14 +410,79 @@ Every page follows a strict 1-to-1 pairing:
 
 ---
 
-## Running the Application
+## Setup & Running the Application
+
+### Prerequisites
+
+- **Node.js** v16 or higher — [download here](https://nodejs.org)
+- **npm** (comes bundled with Node.js)
+
+### Step-by-Step Setup
 
 ```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd unified-workspace
+
+# 2. Install all dependencies
 npm install
-npm start        # or: node server.js
+
+# 3. Start the application
+npm start
 ```
 
-Open **http://localhost:3000** in your browser. Login with any demo user (password: `demo123`).
+The server will start on **http://localhost:3000**.
+
+### Login
+
+Open **http://localhost:3000** in your browser. Use any demo account:
+
+| Username | Password | Role |
+|---|---|---|
+| ahmed | demo123 | Admin |
+| khalid | demo123 | Manager |
+| fatima | demo123 | HR |
+| sara | demo123 | Employee |
+| omar | demo123 | Employee |
+| mariam | demo123 | Manager |
+
+### Development Mode (Auto-Restart)
+
+For development with automatic restart on file changes:
+
+```bash
+npm run dev
+```
+
+This uses `nodemon` to watch for changes and restart the server automatically.
+
+### Quick Reference
+
+| Command | What it does |
+|---|---|
+| `npm install` | Installs express, express-session, uuid, nodemon |
+| `npm start` | Starts the server (`node server.js`) on port 3000 |
+| `npm run dev` | Starts with nodemon (auto-restart on file changes) |
+
+### Automated Setup (for AI agents / CI)
+
+```bash
+# Full automated setup — copy and run as a single block
+cd "<project-directory>"
+npm install
+node server.js
+# Server is now running at http://localhost:3000
+# POST /api/auth/login with {"username":"ahmed","password":"demo123"} to authenticate
+# All API endpoints are under /api/* and require an active session
+```
+
+### Notes
+
+- No external database needed — all data is stored in JSON files under `data/`
+- No build step required — frontend uses vanilla JS and CDN-hosted libraries
+- No environment variables or `.env` file needed
+- The app runs entirely locally with no external service dependencies
+- Port 3000 is the default; modify `server.js` to change it
 
 ---
 
