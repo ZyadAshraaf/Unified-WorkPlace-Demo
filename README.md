@@ -104,7 +104,8 @@ unified-workspace/
 │   │   ├── directory.js        # Controller: organization directory
 │   │   └── customize.js        # Controller: theme customization
 │   └── assets/
-│       └── logo.png            # WIND-IS logo (used in sidebar + topbar)
+│       ├── logo.png            # WIND-IS logo (used in sidebar + topbar)
+│       └── login-bg.jpg        # Login page cityscape background photo
 └── views/
     ├── login.html              # Login form (no sidebar)
     ├── landing.html            # Portal home — analytics cards, quick access, announcements
@@ -129,6 +130,11 @@ unified-workspace/
 - Role-based access (Employee, Manager, HR, Admin)
 - Session stored via `express-session`
 - Demo credentials: any user with password `demo123`
+- **Redesigned UI** — full-screen cityscape background (`login-bg.jpg`) with two-layer blur/sharp photo system and film-grain texture overlay
+- **Light-themed login panel** — white card on right with brand `#198D87` teal accents
+- **Top info bar** — displays company logo, city, next prayer time, weather, live clock and date
+- **Prayer times widget** — shows all 5 daily prayer times with the next prayer highlighted
+- **Stats bar** — employee count, active modules, uptime displayed over the background
 
 ---
 
@@ -151,11 +157,11 @@ The landing page has a **collapsible sidebar** with burger menu toggle in the to
 
 Aggregates tasks from **all systems** (HR, Accounting, CRM, Warehouse, IT) into one unified list.
 
-#### Task Card Contains:
-- Task title, source system (badge), type, priority, due date, status
-- Assigned to / created by
-- Description / notes
-- Action buttons
+#### Task Table Contains:
+- Priority badge, task title + description, source system badge, due date, status
+- Tasks are **grouped by department/system** with a clearly styled section heading (e.g. HR, Accounting, IT) and task count
+- A modern horizontal divider separates each task row
+- "Assigned To" column is intentionally omitted — tasks shown are always the logged-in user's own tasks
 
 #### Task Actions:
 | Action | Description |
@@ -483,6 +489,30 @@ node server.js
 - No environment variables or `.env` file needed
 - The app runs entirely locally with no external service dependencies
 - Port 3000 is the default; modify `server.js` to change it
+
+---
+
+---
+
+## Changelog
+
+### v1.1.0 — UI Overhaul (Mar 2026)
+
+**Login Page — Full Redesign**
+- Replaced plain login form with a split-panel layout: full-screen cityscape background (left) + white login card (right)
+- Background uses a two-layer system: blurred `cover` layer fills edges, sharp `100% auto` layer shows the full panorama without side-cropping
+- Film-grain CSS texture overlay masks image compression artifacts and adds depth
+- Top info bar added with logo, location, next prayer time, weather conditions, and a live clock
+- Prayer times card shows all 5 daily prayers with the current/next prayer highlighted
+- Logo tinted to brand teal (`#198D87`) via CSS filter — no separate asset needed
+- All colours aligned to `#198D87` primary brand with light theme throughout
+
+**Tasks Page — Improvements**
+- Tasks now grouped by source system/department with bold section headings and task count badges
+- Horizontal dividers added between each task row for a clean modern look
+- Action buttons reorganised — primary action (View) is prominent, secondary actions in a `...` overflow menu
+- Removed the "Assigned To" column — redundant since the page always shows the logged-in user's own tasks
+- Fixed table header and row text visibility (white text on light background issue resolved)
 
 ---
 
