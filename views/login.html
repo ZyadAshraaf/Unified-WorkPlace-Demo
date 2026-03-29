@@ -3,91 +3,625 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login — Unified Workspace</title>
+  <title>Sign In — Unified Workspace</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/css/variables.css">
   <style>
-    body { background: var(--color-surface); font-family: var(--font-family); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-    .login-wrap { width: 100%; max-width: 420px; padding: 24px; }
-    .login-card { background: white; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); overflow: hidden; }
-    .login-header { background: var(--color-primary); padding: 36px 32px 28px; text-align: center; }
-    .login-logo { display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px; }
-    .login-title { color: white; font-weight: 700; font-size: 22px; margin: 0 0 4px; }
-    .login-sub   { color: rgba(255,255,255,0.75); font-size: 13px; margin: 0; }
-    .login-body  { padding: 32px; }
-    .login-body .form-control { border-radius: var(--radius-md); font-size: 14px; padding: 10px 14px; }
-    .login-body .form-control:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(25,141,135,0.15); }
-    .btn-login { background: var(--color-primary); border: none; border-radius: var(--radius-md); padding: 11px; font-size: 15px; font-weight: 600; color: white; width: 100%; transition: background 0.2s; }
-    .btn-login:hover { background: var(--color-primary-dark); }
-    .demo-accounts { margin-top: 20px; padding: 14px 16px; background: var(--color-surface); border-radius: var(--radius-md); border: 1px solid var(--color-border); }
-    .demo-accounts h6 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); margin-bottom: 10px; font-weight: 600; }
-    .demo-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 3px 0; cursor: pointer; border-radius: 4px; transition: color 0.15s; }
-    .demo-row:hover { color: var(--color-primary); }
-    .demo-row span { color: var(--color-text-muted); }
-    .input-group-text { background: var(--color-surface); border-color: #dee2e6; }
-    .alert-danger { font-size: 13px; border-radius: var(--radius-md); }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      background: #0b1d1c;
+      overflow: hidden;
+    }
+
+    /* ── Background photo ──────────────────────────────────── */
+    .bg-scene {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      background: #071a18; /* dark fallback */
+    }
+    /* Layer 1 — full-screen blurred stretch (covers any edge gaps) */
+    .bg-blur {
+      position: absolute;
+      inset: -5%;
+      background: url('/assets/login-bg.jpg') center center / cover no-repeat;
+      filter: blur(28px) brightness(0.55) saturate(1.3);
+    }
+    /* Layer 2 — actual photo as <img> so we can freely shift it */
+    .bg-photo {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .bg-photo img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: auto;
+      transform: translate(-65%, -50%); /* shift left: increase % to go further left */
+      filter: blur(1.5px) saturate(1.1) contrast(1.06);
+    }
+    /* Vignette overlay — sits above both photo layers, sharp */
+    .bg-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background:
+        linear-gradient(90deg,
+          rgba(10,40,36,0.45) 0%,
+          rgba(10,40,36,0.05) 50%,
+          rgba(10,40,36,0.72) 100%),
+        linear-gradient(180deg,
+          rgba(25,141,135,0.04) 0%,
+          rgba(0,0,0,0.0) 60%,
+          rgba(10,40,36,0.3) 100%);
+      pointer-events: none;
+    }
+    /* Film-grain texture — masks compression artifacts, very modern look */
+    .bg-grain {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      opacity: 0.045;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      pointer-events: none;
+    }
+
+    /* ── Top info bar — WHITE / LIGHT ──────────────────────── */
+    .info-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 20;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      padding: 0 36px;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(25,141,135,0.12);
+      box-shadow: 0 1px 16px rgba(25,141,135,0.08);
+      gap: 0;
+    }
+
+    .ib-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 28px;
+    }
+    /* Logo is white PNG (dark-theme asset) — tint it to brand teal on white bg */
+    .ib-brand img {
+      height: 32px;
+      width: auto;
+      display: block;
+      /* converts white logo → #198D87 teal */
+      filter: brightness(0) saturate(100%) invert(44%) sepia(96%) saturate(372%) hue-rotate(139deg) brightness(96%);
+    }
+    .ib-brand-name {
+      color: #198D87;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+    }
+
+    .ib-sep {
+      width: 1px;
+      height: 20px;
+      background: rgba(25,141,135,0.18);
+      margin: 0 22px;
+      flex-shrink: 0;
+    }
+
+    .ib-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: #3d6b68;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .ib-item i { font-size: 13px; color: #198D87; }
+    .ib-item .hl { color: #198D87; font-weight: 700; }
+    .ib-item .prayer-hl { color: #147A75; font-weight: 700; }
+
+    .ib-right { margin-left: auto; display: flex; align-items: center; }
+    .ib-clock {
+      font-size: 18px;
+      font-weight: 800;
+      color: #198D87;
+      letter-spacing: 0.07em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .ib-date {
+      font-size: 11px;
+      color: #8AABAA;
+      margin-top: 2px;
+      text-align: right;
+    }
+
+    /* ── Main two-column layout ────────────────────────────── */
+    .login-layout {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding-top: 54px;
+      display: grid;
+      grid-template-columns: 1fr 460px;
+    }
+
+    /* ── LEFT: photo + welcome ─────────────────────────────── */
+    .welcome-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 64px 56px 72px;
+    }
+
+    .wp-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #6ee7b7;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .wp-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 24px;
+      height: 2px;
+      background: #6ee7b7;
+      border-radius: 2px;
+    }
+
+    .wp-headline {
+      font-size: 54px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.07;
+      margin-bottom: 18px;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.35);
+    }
+    .wp-headline .accent { color: #4DC5BE; }
+
+    .wp-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+      max-width: 400px;
+      margin-bottom: 36px;
+    }
+
+    /* Stat pills */
+    .stat-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 14px;
+      padding: 12px 16px;
+      transition: background 0.2s;
+    }
+    .stat-pill:hover { background: rgba(255,255,255,0.14); }
+    .sp-icon {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      background: rgba(25,141,135,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      color: #6ee7b7;
+      flex-shrink: 0;
+    }
+    .sp-label { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 500; margin-bottom: 1px; }
+    .sp-value { font-size: 15px; font-weight: 700; color: white; }
+
+    /* Prayer card */
+    .prayer-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      max-width: 520px;
+    }
+    .pc-mosque { font-size: 28px; flex-shrink: 0; }
+    .pc-next-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
+    .pc-next-name  { font-size: 18px; font-weight: 700; color: white; line-height: 1; }
+    .pc-countdown  { font-size: 12px; color: #6ee7b7; font-weight: 600; margin-top: 3px; }
+    .prayer-times  { margin-left: auto; display: flex; gap: 14px; }
+    .pt { text-align: center; }
+    .pt-n { font-size: 9px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px; }
+    .pt-t { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); }
+    .pt.cur .pt-n,
+    .pt.cur .pt-t { color: #6ee7b7; }
+
+    /* ── RIGHT: clean white login panel ───────────────────── */
+    .login-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 48px;
+      background: rgba(255,255,255,0.97);
+      border-left: 1px solid rgba(25,141,135,0.1);
+      box-shadow: -8px 0 48px rgba(0,0,0,0.18);
+    }
+    .login-card { width: 100%; max-width: 360px; }
+
+    /* Logo in white card — no filter, natural colours */
+    .lc-logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .lc-logo img {
+      height: 64px;
+      width: auto;
+      display: block;
+      margin: 0 auto 14px;
+      /* converts white logo → #198D87 teal on the white login card */
+      filter: brightness(0) saturate(100%) invert(44%) sepia(96%) saturate(372%) hue-rotate(139deg) brightness(96%);
+    }
+    .lc-logo h1 {
+      color: #1A2E2D;
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 5px;
+      letter-spacing: -0.01em;
+    }
+    .lc-logo p { color: #8AABAA; font-size: 12px; margin: 0; }
+
+    .lc-label {
+      display: block;
+      color: #3d6b68;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    /* Inputs */
+    .gi-wrap {
+      display: flex;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1.5px solid #D6EEEC;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fff;
+    }
+    .gi-wrap:focus-within {
+      border-color: #198D87;
+      box-shadow: 0 0 0 3px rgba(25,141,135,0.12);
+    }
+    .gi-icon {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      background: #F5FAFA;
+      color: #8AABAA;
+      font-size: 14px;
+      border-right: 1.5px solid #D6EEEC;
+      flex-shrink: 0;
+    }
+    .gi-btn {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      background: #F5FAFA;
+      color: #8AABAA;
+      font-size: 14px;
+      border: none;
+      border-left: 1.5px solid #D6EEEC;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: color 0.15s;
+    }
+    .gi-btn:hover { color: #198D87; }
+    .gi-field {
+      flex: 1;
+      background: #fff;
+      border: none;
+      outline: none;
+      padding: 11px 13px;
+      color: #1A2E2D;
+      font-size: 14px;
+      font-family: inherit;
+      min-width: 0;
+    }
+    .gi-field::placeholder { color: #B0CECE; }
+
+    .btn-signin {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #198D87 0%, #147A75 100%);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(25,141,135,0.32);
+    }
+    .btn-signin:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1FA89F 0%, #198D87 100%);
+      box-shadow: 0 6px 26px rgba(25,141,135,0.45);
+      transform: translateY(-1px);
+    }
+    .btn-signin:disabled { opacity: 0.65; transform: none; cursor: default; }
+
+    .lc-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0;
+      color: #8AABAA;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .lc-divider::before, .lc-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #D6EEEC;
+    }
+
+    .demo-box {
+      background: #F5FAFA;
+      border: 1px solid #D6EEEC;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .demo-box-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #8AABAA;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .demo-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .demo-row:hover { background: #E4F5F4; }
+    .demo-row strong { color: #1A2E2D; font-size: 13px; font-weight: 600; }
+    .demo-row span   { font-size: 11px; font-weight: 700; color: #198D87; }
+
+    .lc-error {
+      background: #FDE8EA;
+      border: 1px solid rgba(220,53,69,0.2);
+      color: #B02A37;
+      border-radius: 10px;
+      font-size: 13px;
+      padding: 10px 13px;
+      margin-bottom: 16px;
+    }
+
+    .lc-footer {
+      text-align: center;
+      color: #8AABAA;
+      font-size: 11px;
+      margin-top: 18px;
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .login-layout { grid-template-columns: 1fr; }
+      .welcome-panel { display: none; }
+      .login-panel { border-left: none; box-shadow: none; }
+    }
+    @media (max-width: 500px) {
+      .info-bar { padding: 0 16px; }
+      .ib-sep { display: none; }
+      .ib-item:not(:first-child) { display: none; }
+    }
   </style>
 </head>
 <body>
-  <div class="login-wrap">
-    <div class="login-card">
-      <div class="login-header">
-        <div class="login-logo"><img src="/assets/logo.png" alt="WIND-IS" style="height:80px;width:auto;filter:brightness(0) invert(1)"></div>
-        <h1 class="login-title">Unified Workspace</h1>
-        <p class="login-sub">Enterprise Self-Service Portal</p>
+  <div class="bg-scene">
+    <div class="bg-blur"></div>
+    <div class="bg-photo"><img src="/assets/login-bg.jpg" alt=""></div>
+    <div class="bg-vignette"></div>
+    <div class="bg-grain"></div>
+  </div>
+
+  <!-- ── Top info bar ──────────────────────────────────────── -->
+  <header class="info-bar">
+    <div class="ib-brand">
+      <img src="/assets/logo.png" alt="WIND-IS">
+      <span class="ib-brand-name">WIND-IS</span>
+    </div>
+
+    <div class="ib-sep"></div>
+
+    <div class="ib-item">
+      <i class="bi bi-geo-alt-fill"></i>
+      Riyadh, KSA
+    </div>
+
+    <div class="ib-sep"></div>
+
+    <div class="ib-item">
+      <i class="bi bi-moon-stars-fill"></i>
+      Next Prayer: <span class="prayer-hl">&nbsp;Isha — 8:14 PM</span>
+    </div>
+
+    <div class="ib-sep"></div>
+
+    <div class="ib-item">
+      <i class="bi bi-cloud-sun-fill" style="color:#E6A817"></i>
+      <span class="hl">29°C</span>&nbsp; Partly Cloudy &nbsp;·&nbsp; Humidity 38%
+    </div>
+
+    <div class="ib-right">
+      <div>
+        <div class="ib-clock" id="topClock">--:--</div>
+        <div class="ib-date" id="topDate">--</div>
       </div>
-      <div class="login-body">
-        <div id="loginError" class="alert alert-danger d-none" role="alert"></div>
+    </div>
+  </header>
+
+  <!-- ── Main layout ───────────────────────────────────────── -->
+  <div class="login-layout">
+
+    <!-- Left: photo + welcome -->
+    <div class="welcome-panel">
+      <div class="wp-eyebrow">Enterprise Self-Service Platform</div>
+      <h2 class="wp-headline">
+        Your Unified<br>
+        <span class="accent">Workspace</span><br>
+        Awaits.
+      </h2>
+      <p class="wp-sub">
+        One intelligent hub for HR, Finance, Operations, and more.
+        Streamline your workday, track goals, and stay connected — all in one place.
+      </p>
+
+      <div class="stat-row">
+        <div class="stat-pill">
+          <div class="sp-icon"><i class="bi bi-people-fill"></i></div>
+          <div>
+            <div class="sp-label">Employees</div>
+            <div class="sp-value">1,240+</div>
+          </div>
+        </div>
+        <div class="stat-pill">
+          <div class="sp-icon"><i class="bi bi-grid-fill"></i></div>
+          <div>
+            <div class="sp-label">Modules</div>
+            <div class="sp-value">12 Active</div>
+          </div>
+        </div>
+        <div class="stat-pill">
+          <div class="sp-icon"><i class="bi bi-shield-check-fill"></i></div>
+          <div>
+            <div class="sp-label">Uptime</div>
+            <div class="sp-value">99.9%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prayer times card -->
+      <div class="prayer-card">
+        <div class="pc-mosque">🕌</div>
+        <div>
+          <div class="pc-next-label">Next Prayer</div>
+          <div class="pc-next-name">Isha</div>
+          <div class="pc-countdown">In 1 hour 42 minutes</div>
+        </div>
+        <div class="prayer-times">
+          <div class="pt"><div class="pt-n">Fajr</div><div class="pt-t">5:12</div></div>
+          <div class="pt"><div class="pt-n">Dhuhr</div><div class="pt-t">12:18</div></div>
+          <div class="pt"><div class="pt-n">Asr</div><div class="pt-t">3:42</div></div>
+          <div class="pt cur"><div class="pt-n">Maghrib</div><div class="pt-t">6:31</div></div>
+          <div class="pt"><div class="pt-n">Isha</div><div class="pt-t">8:14</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: white login card -->
+    <div class="login-panel">
+      <div class="login-card">
+
+        <div class="lc-logo">
+          <img src="/assets/logo.png" alt="WIND-IS">
+          <h1>Unified Workspace</h1>
+          <p>Enterprise Self-Service Portal</p>
+        </div>
+
+        <div id="loginError" class="lc-error d-none"></div>
+
         <form id="loginForm">
-          <div class="mb-3">
-            <label class="form-label fw-600" for="email">Email Address</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="bi bi-envelope text-muted"></i></span>
-              <input type="email" class="form-control" id="email" placeholder="name@company.com" autocomplete="email" required>
+          <div style="margin-bottom:16px">
+            <label class="lc-label" for="email">Email Address</label>
+            <div class="gi-wrap">
+              <span class="gi-icon"><i class="bi bi-envelope"></i></span>
+              <input type="email" class="gi-field" id="email" placeholder="name@company.com" autocomplete="email" required>
             </div>
           </div>
-          <div class="mb-4">
-            <label class="form-label fw-600" for="password">Password</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="bi bi-lock text-muted"></i></span>
-              <input type="password" class="form-control" id="password" placeholder="Enter your password" autocomplete="current-password" required>
-              <button type="button" class="input-group-text" id="togglePass" style="cursor:pointer">
+          <div style="margin-bottom:24px">
+            <label class="lc-label" for="password">Password</label>
+            <div class="gi-wrap">
+              <span class="gi-icon"><i class="bi bi-lock"></i></span>
+              <input type="password" class="gi-field" id="password" placeholder="Enter your password" autocomplete="current-password" required>
+              <button type="button" class="gi-btn" id="togglePass">
                 <i class="bi bi-eye" id="togglePassIcon"></i>
               </button>
             </div>
           </div>
-          <button type="submit" class="btn-login" id="loginBtn">
+          <button type="submit" class="btn-signin" id="loginBtn">
             <span id="loginBtnText">Sign In</span>
             <span id="loginSpinner" class="spinner-border spinner-border-sm ms-2 d-none"></span>
           </button>
         </form>
 
-        <div class="demo-accounts mt-3">
-          <h6>Demo Accounts — click to fill</h6>
+        <div class="lc-divider">Demo Accounts</div>
+
+        <div class="demo-box">
+          <div class="demo-box-label">Click any row to fill credentials</div>
           <div class="demo-row" onclick="fillDemo('ahmed@company.com','demo123')">
-            <strong>Ahmed Al-Rashidi</strong> <span>Admin</span>
+            <strong>Ahmed Al-Rashidi</strong><span>Admin</span>
           </div>
           <div class="demo-row" onclick="fillDemo('khalid@company.com','demo123')">
-            <strong>Khalid Al-Mansouri</strong> <span>Manager</span>
+            <strong>Khalid Al-Mansouri</strong><span>Manager</span>
           </div>
           <div class="demo-row" onclick="fillDemo('fatima@company.com','demo123')">
-            <strong>Fatima Al-Zahra</strong> <span>HR Manager</span>
+            <strong>Fatima Al-Zahra</strong><span>HR Manager</span>
           </div>
           <div class="demo-row" onclick="fillDemo('sara@company.com','demo123')">
-            <strong>Sara Hassan</strong> <span>Employee</span>
+            <strong>Sara Hassan</strong><span>Employee</span>
           </div>
           <div class="demo-row" onclick="fillDemo('omar@company.com','demo123')">
-            <strong>Omar Al-Farsi</strong> <span>Employee</span>
+            <strong>Omar Al-Farsi</strong><span>Employee</span>
           </div>
         </div>
+
+        <div class="lc-footer">© 2026 Unified Workspace · All rights reserved.</div>
       </div>
     </div>
-    <p class="text-center mt-3 fs-sm text-muted">© 2026 Unified Workspace. All rights reserved.</p>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2,'0');
+      const m = String(now.getMinutes()).padStart(2,'0');
+      document.getElementById('topClock').textContent = `${h}:${m}`;
+      document.getElementById('topDate').textContent  =
+        `${DAYS[now.getDay()]}, ${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
     function fillDemo(email, pass) {
       document.getElementById('email').value    = email;
       document.getElementById('password').value = pass;
@@ -96,8 +630,8 @@
     document.getElementById('togglePass').addEventListener('click', function () {
       const inp  = document.getElementById('password');
       const icon = document.getElementById('togglePassIcon');
-      if (inp.type === 'password') { inp.type = 'text'; icon.className = 'bi bi-eye-slash'; }
-      else { inp.type = 'password'; icon.className = 'bi bi-eye'; }
+      if (inp.type === 'password') { inp.type = 'text';     icon.className = 'bi bi-eye-slash'; }
+      else                         { inp.type = 'password'; icon.className = 'bi bi-eye'; }
     });
 
     document.getElementById('loginForm').addEventListener('submit', async function (e) {
@@ -107,7 +641,7 @@
       const err  = document.getElementById('loginError');
       const text = document.getElementById('loginBtnText');
 
-      text.textContent = 'Signing in...';
+      text.textContent = 'Signing in…';
       spin.classList.remove('d-none');
       btn.disabled = true;
       err.classList.add('d-none');
@@ -122,7 +656,6 @@
           })
         });
         const data = await res.json();
-
         if (data.success) {
           window.location.href = '/';
         } else {

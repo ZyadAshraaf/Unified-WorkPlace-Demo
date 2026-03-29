@@ -16,11 +16,8 @@
     .filter-bar .form-control:focus, .filter-bar .form-select:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(25,141,135,0.12); }
     .search-input { min-width: 220px; flex: 1; }
     .task-table-wrap { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; }
-    .action-btn { background: none; border: none; padding: 4px 6px; border-radius: var(--radius-sm); cursor: pointer; font-size: 15px; transition: all 0.15s; color: var(--color-text-muted); }
-    .action-btn:hover { background: var(--color-primary-faint); color: var(--color-primary); }
-    .action-btn.danger:hover { background: var(--color-danger-light); color: var(--color-danger); }
     .task-title-cell { font-weight: 600; font-size: 13px; color: var(--color-text); max-width: 280px; }
-    .task-desc-preview { font-size: 11px; color: var(--color-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
+    .task-desc-preview { font-size: 11px; color: var(--color-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; margin-top: 2px; }
     .overdue-indicator { color: var(--color-danger); font-size: 11px; font-weight: 600; }
     .history-item { font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--color-border-light); }
     .history-item:last-child { border-bottom: none; }
@@ -32,6 +29,96 @@
     .stat-pill { background: white; border: 1px solid var(--color-border); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 600; color: var(--color-text-muted); cursor: pointer; transition: all 0.15s; }
     .stat-pill.active, .stat-pill:hover { background: var(--color-primary); border-color: var(--color-primary); color: white; }
     .stat-pill span { background: rgba(0,0,0,0.1); border-radius: 10px; padding: 1px 6px; font-size: 11px; margin-left: 4px; }
+
+    /* System group header rows */
+    .task-group-header { pointer-events: none; }
+    .task-group-header td {
+      padding: 0 !important;
+      border: none !important;
+      background: transparent !important;
+    }
+    .task-group-header:not(:first-child) td { padding-top: 8px !important; }
+    .task-group-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px 8px;
+      background: linear-gradient(90deg, var(--color-primary-faint, #eaf6f5) 0%, transparent 100%);
+      border-left: 3px solid var(--color-primary);
+      border-bottom: 1px solid var(--color-border);
+      margin: 0;
+    }
+    .task-group-label-text {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+    }
+    .task-group-label-icon {
+      font-size: 14px;
+      color: var(--color-primary);
+      opacity: 0.8;
+    }
+    .task-group-count {
+      background: var(--color-primary);
+      color: white;
+      border-radius: 20px;
+      padding: 1px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    /* Row separators */
+    .table-custom tbody tr.task-row { border-bottom: 1px solid var(--color-border-light); }
+    .table-custom tbody tr.task-row:last-child { border-bottom: none; }
+    .table-custom tbody tr.task-row:hover { background: var(--color-primary-faint, #eaf6f5); }
+
+    /* Fix: dark-table-card makes thead text semi-transparent white — restore readable dark text */
+    .dark-table-card .table-custom thead th {
+      background: #fff !important;
+      color: var(--color-text-muted, #6c757d) !important;
+      border-bottom: 1px solid var(--color-border, #dee2e6) !important;
+      border-right: none !important;
+    }
+
+    /* Fix: dark-table-card forces white text on all tds, but task rows have a white background.
+       Override with enough specificity (031) to beat the dark-table rule (021). */
+    .dark-table-card .table-custom .task-row td {
+      color: var(--color-text);
+    }
+    .dark-table-card .table-custom .task-row .fs-sm,
+    .dark-table-card .table-custom .task-row .task-desc-preview {
+      color: var(--color-text-muted) !important;
+    }
+    .dark-table-card .table-custom .task-row .overdue-indicator {
+      color: var(--color-danger) !important;
+    }
+    /* Restore badge colours overridden by dark-table-card (specificity 030 beats 021) */
+    .dark-table-card .task-row .badge-priority-critical { color: #B02A37; }
+    .dark-table-card .task-row .badge-priority-high     { color: var(--color-danger); }
+    .dark-table-card .task-row .badge-priority-medium   { color: #92600A; }
+    .dark-table-card .task-row .badge-priority-low      { color: var(--color-success); }
+    .dark-table-card .task-row .badge-status-pending    { color: #92600A; }
+    .dark-table-card .task-row .badge-status-in-progress{ color: var(--color-info); }
+    .dark-table-card .task-row .badge-status-completed  { color: var(--color-success); }
+    .dark-table-card .task-row .badge-status-escalated  { color: var(--color-danger); }
+    .dark-table-card .task-row .badge-sys-HR            { color: #1a56db; }
+    .dark-table-card .task-row .badge-sys-Accounting    { color: #166534; }
+    .dark-table-card .task-row .badge-sys-CRM           { color: #6b21a8; }
+    .dark-table-card .task-row .badge-sys-Warehouse     { color: #b45309; }
+    .dark-table-card .task-row .badge-sys-IT            { color: var(--color-primary-dark); }
+    .dark-table-card .task-row .badge-sys-Manual        { color: #475569; }
+
+    /* Action cell */
+    .task-action-cell { display: flex; align-items: center; gap: 6px; }
+    .task-action-cell .btn-view { font-size: 12px; padding: 3px 10px; white-space: nowrap; }
+    .task-action-cell .dropdown-toggle::after { display: none; }
+    .task-action-cell .btn-more { padding: 3px 8px; font-size: 13px; line-height: 1; }
+    .task-action-cell .dropdown-item { font-size: 13px; padding: 7px 14px; }
+    .task-action-cell .dropdown-item i { width: 16px; }
+    .task-action-cell .dropdown-item.text-danger:hover { background: #fff0f0; }
   </style>
 </head>
 <body>
@@ -143,21 +230,20 @@
         <div class="dark-table-head">
           <h6><i class="bi bi-check2-square me-2"></i>Task List</h6>
         </div>
-        <div class="task-table-wrap" style="border-radius:0;box-shadow:none;border:none">
+        <div class="task-table-wrap" style="border-radius:0;box-shadow:none;border:none;background:#fff">
         <table class="table-custom">
           <thead>
             <tr>
               <th style="width:90px">Priority</th>
               <th>Task</th>
               <th style="width:90px">System</th>
-              <th style="width:110px">Assigned To</th>
               <th style="width:100px">Due Date</th>
               <th style="width:110px">Status</th>
-              <th style="width:120px">Actions</th>
+              <th style="width:140px">Actions</th>
             </tr>
           </thead>
           <tbody id="tasksTableBody">
-            <tr><td colspan="7" class="text-center py-5"><div class="spinner-border" style="color:var(--color-primary)"></div></td></tr>
+            <tr><td colspan="6" class="text-center py-5"><div class="spinner-border" style="color:var(--color-primary)"></div></td></tr>
           </tbody>
         </table>
         </div>

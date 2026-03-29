@@ -404,5 +404,33 @@
     "comments": [],
     "escalated": false,
     "delegatedFrom": null
+  },
+  {
+    "id": "TCDED2095",
+    "title": "Approve Leave Request — Sara Hassan",
+    "description": "Sara Hassan has requested sick leave for 3 day(s) (2026-03-26 to 2026-03-30). Reason: ",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-03-26",
+    "createdAt": "2026-03-25T15:26:26.495Z",
+    "updatedAt": "2026-03-25T15:26:26.495Z",
+    "metadata": {
+      "leaveId": "LE84B8829"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-03-25T15:26:26.495Z",
+        "note": "Leave request submitted"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
   }
 ]

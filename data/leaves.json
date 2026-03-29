@@ -118,5 +118,20 @@
     "reviewedBy": null,
     "reviewedAt": null,
     "reviewNote": ""
+  },
+  {
+    "id": "LE84B8829",
+    "userId": "u004",
+    "type": "sick",
+    "startDate": "2026-03-26",
+    "endDate": "2026-03-30",
+    "days": 3,
+    "reason": "",
+    "status": "pending",
+    "taskId": "TCDED2095",
+    "submittedAt": "2026-03-25T15:26:26.495Z",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "reviewNote": ""
   }
 ]

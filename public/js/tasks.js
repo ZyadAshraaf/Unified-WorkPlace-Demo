@@ -71,42 +71,91 @@ function getFilteredTasks() {
   });
 }
 
+const SYSTEM_ICONS = {
+  HR:          'bi-people',
+  Accounting:  'bi-calculator',
+  CRM:         'bi-person-lines-fill',
+  Warehouse:   'bi-box-seam',
+  IT:          'bi-laptop',
+  Manual:      'bi-pencil-square'
+};
+
 function renderTasks() {
   const tasks = getFilteredTasks();
   const tbody = document.getElementById('tasksTableBody');
   document.getElementById('taskCount').textContent = `Showing ${tasks.length} of ${allTasks.length} tasks`;
 
   if (!tasks.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="bi bi-inbox"></i><h5>No tasks found</h5><p>Try adjusting your filters.</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="bi bi-inbox"></i><h5>No tasks found</h5><p>Try adjusting your filters.</p></div></td></tr>`;
     return;
   }
 
-  tbody.innerHTML = tasks.map(t => {
-    const overdue = t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'completed';
-    const dueLabel = t.dueDate
-      ? `<div>${UI.formatDate(t.dueDate)}</div>${overdue ? '<div class="overdue-indicator">Overdue</div>' : ''}`
-      : '—';
+  // Group tasks by sourceSystem, preserving insertion order
+  const groups = {};
+  tasks.forEach(t => {
+    const sys = t.sourceSystem || 'Manual';
+    if (!groups[sys]) groups[sys] = [];
+    groups[sys].push(t);
+  });
 
-    return `
-      <tr>
-        <td>${UI.priorityBadge(t.priority)}</td>
-        <td>
-          <div class="task-title-cell">${t.title}</div>
-          <div class="task-desc-preview">${t.description || ''}</div>
-        </td>
-        <td>${UI.systemBadge(t.sourceSystem)}</td>
-        <td class="fs-sm">${t.assignedToName || '—'}</td>
-        <td class="fs-sm">${dueLabel}</td>
-        <td>${UI.statusBadge(t.status)}</td>
-        <td>
-          <button class="action-btn" title="View Details"  onclick="openDetail('${t.id}')"><i class="bi bi-eye"></i></button>
-          <button class="action-btn" title="Delegate"      onclick="openDelegate('${t.id}')"><i class="bi bi-arrow-left-right"></i></button>
-          <button class="action-btn" title="Reassign"      onclick="openReassign('${t.id}')"><i class="bi bi-person-check"></i></button>
-          <button class="action-btn" title="Add Comment"   onclick="openComment('${t.id}')"><i class="bi bi-chat-dots"></i></button>
-          ${!t.escalated ? `<button class="action-btn danger" title="Escalate" onclick="openEscalate('${t.id}')"><i class="bi bi-exclamation-triangle"></i></button>` : ''}
+  let html = '';
+  Object.entries(groups).forEach(([system, groupTasks]) => {
+    const icon = SYSTEM_ICONS[system] || 'bi-grid';
+    html += `
+      <tr class="task-group-header">
+        <td colspan="6">
+          <div class="task-group-label">
+            <i class="bi ${icon} task-group-label-icon"></i>
+            <span class="task-group-label-text">${system}</span>
+            <span class="task-group-count">${groupTasks.length}</span>
+          </div>
         </td>
       </tr>`;
-  }).join('');
+
+    groupTasks.forEach(t => {
+      const overdue = t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'completed';
+      const dueLabel = t.dueDate
+        ? `<div>${UI.formatDate(t.dueDate)}</div>${overdue ? '<div class="overdue-indicator"><i class="bi bi-exclamation-circle me-1"></i>Overdue</div>' : ''}`
+        : '—';
+
+      const escalateItem = !t.escalated
+        ? `<li><hr class="dropdown-divider my-1"></li>
+           <li><button class="dropdown-item text-danger" onclick="openEscalate('${t.id}')"><i class="bi bi-exclamation-triangle me-2"></i>Escalate</button></li>`
+        : '';
+
+      html += `
+        <tr class="task-row">
+          <td>${UI.priorityBadge(t.priority)}</td>
+          <td>
+            <div class="task-title-cell">${t.title}</div>
+            ${t.description ? `<div class="task-desc-preview">${t.description}</div>` : ''}
+          </td>
+          <td>${UI.systemBadge(t.sourceSystem)}</td>
+          <td class="fs-sm">${dueLabel}</td>
+          <td>${UI.statusBadge(t.status)}</td>
+          <td>
+            <div class="task-action-cell">
+              <button class="btn btn-sm btn-outline-primary btn-view" onclick="openDetail('${t.id}')">
+                <i class="bi bi-eye me-1"></i>View
+              </button>
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary btn-more dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                  <li><button class="dropdown-item" onclick="openDelegate('${t.id}')"><i class="bi bi-arrow-left-right me-2 text-primary"></i>Delegate</button></li>
+                  <li><button class="dropdown-item" onclick="openReassign('${t.id}')"><i class="bi bi-person-check me-2 text-success"></i>Reassign</button></li>
+                  <li><button class="dropdown-item" onclick="openComment('${t.id}')"><i class="bi bi-chat-dots me-2 text-info"></i>Add Comment</button></li>
+                  ${escalateItem}
+                </ul>
+              </div>
+            </div>
+          </td>
+        </tr>`;
+    });
+  });
+
+  tbody.innerHTML = html;
 }
 
 function bindFilters() {

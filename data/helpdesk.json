@@ -26,7 +26,12 @@
     "createdAt": "2026-03-22T14:00:00Z",
     "updatedAt": "2026-03-23T10:00:00Z",
     "comments": [
-      { "by": "u005", "at": "2026-03-23T10:00:00Z", "text": "Replacement keyboard ordered from supplier. Expected delivery: March 26th.", "isInternal": false }
+      {
+        "by": "u005",
+        "at": "2026-03-23T10:00:00Z",
+        "text": "Replacement keyboard ordered from supplier. Expected delivery: March 26th.",
+        "isInternal": false
+      }
     ]
   },
   {
@@ -42,8 +47,18 @@
     "createdAt": "2026-03-10T09:00:00Z",
     "updatedAt": "2026-03-18T11:00:00Z",
     "comments": [
-      { "by": "u003", "at": "2026-03-12T10:00:00Z", "text": "Training session scheduled for March 18th, 2:00 PM.", "isInternal": false },
-      { "by": "u004", "at": "2026-03-18T15:00:00Z", "text": "Training completed. Very helpful, thank you!", "isInternal": false }
+      {
+        "by": "u003",
+        "at": "2026-03-12T10:00:00Z",
+        "text": "Training session scheduled for March 18th, 2:00 PM.",
+        "isInternal": false
+      },
+      {
+        "by": "u004",
+        "at": "2026-03-18T15:00:00Z",
+        "text": "Training completed. Very helpful, thank you!",
+        "isInternal": false
+      }
     ]
   },
   {
@@ -59,7 +74,26 @@
     "createdAt": "2026-03-24T07:45:00Z",
     "updatedAt": "2026-03-24T07:45:00Z",
     "comments": [
-      { "by": "u001", "at": "2026-03-24T08:00:00Z", "text": "Investigating the issue. Likely related to last night's maintenance.", "isInternal": true }
+      {
+        "by": "u001",
+        "at": "2026-03-24T08:00:00Z",
+        "text": "Investigating the issue. Likely related to last night's maintenance.",
+        "isInternal": true
+      }
     ]
+  },
+  {
+    "id": "HD5F3636FB",
+    "ticketNo": "TKT-2026-005",
+    "title": "borken laptop",
+    "description": "test",
+    "category": "Access & Permissions",
+    "priority": "medium",
+    "status": "open",
+    "submittedBy": "u004",
+    "assignedTo": null,
+    "createdAt": "2026-03-25T15:25:00.319Z",
+    "updatedAt": "2026-03-25T15:25:00.320Z",
+    "comments": []
   }
 ]
