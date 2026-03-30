@@ -412,12 +412,12 @@
     "sourceSystem": "HR",
     "type": "approval",
     "priority": "medium",
-    "status": "pending",
+    "status": "completed",
     "assignedTo": "u002",
     "createdBy": "u004",
     "dueDate": "2026-03-26",
     "createdAt": "2026-03-25T15:26:26.495Z",
-    "updatedAt": "2026-03-25T15:26:26.495Z",
+    "updatedAt": "2026-03-30T11:24:11.082Z",
     "metadata": {
       "leaveId": "LE84B8829"
     },
@@ -427,6 +427,12 @@
         "by": "u004",
         "at": "2026-03-25T15:26:26.495Z",
         "note": "Leave request submitted"
+      },
+      {
+        "action": "rejected",
+        "by": "u001",
+        "at": "2026-03-30T11:24:11.082Z",
+        "note": "Leave request rejected"
       }
     ],
     "comments": [],

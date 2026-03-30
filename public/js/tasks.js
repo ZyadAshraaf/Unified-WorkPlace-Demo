@@ -212,7 +212,13 @@ async function openDetail(id) {
       <div class="fw-600 mb-2">History</div>${history}
     </div>`;
 
-  document.getElementById('btnCompleteTask').classList.toggle('d-none', t.status === 'completed');
+  const isLeaveApproval = t.type === 'approval' && t.metadata?.leaveId;
+  const isDone = t.status === 'completed';
+
+  document.getElementById('btnCompleteTask').classList.toggle('d-none', isLeaveApproval || isDone);
+  document.getElementById('btnApproveLeave').classList.toggle('d-none', !isLeaveApproval || isDone);
+  document.getElementById('btnRejectLeave').classList.toggle('d-none', !isLeaveApproval || isDone);
+
   taskDetailModal().show();
 }
 
@@ -232,6 +238,22 @@ function bindModals() {
     });
     if (data?.success) { UI.toast('Task created'); createTaskModal().hide(); await loadTasks(); }
     else UI.toast(data?.message || 'Error creating task', 'danger');
+  });
+
+  // Approve leave
+  document.getElementById('btnApproveLeave')?.addEventListener('click', async () => {
+    if (!activeTask?.metadata?.leaveId) return;
+    const data = await API.put(`/api/leaves/${activeTask.metadata.leaveId}`, { status: 'approved' });
+    if (data?.success) { UI.toast('Leave request approved', 'success'); taskDetailModal().hide(); await loadTasks(); }
+    else UI.toast(data?.message || 'Error approving leave', 'danger');
+  });
+
+  // Reject leave
+  document.getElementById('btnRejectLeave')?.addEventListener('click', async () => {
+    if (!activeTask?.metadata?.leaveId) return;
+    const data = await API.put(`/api/leaves/${activeTask.metadata.leaveId}`, { status: 'rejected' });
+    if (data?.success) { UI.toast('Leave request rejected', 'warning'); taskDetailModal().hide(); await loadTasks(); }
+    else UI.toast(data?.message || 'Error rejecting leave', 'danger');
   });
 
   // Complete task

@@ -133,8 +133,8 @@
         <a href="/tasks" class="nav-item" data-page="tasks"><i class="bi bi-check2-square"></i><span>My Tasks</span><span class="nav-badge d-none" id="tasksBadge">0</span></a>
       </div>
       <div class="nav-section">
-        <div class="nav-section-label">Self-Service</div>
-        <a href="/services" class="nav-item" data-page="services"><i class="bi bi-grid-3x3-gap"></i><span>Self Services</span></a>
+        <div class="nav-section-label">Services</div>
+        <a href="/services" class="nav-item" data-page="services"><i class="bi bi-grid-3x3-gap"></i><span>Service Catalog</span></a>
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Insights</div>
@@ -264,6 +264,8 @@
       <div class="modal-body" id="detailBody"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger d-none" id="btnRejectLeave"><i class="bi bi-x-lg me-1"></i>Reject</button>
+        <button type="button" class="btn btn-success d-none" id="btnApproveLeave"><i class="bi bi-check-lg me-1"></i>Approve</button>
         <button type="button" class="btn btn-success" id="btnCompleteTask"><i class="bi bi-check-lg me-1"></i>Mark Complete</button>
       </div>
     </div>

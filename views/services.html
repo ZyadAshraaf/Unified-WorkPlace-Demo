@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Self Services — Unified Workspace</title>
+  <title>Service Catalog — Unified Workspace</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/variables.css">
@@ -50,6 +50,94 @@
       font-size: 12px; color: var(--color-text-muted);
       line-height: 1.45; margin: 0;
     }
+
+    /* Tab Switcher */
+    .catalog-tabs {
+      display: inline-flex;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+    .catalog-tab {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      font-size: 14px; font-weight: 600;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .catalog-tab:hover { color: var(--color-text); background: rgba(0,0,0,.03); }
+    .catalog-tab.active {
+      background: #fff;
+      color: var(--color-text);
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .catalog-tab .tab-count {
+      font-size: 11px; font-weight: 700;
+      background: var(--color-border);
+      color: var(--color-text-muted);
+      padding: 1px 8px; border-radius: 20px;
+    }
+    .catalog-tab.active .tab-count {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    .catalog-tab.active.tab-ai .tab-count {
+      background: #0d9488;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* AI cards */
+    a.ai-card, a.ai-card:hover, a.ai-card:visited { text-decoration: none; }
+    .ai-card {
+      background: linear-gradient(160deg, #0d9488, #0f766e);
+      border-radius: 16px; border: none;
+      padding: 24px 20px; display: flex; flex-direction: column;
+      align-items: flex-start; gap: 10px;
+      text-decoration: none; color: #fff;
+      transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(13,148,136,.15);
+      position: relative; overflow: hidden;
+    }
+    .ai-card::before {
+      content: ''; position: absolute; top: -30px; right: -30px;
+      width: 100px; height: 100px; border-radius: 50%;
+      background: rgba(255,255,255,.06);
+    }
+    .ai-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(13,148,136,.3);
+      color: #fff;
+    }
+    .ai-card .ai-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; background: rgba(255,255,255,.18);
+    }
+    .ai-card .ai-name {
+      font-size: 14px; font-weight: 700; line-height: 1.3;
+    }
+    .ai-card .ai-desc {
+      font-size: 12px; line-height: 1.45; margin: 0;
+      color: rgba(255,255,255,.8);
+    }
+    .ai-card .ai-demo-btn {
+      margin-top: auto; font-size: 11px; font-weight: 600;
+      padding: 4px 14px; border-radius: 20px;
+      background: rgba(255,255,255,.2); color: #fff;
+      border: 1px solid rgba(255,255,255,.3);
+      transition: background .2s;
+    }
+    .ai-card:hover .ai-demo-btn { background: rgba(255,255,255,.3); }
   </style>
 </head>
 <body>
@@ -64,8 +152,8 @@
         <a href="/tasks" class="nav-item" data-page="tasks"><i class="bi bi-check2-square"></i><span>My Tasks</span><span class="nav-badge d-none" id="tasksBadge">0</span></a>
       </div>
       <div class="nav-section">
-        <div class="nav-section-label">Self-Service</div>
-        <a href="/services" class="nav-item active" data-page="services"><i class="bi bi-grid-3x3-gap"></i><span>Self Services</span></a>
+        <div class="nav-section-label">Services</div>
+        <a href="/services" class="nav-item active" data-page="services"><i class="bi bi-grid-3x3-gap"></i><span>Service Catalog</span></a>
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Insights</div>
@@ -98,7 +186,7 @@
     <header class="topbar">
       <button class="topbar-toggle" id="sidebarToggle"><i class="bi bi-list"></i></button>
       <img src="/assets/logo.png" alt="Logo" class="topbar-logo" id="topbarLogo">
-      <h1 class="page-title">Self Services</h1>
+      <h1 class="page-title">Service Catalog</h1>
       <div class="topbar-right">
         <div class="topbar-search"><i class="bi bi-search"></i><input type="text" placeholder="Search..."></div>
         <button class="icon-btn"><i class="bi bi-bell"></i><span class="notif-dot d-none" id="notifDot"></span></button>
@@ -119,11 +207,23 @@
 
     <main class="content" style="padding:24px">
       <div class="page-hero">
-        <div class="page-hero-bc">Dashboard &rsaquo; <span>Self Services</span></div>
-        <div class="page-hero-title"><i class="bi bi-grid-3x3-gap me-2"></i>Self Services</div>
-        <div class="page-hero-sub">Access all HR and employee self-service requests from one place.</div>
+        <div class="page-hero-bc">Dashboard &rsaquo; <span>Service Catalog</span></div>
+        <div class="page-hero-title"><i class="bi bi-grid-3x3-gap me-2"></i>Service Catalog</div>
+        <div class="page-hero-sub">Access all self-service requests and AI-powered tools from one place.</div>
       </div>
 
+      <div class="catalog-tabs">
+        <button class="catalog-tab active" data-tab="services" onclick="switchTab('services')">
+          <i class="bi bi-grid-3x3-gap"></i>Self-Service
+          <span class="tab-count">15</span>
+        </button>
+        <button class="catalog-tab tab-ai" data-tab="ai" onclick="switchTab('ai')">
+          <i class="bi bi-stars"></i>AI Use Cases
+          <span class="tab-count">14</span>
+        </button>
+      </div>
+
+      <div id="panelServices" class="tab-panel active">
       <div class="services-grid">
         <a href="/leaves" class="service-card">
           <div class="service-icon"><i class="bi bi-calendar-check"></i></div>
@@ -201,12 +301,108 @@
           <p class="service-desc">Request a change in your assigned work shift or schedule.</p>
         </a>
       </div>
+      </div>
+
+      <div id="panelAi" class="tab-panel">
+      <div class="services-grid">
+        <a href="https://winduploadai-352744bfe044.herokuapp.com/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-file-earmark-richtext"></i></div>
+          <div class="ai-name">Smart Document Chat</div>
+          <p class="ai-desc">AI chat that supports general conversation and document uploads for tailored responses.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://windhealthaiall-780732eb9ddf.herokuapp.com/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-heart-pulse"></i></div>
+          <div class="ai-name">Health Assistant</div>
+          <p class="ai-desc">Simulated healthcare companion for appointment management and condition awareness.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://autonomouswindsql-81840125c162.herokuapp.com/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-database"></i></div>
+          <div class="ai-name">Intelligent ERP Dialogue</div>
+          <p class="ai-desc">Chat with your ERP/database for invoices, POs, and stock info, powered by AI-generated SQL queries.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://nahdistream-242a97eaa3ae.herokuapp.com/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-shield-check"></i></div>
+          <div class="ai-name">HR Policy Advisor</div>
+          <p class="ai-desc">AI assistant for employee inquiries on company policies, reducing HR workload.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://windleaveai-29db952ad6f1.herokuapp.com/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-person-gear"></i></div>
+          <div class="ai-name">HR Self-Service Assistant</div>
+          <p class="ai-desc">Gen AI tool for employees to submit self-service requests through conversation.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://genai.cibbot.com/cibgenai/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-bank"></i></div>
+          <div class="ai-name">Banking Assistant</div>
+          <p class="ai-desc">AI chat service for customer support on banking products and services using uploaded documents.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://windincidentai-aa041d06baaa.herokuapp.com/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-umbrella"></i></div>
+          <div class="ai-name">Insurance Assistant</div>
+          <p class="ai-desc">AI gathers details including location and images, &amp; submits reports to the insurance system.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://oic-vbcs-infosysoic-vb-frxpd492cljs.builder.eu-frankfurt-1.ocp.oraclecloud.com/ic/builder/rt/WindGlobalQualityApp/live/webApps/windglobalquality/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-clipboard2-check"></i></div>
+          <div class="ai-name">Global Quality Process</div>
+          <p class="ai-desc">AI identifies sensitive ingredients from medical or medicine packages.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://oic-vbcs-infosysoic-vb-frxpd492cljs.builder.eu-frankfurt-1.ocp.oraclecloud.com/ic/builder/rt/SalesDashboardApp/live/webApps/salesportal/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-graph-up-arrow"></i></div>
+          <div class="ai-name">Sales Portal</div>
+          <p class="ai-desc">AI supports sales insights, promotion planning, and risk assessment.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://combocustomer-d7f103a4fa54.herokuapp.com/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-person-badge"></i></div>
+          <div class="ai-name">Customer Portal</div>
+          <p class="ai-desc">Portal provides data for customer enquiries about products and enables refund processing.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://oic-vbcs-infosysoic-vb-frxpd492cljs.builder.eu-frankfurt-1.ocp.oraclecloud.com/ic/builder/rt/RfpEvaluatorApp/live/webApps/rfpevalwebapp/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-file-earmark-check"></i></div>
+          <div class="ai-name">Document Evaluator</div>
+          <p class="ai-desc">AI evaluates proposals against the provided criteria.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://speechtotext-1219a969c377.herokuapp.com/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-mic"></i></div>
+          <div class="ai-name">Speech to Text</div>
+          <p class="ai-desc">Speech to Text &amp; Summarization.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://realtimevoice-d924247b1e11.herokuapp.com/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-telephone-outbound"></i></div>
+          <div class="ai-name">Leave Request Voice Agent</div>
+          <p class="ai-desc">A real-time voice agent that instantly processes and books leave requests.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+        <a href="https://loans-usecase-9a616b688d68.herokuapp.com/" target="_blank" class="ai-card">
+          <div class="ai-icon"><i class="bi bi-calculator"></i></div>
+          <div class="ai-name">Loan Calculator</div>
+          <p class="ai-desc">Calculate EMI by DTI, get better loan tips.</p>
+          <span class="ai-demo-btn">Demo <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+        </a>
+      </div>
+      </div>
     </main>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/api.js"></script>
 <script>
+function switchTab(tab) {
+  document.querySelectorAll('.catalog-tab').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.catalog-tab[data-tab="${tab}"]`).classList.add('active');
+  document.getElementById('panelServices').classList.toggle('active', tab === 'services');
+  document.getElementById('panelAi').classList.toggle('active', tab === 'ai');
+}
 document.addEventListener('DOMContentLoaded', async () => {
   await Layout.init('services');
 });
