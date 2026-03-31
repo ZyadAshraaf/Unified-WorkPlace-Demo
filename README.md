@@ -118,7 +118,8 @@ unified-workspace/
     ├── policy.html             # AI policy assistant
     ├── helpdesk.html           # Help desk & tickets
     ├── directory.html          # Organization directory
-    └── customize.html          # Theme customization (colors, logo)
+    ├── customize.html          # Theme customization (colors, logo)
+    └── services.html           # AI Use Cases catalog (14 GenAI demos)
 ```
 
 ---
@@ -134,7 +135,7 @@ unified-workspace/
 - **Light-themed login panel** — white card on right with brand `#198D87` teal accents
 - **Top info bar** — displays company logo, city, next prayer time, weather, live clock and date
 - **Prayer times widget** — shows all 5 daily prayer times with the next prayer highlighted
-- **Stats bar** — employee count, active modules, uptime displayed over the background
+- **Stats bar** — employee count, active modules, and departments displayed over the background
 
 ---
 
@@ -242,7 +243,32 @@ New → In Progress → Pending Approval → Completed / Rejected / Escalated
 
 ---
 
-### 12. Customize Page
+### 12. AI Use Cases
+
+A curated catalog of **14 live GenAI demos** built on the WIND-IS platform, accessible directly from the portal.
+
+| Demo | Description |
+|---|---|
+| Smart Document Chat | AI chat with document upload for tailored responses |
+| Health Assistant | Appointment companion and condition awareness chat |
+| Intelligent ERP Dialogue | Chat with ERP data (invoices, POs, stock) via AI-generated SQL |
+| HR Policy Advisor | Employee inquiries on company policies |
+| HR Self-Service Assistant | Submit self-service requests through conversation |
+| Banking Assistant | Customer support for banking products via uploaded documents |
+| Insurance Assistant | Gathers location/images and submits insurance reports |
+| Global Quality Process | Identifies sensitive ingredients in medical or medicine packages |
+| Sales Portal | Sales insights, promotion planning, and risk assessment |
+| Customer Portal | Customer enquiries and refund requests |
+| Document Evaluator | Evaluates proposals against provided criteria |
+| Speech to Text | Speech to text and summarization |
+| Leave Request Voice Agent | Real-time voice agent for processing leave requests |
+| Loan Calculator | EMI by DTI calculator with loan tips |
+
+Each card links directly to its live demo URL and opens in a new tab.
+
+---
+
+### 13. Customize Page
 - Change primary and secondary colors via color pickers or hex input
 - Auto-generated shade palette preview
 - Upload new logo (base64 — no multer dependency)
@@ -282,7 +308,8 @@ Sidebar:
 ├── Attendance
 ├── Policy Assistant
 ├── Help Desk
-└── Directory
+├── Directory
+└── AI Use Cases
 
 User Dropdown:
 ├── Customize
@@ -407,6 +434,7 @@ Every page follows a strict 1-to-1 pairing:
 | `views/helpdesk.html` | `public/js/helpdesk.js` | Help desk & tickets |
 | `views/directory.html` | `public/js/directory.js` | Organization directory |
 | `views/customize.html` | `public/js/customize.js` | Theme customization |
+| `views/services.html` | inline script | AI Use Cases catalog |
 
 **Rules:**
 - The HTML file contains only structure and markup — no inline logic
@@ -495,6 +523,22 @@ node server.js
 ---
 
 ## Changelog
+
+### v1.2.0 — AI Use Cases & Polish (Mar 2026)
+
+**AI Use Cases Page (services.html)**
+- Added a new **AI Use Cases** page showcasing 14 live GenAI demos from the WIND-IS platform
+- Each demo is presented as a card with title, description, and a direct link to its live Heroku/Oracle URL
+- Accessible from the sidebar navigation under "AI Use Cases"
+
+**Task Badge Fix**
+- Fixed "In Progress" badge rendering as a thin blue bar — caused by a CSS class name collision with Bootstrap's `.progress` component
+- Renamed badge class from `.progress` to `.in-prog` to eliminate the conflict; badge now displays correctly
+
+**Login Page — Stats Bar Update**
+- Replaced "Uptime 99.9%" stat pill with "Departments" — a more relevant and meaningful metric for an enterprise portal
+
+---
 
 ### v1.1.0 — UI Overhaul (Mar 2026)
 
