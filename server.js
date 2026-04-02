@@ -1,7 +1,8 @@
-const express = require('express');
-const session = require('express-session');
-const path    = require('path');
-const fs      = require('fs');
+const express    = require('express');
+const session    = require('express-session');
+const FileStore  = require('session-file-store')(session);
+const path       = require('path');
+const fs         = require('fs');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -55,17 +56,46 @@ function buildThemeCSS(settings) {
 `;
 }
 
+// Trust reverse proxies (ngrok, nginx) so req.secure works correctly
+app.set('trust proxy', 1);
+
 // ─── Middleware ────────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Allow embedding in Microsoft Teams iframe
+app.use((req, res, next) => {
+  res.removeHeader('X-Frame-Options');
+  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://teams.microsoft.com https://*.teams.microsoft.com https://*.skype.com");
+  // ngrok: skip browser warning page (uncomment if using ngrok instead of Cloudflare)
+  // res.setHeader('ngrok-skip-browser-warning', 'true');
+  next();
+});
+
 app.use(session({
+  store: new FileStore({
+    path: path.join(__dirname, '.sessions'),
+    ttl: 8 * 60 * 60,            // 8 hours (seconds)
+    retries: 0,
+    logFn: () => {}               // silence logs
+  }),
   secret: 'unified-workspace-secret-2026',
-  resave: false,
+  resave: true,                   // save session on every request (keeps it alive)
+  rolling: true,                  // reset cookie maxAge on every response
   saveUninitialized: false,
   cookie: { maxAge: 8 * 60 * 60 * 1000 }
 }));
+
+// Dynamically upgrade cookie security for HTTPS (Teams/ngrok) without breaking localhost
+app.use((req, res, next) => {
+  const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https';
+  if (isHttps && req.session) {
+    req.session.cookie.sameSite = 'none';
+    req.session.cookie.secure   = true;
+  }
+  next();
+});
 
 // ─── Dynamic Theme CSS (no auth — CSS must load on every page) ─────────────
 app.get('/theme.css', (req, res) => {
@@ -78,6 +108,18 @@ app.get('/theme.css', (req, res) => {
     res.setHeader('Content-Type', 'text/css');
     res.send('/* settings unavailable */');
   }
+});
+
+// ─── Auto-login for Teams embed mode (dev only — remove in production) ───────
+app.use((req, res, next) => {
+  if (!req.session.user && req.query.embed === '1') {
+    const users = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/users.json'), 'utf8'));
+    const defaultUser = users.find(u => u.email === 'ahmed@company.com');
+    if (defaultUser) {
+      req.session.user = { id: defaultUser.id, name: defaultUser.name, email: defaultUser.email, role: defaultUser.role };
+    }
+  }
+  next();
 });
 
 // ─── Auth Guard ────────────────────────────────────────────────────────────────
@@ -104,6 +146,13 @@ app.get('/api/me', requireAuth, (req, res) => {
   res.json({ success: true, user: req.session.user });
 });
 
+// ─── Heartbeat (keeps session & tunnel alive for Teams iframe) ────────────
+app.get('/api/heartbeat', (req, res) => {
+  // Touch the session so it doesn't expire while the tab is open
+  if (req.session) req.session._heartbeat = Date.now();
+  res.json({ ok: true });
+});
+
 // ─── View Routes ──────────────────────────────────────────────────────────────
 app.get('/login', (req, res) => {
   if (req.session && req.session.user) return res.redirect('/');
@@ -126,6 +175,17 @@ app.use((req, res) => {
 });
 
 // ─── Start ────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n  Unified Workspace running at http://localhost:${PORT}\n`);
+const server1 = app.listen(PORT, () => {
+  console.log(`\n  Unified Workspace running at http://localhost:${PORT}`);
 });
+server1.keepAliveTimeout  = 120000;   // 2 min — prevents tunnel from dropping idle connections
+server1.headersTimeout    = 125000;   // slightly above keepAlive
+
+// Also listen on 3001 for tunnel (Cloudflare / ngrok) → Teams integration
+if (PORT !== 3001) {
+  const server2 = app.listen(3001, () => {
+    console.log(`  Teams tunnel port:      http://localhost:3001\n`);
+  });
+  server2.keepAliveTimeout = 120000;
+  server2.headersTimeout   = 125000;
+}

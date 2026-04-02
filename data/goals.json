@@ -74,7 +74,7 @@
     "startDate": "2026-01-01",
     "dueDate": "2026-03-31",
     "progress": 80,
-    "status": "on-track",
+    "status": "at-risk",
     "keyResults": [
       {
         "id": "kr007",
@@ -96,7 +96,7 @@
       }
     ],
     "createdAt": "2026-01-01T08:00:00Z",
-    "updatedAt": "2026-03-22T11:00:00Z"
+    "updatedAt": "2026-04-01T12:05:47.450Z"
   },
   {
     "id": "g004",

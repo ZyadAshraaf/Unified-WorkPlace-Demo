@@ -3,6 +3,7 @@ const router  = express.Router();
 const fs      = require('fs');
 const path    = require('path');
 const { v4: uuidv4 } = require('uuid');
+const { notifyLeaveRequest, notifyLeaveDecision } = require('../utils/teamsNotify');
 
 const leavesPath = path.join(__dirname, '../data/leaves.json');
 const tasksPath  = path.join(__dirname, '../data/tasks.json');
@@ -100,6 +101,19 @@ router.post('/', requireAuth, (req, res) => {
 
   leaves.push(leave);
   writeLeaves(leaves);
+
+  // Notify manager on Microsoft Teams (activity feed notification)
+  const manager = managerId ? users.find(u => u.id === managerId) : null;
+  notifyLeaveRequest({
+    managerEmail: manager ? manager.email : null,
+    employeeName: user.name,
+    leaveType:    req.body.type,
+    days:         req.body.days,
+    startDate:    req.body.startDate,
+    endDate:      req.body.endDate,
+    reason:       req.body.reason || ''
+  });
+
   res.json({ success: true, leave });
 });
 
@@ -135,6 +149,22 @@ router.put('/:id', requireAuth, (req, res) => {
   }
 
   writeLeaves(leaves);
+
+  // Notify employee on Microsoft Teams about the decision
+  const users    = readUsers();
+  const empUser  = users.find(u => u.id === leave.userId);
+  notifyLeaveDecision({
+    employeeEmail: empUser ? empUser.email : null,
+    employeeName:  empUser ? empUser.name : 'Unknown',
+    leaveType:     leave.type,
+    days:          leave.days,
+    startDate:     leave.startDate,
+    endDate:       leave.endDate,
+    status:        leave.status,
+    reviewerName:  user.name,
+    reviewNote:    req.body.note || ''
+  });
+
   res.json({ success: true, leave });
 });
 

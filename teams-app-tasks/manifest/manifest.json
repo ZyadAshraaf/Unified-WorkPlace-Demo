@@ -1,0 +1,70 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.17",
+  "version": "1.0.0",
+  "id": "a7e3c1d9-4f82-4b6a-9e15-3d8f0c2b1a47",
+  "developer": {
+    "name": "WIND-IS",
+    "websiteUrl": "https://inventory-calculator-lip-viking.trycloudflare.com",
+    "privacyUrl": "https://inventory-calculator-lip-viking.trycloudflare.com/privacy",
+    "termsOfUseUrl": "https://inventory-calculator-lip-viking.trycloudflare.com/terms"
+  },
+  "name": {
+    "short": "Wind-IS Hub",
+    "full": "Wind-IS Hub \u2014 Unified Workspace"
+  },
+  "description": {
+    "short": "Your tasks and analytics at a glance.",
+    "full": "Wind-IS Hub brings your tasks and analytics dashboards from Unified Workspace directly into Microsoft Teams."
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "accentColor": "#198D87",
+  "staticTabs": [
+    {
+      "entityId": "tasks-tab",
+      "name": "My Tasks",
+      "contentUrl": "https://inventory-calculator-lip-viking.trycloudflare.com/tasks?embed=1",
+      "scopes": ["personal"]
+    },
+    {
+      "entityId": "analytics-tab",
+      "name": "Analytics",
+      "contentUrl": "https://inventory-calculator-lip-viking.trycloudflare.com/analytics?embed=1",
+      "scopes": ["personal"]
+    },
+    {
+      "entityId": "policy-tab",
+      "name": "My Assistant",
+      "contentUrl": "https://inventory-calculator-lip-viking.trycloudflare.com/policy?embed=1",
+      "scopes": ["personal"]
+    }
+  ],
+  "configurableTabs": [],
+  "permissions": ["identity", "messageTeamMembers"],
+  "validDomains": [
+    "inventory-calculator-lip-viking.trycloudflare.com"
+  ],
+  "activities": {
+    "activityTypes": [
+      {
+        "type": "leaveRequest",
+        "description": "A new leave request was submitted",
+        "templateText": "{actor} submitted a {leaveType} leave request for {days} day(s) ({dates})"
+      },
+      {
+        "type": "leaveDecision",
+        "description": "A leave request was approved or rejected",
+        "templateText": "{actor} {decision} your {leaveType} leave request ({dates})"
+      },
+      {
+        "type": "taskAssigned",
+        "description": "A new task has been assigned",
+        "templateText": "{actor} assigned you a new task: {taskTitle}"
+      }
+    ]
+  },
+  "showLoadingIndicator": false
+}

@@ -322,12 +322,12 @@
     "sourceSystem": "IT",
     "type": "task",
     "priority": "medium",
-    "status": "pending",
+    "status": "completed",
     "assignedTo": "u004",
     "createdBy": "u001",
     "dueDate": "2026-03-31",
     "createdAt": "2026-03-18T08:00:00Z",
-    "updatedAt": "2026-03-18T08:00:00Z",
+    "updatedAt": "2026-04-01T21:07:48.545Z",
     "metadata": {
       "policyVersion": "2026.1"
     },
@@ -337,6 +337,12 @@
         "by": "u001",
         "at": "2026-03-18T08:00:00Z",
         "note": "Policy acknowledgment required from all staff"
+      },
+      {
+        "action": "updated",
+        "by": "u001",
+        "at": "2026-04-01T21:07:48.545Z",
+        "note": "Marked as complete"
       }
     ],
     "comments": [],
@@ -384,12 +390,12 @@
     "sourceSystem": "HR",
     "type": "approval",
     "priority": "medium",
-    "status": "pending",
+    "status": "completed",
     "assignedTo": "u002",
     "createdBy": "u004",
     "dueDate": "2026-03-27",
     "createdAt": "2026-03-25T14:47:03.085Z",
-    "updatedAt": "2026-03-25T14:47:03.085Z",
+    "updatedAt": "2026-04-01T21:08:07.195Z",
     "metadata": {
       "leaveId": "LE88C37A0"
     },
@@ -399,6 +405,12 @@
         "by": "u004",
         "at": "2026-03-25T14:47:03.085Z",
         "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-01T21:08:07.195Z",
+        "note": "Leave request approved"
       }
     ],
     "comments": [],
@@ -433,6 +445,176 @@
         "by": "u001",
         "at": "2026-03-30T11:24:11.082Z",
         "note": "Leave request rejected"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T84BA4FB5",
+    "title": "Approve Leave Request — Sara Hassan",
+    "description": "Sara Hassan has requested annual leave for 2 day(s) (2026-04-01 to 2026-04-02). Reason: jkj",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "completed",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-04-01",
+    "createdAt": "2026-03-31T19:29:49.020Z",
+    "updatedAt": "2026-03-31T19:30:31.420Z",
+    "metadata": {
+      "leaveId": "LA85EF194"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-03-31T19:29:49.020Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-03-31T19:30:31.420Z",
+        "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T977BDBA0",
+    "title": "Approve Leave Request — Sara Hassan",
+    "description": "Sara Hassan has requested annual leave for 2 day(s) (2026-04-02 to 2026-04-04). Reason: lf;mldkf",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "completed",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-04-02",
+    "createdAt": "2026-04-01T21:09:07.871Z",
+    "updatedAt": "2026-04-01T21:09:36.156Z",
+    "metadata": {
+      "leaveId": "L7FD44DAD"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-01T21:09:07.871Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-01T21:09:36.156Z",
+        "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T3B3C1710",
+    "title": "Approve Leave Request — Sara Hassan",
+    "description": "Sara Hassan has requested annual leave for 1 day(s) (2026-04-01 to 2026-04-01). Reason: lf;mldkf",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "completed",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-04-01",
+    "createdAt": "2026-04-01T21:09:48.990Z",
+    "updatedAt": "2026-04-01T21:10:12.074Z",
+    "metadata": {
+      "leaveId": "L7BF5098D"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-01T21:09:48.990Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-01T21:10:12.074Z",
+        "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T468CB8F3",
+    "title": "Approve Leave Request — Sara Hassan",
+    "description": "Sara Hassan has requested annual leave for 2 day(s) (2026-04-02 to 2026-04-04). Reason: .....",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "completed",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-04-02",
+    "createdAt": "2026-04-02T08:38:08.099Z",
+    "updatedAt": "2026-04-02T08:38:16.765Z",
+    "metadata": {
+      "leaveId": "L632F603A"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-02T08:38:08.099Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-02T08:38:16.765Z",
+        "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T20A53315",
+    "title": "Approve Leave Request — Sara Hassan",
+    "description": "Sara Hassan has requested annual leave for 3 day(s) (2026-04-05 to 2026-04-08). Reason: knn",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "completed",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-04-05",
+    "createdAt": "2026-04-02T10:56:39.253Z",
+    "updatedAt": "2026-04-02T10:57:30.344Z",
+    "metadata": {
+      "leaveId": "LBE4B734F"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-02T10:56:39.253Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-02T10:57:30.344Z",
+        "note": "Leave request approved"
       }
     ],
     "comments": [],

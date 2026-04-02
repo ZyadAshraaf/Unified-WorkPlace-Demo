@@ -53,6 +53,11 @@ const Layout = {
   user: null,
 
   async init(activePage) {
+    // Detect embed mode (Teams tabs without sidebar)
+    if (new URLSearchParams(window.location.search).has('embed')) {
+      document.body.classList.add('embed-mode');
+    }
+
     this.user = await API.getMe();
     if (!this.user) return;
 
@@ -60,6 +65,7 @@ const Layout = {
     this.populateUser();
     this.bindSidebarToggle();
     await this.loadNotifications();
+    Heartbeat.start();
   },
 
   setActiveNav(page) {
@@ -128,6 +134,72 @@ const Layout = {
     const dot   = document.getElementById('notifDot');
     const count = data.unreadCount || 0;
     if (dot) dot.style.display = count > 0 ? 'block' : 'none';
+  }
+};
+
+/* ============================================================
+   HEARTBEAT — Keep session & tunnel alive (fixes Teams idle timeout)
+   - Pings /api/heartbeat every 30s to keep session + tunnel warm
+   - If ping fails, auto-reloads to recover before Teams shows error
+   - On visibility change (tab refocus), pings immediately
+   ============================================================ */
+const Heartbeat = {
+  _timer: null,
+  _interval: 30 * 1000,        // 30 seconds — aggressive to prevent Teams disconnect
+  _failCount: 0,
+  _maxFails: 2,                 // reload after 2 consecutive failures
+
+  start() {
+    if (this._timer) return;
+    this._ping();
+    this._timer = setInterval(() => this._ping(), this._interval);
+
+    // Ping + recover when tab/iframe regains focus
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        this._ping();
+        // Reset interval so it doesn't fire right after
+        clearInterval(this._timer);
+        this._timer = setInterval(() => this._ping(), this._interval);
+      }
+    });
+
+    // Teams SDK: notify Teams the app loaded successfully
+    if (window.microsoftTeams) {
+      try { microsoftTeams.app.initialize().then(() => microsoftTeams.app.notifySuccess()); } catch {}
+    }
+  },
+
+  stop() {
+    if (this._timer) { clearInterval(this._timer); this._timer = null; }
+  },
+
+  async _ping() {
+    try {
+      const res = await fetch('/api/heartbeat', {
+        credentials: 'include',
+        signal: AbortSignal.timeout(8000)    // 8s timeout
+      });
+      if (res.ok) {
+        this._failCount = 0;
+      } else if (res.status === 401 || res.redirected) {
+        // Session expired — reload immediately to trigger login
+        window.location.reload();
+      } else {
+        this._onFail();
+      }
+    } catch {
+      this._onFail();
+    }
+  },
+
+  _onFail() {
+    this._failCount++;
+    if (this._failCount >= this._maxFails) {
+      // Connection lost — reload before Teams shows "problem reaching" error
+      this._failCount = 0;
+      window.location.reload();
+    }
   }
 };
 

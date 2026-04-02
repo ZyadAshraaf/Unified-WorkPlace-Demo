@@ -575,6 +575,12 @@ body.sidebar-collapsed .main-wrapper {
   margin-left: 0;
 }
 
+/* ── Embed mode (Teams tabs without sidebar & topbar) ──────── */
+.embed-mode .sidebar,
+.embed-mode .sidebar-overlay { display: none !important; }
+.embed-mode .topbar          { display: none !important; }
+.embed-mode .main-wrapper    { margin-left: 0; }
+
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 991px) {
   .sidebar { transform: translateX(-100%); }

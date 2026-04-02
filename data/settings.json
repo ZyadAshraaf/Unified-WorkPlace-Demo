@@ -4,5 +4,11 @@
     "secondary": "#2C3E50"
   },
   "appName": "Unified Workspace",
-  "logoPath": "/assets/logo.png"
+  "logoPath": "/assets/logo.png",
+  "teamsWebhookUrl": "",
+  "teamsGraph": {
+    "tenantId": "",
+    "clientId": "",
+    "clientSecret": ""
+  }
 }
