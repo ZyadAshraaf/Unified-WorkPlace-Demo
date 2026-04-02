@@ -99,6 +99,7 @@ app.use('/api/helpdesk',  require('./routes/helpdesk'));
 app.use('/api/directory', require('./routes/directory'));
 app.use('/api/news',      require('./routes/news'));
 app.use('/api/customize', require('./routes/customize'));
+app.use('/api/hr-chat',   require('./routes/hr-chat'));
 
 app.get('/api/me', requireAuth, (req, res) => {
   res.json({ success: true, user: req.session.user });
@@ -110,7 +111,7 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-const pages = ['', 'tasks', 'leaves', 'services', 'analytics', 'goals', 'appraisal', 'attendance', 'policy', 'helpdesk', 'directory', 'customize'];
+const pages = ['', 'tasks', 'leaves', 'services', 'analytics', 'goals', 'appraisal', 'attendance', 'policy', 'helpdesk', 'directory', 'customize', 'erp-dialogue', 'leave-assistant', 'voice-agent'];
 
 pages.forEach(page => {
   const route = page === '' ? '/' : `/${page}`;

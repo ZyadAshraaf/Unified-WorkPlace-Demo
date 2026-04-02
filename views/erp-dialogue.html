@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Policy AI — Unified Workspace</title>
+  <title>ERP Dialogue — Unified Workspace</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/variables.css">
@@ -12,14 +12,16 @@
   <link rel="stylesheet" href="/css/pages.css">
   <style>
     .chat-wrap { display: flex; gap: 20px; height: calc(100vh - 140px); }
-    .policy-sidebar { width: 260px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
-    .policy-card { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 14px 16px; cursor: pointer; transition: all 0.2s; }
-    .policy-card:hover { border-color: var(--color-primary); background: var(--color-primary-faint); }
-    .policy-card-title { font-size: 13px; font-weight: 600; color: var(--color-text); }
-    .policy-card-cat   { font-size: 11px; color: var(--color-text-muted); margin-top: 2px; }
+    .chat-sidebar { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
+    .chat-sidebar-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--color-text-muted); margin-bottom: 4px; }
+    .sample-card { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px 14px; cursor: pointer; transition: all 0.2s; }
+    .sample-card:hover { border-color: var(--color-primary); background: var(--color-primary-faint); }
+    .sample-card-title { font-size: 12px; font-weight: 600; color: var(--color-text); }
+    .sample-card-desc { font-size: 11px; color: var(--color-text-muted); margin-top: 2px; }
     .chat-main { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
     .chat-header { padding: 16px 20px; border-bottom: 1px solid var(--color-border); display: flex; align-items: center; gap: 12px; background: var(--color-primary-faint); }
     .chat-header-icon { width: 38px; height: 38px; background: var(--color-primary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+    .chat-header-badge { margin-left: auto; background: var(--color-primary-faint); border: 1px solid var(--color-border); color: var(--color-primary); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
     .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
     .msg { display: flex; gap: 10px; max-width: 85%; }
     .msg.user { align-self: flex-end; flex-direction: row-reverse; }
@@ -29,23 +31,28 @@
     .msg-bubble { padding: 12px 16px; border-radius: 16px; font-size: 13px; line-height: 1.6; }
     .msg.bot  .msg-bubble { background: var(--color-surface); border: 1px solid var(--color-border); border-top-left-radius: 4px; color: var(--color-text); }
     .msg.user .msg-bubble { background: var(--color-primary); color: white; border-top-right-radius: 4px; }
-    .msg-sources { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
-    .source-tag { background: var(--color-primary-faint); color: var(--color-primary); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+    .msg-meta { font-size: 11px; color: var(--color-text-muted); margin-top: 4px; }
+    .msg.user .msg-meta { text-align: right; }
+    .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+    .data-table th { background: var(--color-primary-faint); color: var(--color-primary); font-weight: 700; padding: 6px 10px; border: 1px solid var(--color-border); text-align: left; }
+    .data-table td { padding: 6px 10px; border: 1px solid var(--color-border); color: var(--color-text); }
+    .data-table tr:nth-child(even) td { background: var(--color-surface); }
+    .suggested-questions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .sq-btn { background: white; border: 1px solid var(--color-primary); color: var(--color-primary); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .sq-btn:hover { background: var(--color-primary); color: white; }
     .chat-input-bar { padding: 14px 16px; border-top: 1px solid var(--color-border); display: flex; gap: 10px; align-items: flex-end; }
     .chat-input-bar textarea { flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 13px; resize: none; outline: none; font-family: var(--font-family); }
     .chat-input-bar textarea:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(25,141,135,0.12); }
     .btn-send { width: 40px; height: 40px; border: none; background: var(--color-primary); color: white; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; transition: background 0.15s; flex-shrink: 0; }
     .btn-send:hover { background: var(--color-primary-dark); }
     .btn-send:disabled { background: var(--color-text-light); cursor: not-allowed; }
-    .suggested-questions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-    .sq-btn { background: white; border: 1px solid var(--color-primary); color: var(--color-primary); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
-    .sq-btn:hover { background: var(--color-primary); color: white; }
     .typing-indicator { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
     .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-primary-lighter); animation: typing 1.2s infinite; }
     .typing-dot:nth-child(2) { animation-delay: 0.2s; }
     .typing-dot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes typing { 0%,80%,100%{transform:scale(1);opacity:.5} 40%{transform:scale(1.2);opacity:1} }
-    @media (max-width:768px) { .chat-wrap { flex-direction: column; height: auto; } .policy-sidebar { width: 100%; max-height: 200px; } }
+    .api-notice { background: var(--color-primary-faint); border: 1px dashed var(--color-primary); border-radius: var(--radius-md); padding: 8px 12px; font-size: 11px; color: var(--color-primary); margin-top: 8px; display: flex; align-items: center; gap: 6px; }
+    @media (max-width:768px) { .chat-wrap { flex-direction: column; height: auto; } .chat-sidebar { width: 100%; } }
   </style>
 </head>
 <body>
@@ -78,7 +85,7 @@
       </div>
       <div class="nav-section">
         <div class="nav-section-label">AI Use Cases</div>
-        <a href="/erp-dialogue" class="nav-item" data-page="erp-dialogue"><i class="bi bi-database"></i><span>ERP Dialogue</span></a>
+        <a href="/erp-dialogue" class="nav-item active" data-page="erp-dialogue"><i class="bi bi-database"></i><span>ERP Dialogue</span></a>
         <a href="/leave-assistant" class="nav-item" data-page="leave-assistant"><i class="bi bi-person-gear"></i><span>Leave Assistant</span></a>
         <a href="/voice-agent" class="nav-item" data-page="voice-agent"><i class="bi bi-telephone-outbound"></i><span>Voice Agent</span></a>
       </div>
@@ -100,7 +107,7 @@
     <header class="topbar">
       <button class="topbar-toggle" id="sidebarToggle"><i class="bi bi-list"></i></button>
       <img src="/assets/logo.png" alt="Logo" class="topbar-logo" id="topbarLogo">
-      <h1 class="page-title">Policy AI Assistant</h1>
+      <h1 class="page-title">ERP Dialogue</h1>
       <div class="topbar-right">
         <div class="topbar-search"><i class="bi bi-search"></i><input type="text" placeholder="Search..."></div>
         <button class="icon-btn"><i class="bi bi-bell"></i><span class="notif-dot d-none" id="notifDot"></span></button>
@@ -121,48 +128,73 @@
 
     <main class="content">
       <div class="page-hero" style="margin-bottom:18px">
-        <div class="page-hero-bc">Dashboard &rsaquo; <span>Policy AI</span></div>
-        <div class="page-hero-title"><i class="bi bi-robot me-2"></i>Policy AI Assistant</div>
-        <div class="page-hero-sub">Ask anything about company policies — leave, remote work, conduct and more.</div>
+        <div class="page-hero-bc">Dashboard &rsaquo; AI Use Cases &rsaquo; <span>ERP Dialogue</span></div>
+        <div class="page-hero-title"><i class="bi bi-database me-2"></i>Intelligent ERP Dialogue</div>
+        <div class="page-hero-sub">Chat with your ERP data — query invoices, purchase orders, stock levels and more using natural language.</div>
       </div>
+
       <div class="chat-wrap">
-        <!-- Policy List Sidebar -->
-        <div class="policy-sidebar">
-          <div class="fw-600 fs-sm text-muted mb-1" style="text-transform:uppercase;letter-spacing:.8px">Policies</div>
-          <div id="policyList">
-            <div class="text-center py-3"><div class="spinner-border spinner-border-sm" style="color:var(--color-primary)"></div></div>
+        <!-- Sample Queries Sidebar -->
+        <div class="chat-sidebar">
+          <div class="chat-sidebar-label">Sample Queries</div>
+
+          <div class="sample-card" onclick="ErpPage.useSample(this)">
+            <div class="sample-card-title">Invoice Lookup</div>
+            <div class="sample-card-desc">Show me all unpaid invoices this month</div>
+          </div>
+          <div class="sample-card" onclick="ErpPage.useSample(this)">
+            <div class="sample-card-title">Purchase Orders</div>
+            <div class="sample-card-desc">List open POs from top 5 suppliers</div>
+          </div>
+          <div class="sample-card" onclick="ErpPage.useSample(this)">
+            <div class="sample-card-title">Stock Levels</div>
+            <div class="sample-card-desc">Which items are below reorder point?</div>
+          </div>
+          <div class="sample-card" onclick="ErpPage.useSample(this)">
+            <div class="sample-card-title">Sales Summary</div>
+            <div class="sample-card-desc">What were total sales last quarter?</div>
+          </div>
+          <div class="sample-card" onclick="ErpPage.useSample(this)">
+            <div class="sample-card-title">Vendor Analysis</div>
+            <div class="sample-card-desc">Which vendor has the most delays?</div>
+          </div>
+
+          <div class="api-notice">
+            <i class="bi bi-plug"></i>
+            API connection pending
           </div>
         </div>
 
         <!-- Chat Area -->
         <div class="chat-main">
           <div class="chat-header">
-            <div class="chat-header-icon"><i class="bi bi-robot"></i></div>
+            <div class="chat-header-icon"><i class="bi bi-database"></i></div>
             <div>
-              <div class="fw-700" style="font-size:15px">Policy Assistant</div>
-              <div class="fs-sm text-muted">Ask anything about company policies</div>
+              <div class="fw-700" style="font-size:15px">ERP Assistant</div>
+              <div class="fs-sm text-muted">Powered by AI-generated SQL queries</div>
             </div>
+            <span class="chat-header-badge"><i class="bi bi-circle-fill me-1" style="font-size:8px;color:#f59e0b"></i>API Pending</span>
           </div>
 
           <div class="chat-messages" id="chatMessages">
             <div class="msg bot">
-              <div class="msg-avatar"><i class="bi bi-robot"></i></div>
+              <div class="msg-avatar"><i class="bi bi-database"></i></div>
               <div>
                 <div class="msg-bubble">
-                  Hello! I'm your Policy AI Assistant. Ask me anything about company policies — leave, remote work, IT security, conduct, and more.<br><br>Try one of these questions:
+                  Hello! I'm your ERP assistant. Ask me anything about your business data — invoices, purchase orders, stock levels, sales figures, and more.<br><br>
+                  I'll translate your questions into database queries and return results in a clear format. Try one of these:
                 </div>
                 <div class="suggested-questions">
-                  <button class="sq-btn" onclick="PolicyPage.askSuggestion(this)">How many annual leave days do I get?</button>
-                  <button class="sq-btn" onclick="PolicyPage.askSuggestion(this)">What is the remote work policy?</button>
-                  <button class="sq-btn" onclick="PolicyPage.askSuggestion(this)">What happens if I'm sick for 3 days?</button>
-                  <button class="sq-btn" onclick="PolicyPage.askSuggestion(this)">How does the appraisal process work?</button>
+                  <button class="sq-btn" onclick="ErpPage.askSuggestion(this)">Show unpaid invoices this month</button>
+                  <button class="sq-btn" onclick="ErpPage.askSuggestion(this)">List open purchase orders</button>
+                  <button class="sq-btn" onclick="ErpPage.askSuggestion(this)">Which items are low in stock?</button>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="chat-input-bar">
-            <textarea id="chatInput" rows="1" placeholder="Ask a question about company policies..." maxlength="500"></textarea>
+            <textarea id="chatInput" rows="1" placeholder="Ask about invoices, stock, POs, sales..." maxlength="500"></textarea>
             <button class="btn-send" id="btnSend" title="Send"><i class="bi bi-send-fill"></i></button>
           </div>
         </div>
@@ -172,6 +204,97 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/api.js"></script>
-<script src="/js/policy.js"></script>
+<script>
+const ErpPage = (() => {
+  let busy = false;
+
+  function appendMsg(role, html) {
+    const wrap = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    const avatarIcon = role === 'bot' ? 'bi-database' : 'bi-person';
+    div.innerHTML = `
+      <div class="msg-avatar"><i class="bi ${avatarIcon}"></i></div>
+      <div><div class="msg-bubble">${html}</div></div>`;
+    wrap.appendChild(div);
+    wrap.scrollTop = wrap.scrollHeight;
+    return div;
+  }
+
+  function showTyping() {
+    const wrap = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.id = 'typingMsg';
+    div.innerHTML = `
+      <div class="msg-avatar"><i class="bi bi-database"></i></div>
+      <div><div class="msg-bubble">
+        <div class="typing-indicator">
+          <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+      </div></div>`;
+    wrap.appendChild(div);
+    wrap.scrollTop = wrap.scrollHeight;
+  }
+
+  function removeTyping() {
+    const el = document.getElementById('typingMsg');
+    if (el) el.remove();
+  }
+
+  async function send(text) {
+    if (busy || !text.trim()) return;
+    busy = true;
+    document.getElementById('btnSend').disabled = true;
+    document.getElementById('chatInput').value = '';
+
+    appendMsg('user', text);
+    showTyping();
+
+    // Placeholder until API is connected
+    await new Promise(r => setTimeout(r, 1200));
+    removeTyping();
+
+    appendMsg('bot', `
+      <strong>Query received:</strong> "${text}"<br><br>
+      <em style="color:var(--color-text-muted)">The ERP backend API is not yet connected. Once the endpoint is configured, I'll return live data from your ERP system here — including tables, figures, and summaries.</em>
+    `);
+
+    busy = false;
+    document.getElementById('btnSend').disabled = false;
+  }
+
+  function useSample(card) {
+    const desc = card.querySelector('.sample-card-desc').textContent;
+    document.getElementById('chatInput').value = desc;
+    document.getElementById('chatInput').focus();
+  }
+
+  function askSuggestion(btn) {
+    send(btn.textContent.trim());
+  }
+
+  function init() {
+    const input = document.getElementById('chatInput');
+    const btn   = document.getElementById('btnSend');
+
+    btn.addEventListener('click', () => send(input.value));
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input.value); }
+    });
+    input.addEventListener('input', () => {
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    });
+  }
+
+  return { init, useSample, askSuggestion };
+})();
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await Layout.init('erp-dialogue');
+  ErpPage.init();
+});
+</script>
 </body>
 </html>
