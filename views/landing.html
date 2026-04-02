@@ -343,6 +343,12 @@
         <a href="/helpdesk" class="nav-item" data-page="helpdesk"><i class="bi bi-headset"></i><span>Help Desk</span></a>
         <a href="/directory" class="nav-item" data-page="directory"><i class="bi bi-people"></i><span>Directory</span></a>
       </div>
+      <div class="nav-section">
+        <div class="nav-section-label">AI Use Cases</div>
+        <a href="/erp-dialogue" class="nav-item" data-page="erp-dialogue"><i class="bi bi-database"></i><span>ERP Dialogue</span></a>
+        <a href="/leave-assistant" class="nav-item" data-page="leave-assistant"><i class="bi bi-person-gear"></i><span>Leave Assistant</span></a>
+        <a href="/voice-agent" class="nav-item" data-page="voice-agent"><i class="bi bi-telephone-outbound"></i><span>Voice Agent</span></a>
+      </div>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
@@ -608,6 +614,185 @@
   </div>
 </div>
 
+<!-- ── WIND-IS Assistant Widget ───────────────────────────────── -->
+<style>
+  .w-bubble { position:fixed;bottom:28px;right:28px;z-index:9999;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#0E5C59,#198D87);border:none;color:#fff;font-size:24px;box-shadow:0 4px 20px rgba(25,141,135,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s }
+  .w-bubble:hover { transform:scale(1.08);box-shadow:0 6px 28px rgba(25,141,135,.6) }
+  .w-bubble-badge { position:absolute;top:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:#ef4444;border:2px solid #fff;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center }
+  .w-panel { position:fixed;bottom:98px;right:28px;z-index:9998;width:370px;height:580px;background:#f8fafc;border-radius:22px;box-shadow:0 16px 56px rgba(0,0,0,.2);display:flex;flex-direction:column;overflow:hidden;transform:scale(.9) translateY(20px);opacity:0;pointer-events:none;transition:transform .28s cubic-bezier(.34,1.56,.64,1),opacity .2s }
+  .w-panel.open { transform:scale(1) translateY(0);opacity:1;pointer-events:all }
+  .w-header { background:linear-gradient(135deg,#0E5C59,#198D87);padding:20px 18px 16px;flex-shrink:0;position:relative }
+  .w-header-top { display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px }
+  .w-header-greeting { color:#fff }
+  .w-header-greeting .hello { font-size:22px;font-weight:800;line-height:1.1 }
+  .w-header-logo { width:52px;height:52px;background:rgba(255,255,255,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px) }
+  .w-header-logo img { width:36px;height:36px;object-fit:contain;filter:brightness(0) invert(1) }
+  .w-close { position:absolute;top:14px;right:14px;background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:background .15s }
+  .w-close:hover { background:rgba(255,255,255,.3) }
+  .w-search { background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:12px;display:flex;align-items:center;gap:8px;padding:9px 14px;backdrop-filter:blur(4px) }
+  .w-search input { background:none;border:none;outline:none;color:#fff;font-size:13px;flex:1;font-family:inherit }
+  .w-search input::placeholder { color:rgba(255,255,255,.6) }
+  .w-search i { color:rgba(255,255,255,.7);font-size:14px }
+  .w-body { flex:1;overflow:hidden;position:relative }
+  .w-tab-pane { position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;display:none;background:#f8fafc }
+  .w-tab-pane.active { display:block }
+  #wTabMessage.active { display:flex;flex-direction:column }
+  .w-action-card { margin:14px 14px 0;background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.07);display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;border:1px solid #e8f4f3;transition:box-shadow .15s,transform .15s }
+  .w-action-card:hover { box-shadow:0 4px 18px rgba(0,0,0,.12);transform:translateY(-1px) }
+  .w-action-card-icon { width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#0E5C59,#198D87);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0 }
+  .w-action-card-text .title { font-size:13px;font-weight:700;color:#1e293b }
+  .w-action-card-text .sub { font-size:11px;color:#64748b;margin-top:2px }
+  .w-action-card-arrow { margin-left:auto;color:#198D87;font-size:16px }
+  .w-section-list { margin:12px 14px }
+  .w-section-item { background:#fff;display:flex;align-items:center;justify-content:space-between;padding:13px 15px;cursor:pointer;border-bottom:1px solid #f1f5f9;transition:background .15s }
+  .w-section-item:first-child { border-radius:12px 12px 0 0 } .w-section-item:last-child { border-radius:0 0 12px 12px;border-bottom:none }
+  .w-section-item:hover { background:#f0fafa }
+  .w-section-item-left { display:flex;align-items:center;gap:10px }
+  .w-section-item-icon { width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px }
+  .w-section-item-icon.teal { background:#e4f5f4;color:#198D87 } .w-section-item-icon.blue { background:#e1f5fe;color:#0096C7 }
+  .w-section-item-icon.green { background:#e4f7ef;color:#00B894 } .w-section-item-icon.coral { background:#fde8ea;color:#E17055 }
+  .w-section-item-icon.purple { background:#f3e8fd;color:#8b5cf6 }
+  .w-section-item-title { font-size:13px;font-weight:600;color:#1e293b }
+  .w-section-item-sub { font-size:11px;color:#94a3b8;margin-top:1px }
+  .w-section-item-arrow { color:#cbd5e1;font-size:14px }
+  .w-messages { padding:14px;display:flex;flex-direction:column;gap:12px;flex:1;overflow-y:auto }
+  .w-msg { display:flex;gap:8px;max-width:88% } .w-msg.user { align-self:flex-end;flex-direction:row-reverse }
+  .w-msg-avatar { width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px }
+  .w-msg.bot .w-msg-avatar { background:#198D87;color:#fff } .w-msg.user .w-msg-avatar { background:#2C3E50;color:#fff }
+  .w-msg-bubble { padding:10px 14px;border-radius:14px;font-size:12.5px;line-height:1.55 }
+  .w-msg.bot .w-msg-bubble { background:#fff;color:#1e293b;border-top-left-radius:3px;box-shadow:0 1px 4px rgba(0,0,0,.08) }
+  .w-msg.user .w-msg-bubble { background:linear-gradient(135deg,#0E5C59,#198D87);color:#fff;border-top-right-radius:3px }
+  .w-typing { display:flex;gap:4px;align-items:center;padding:2px 0 }
+  .w-dot { width:6px;height:6px;border-radius:50%;background:#94a3b8;animation:wDot 1.2s infinite }
+  .w-dot:nth-child(2){animation-delay:.2s} .w-dot:nth-child(3){animation-delay:.4s}
+  @keyframes wDot{0%,80%,100%{transform:scale(1);opacity:.4}40%{transform:scale(1.3);opacity:1}}
+  .w-input-bar { padding:10px 12px;border-top:1px solid #e2e8f0;display:flex;gap:6px;align-items:flex-end;flex-shrink:0;background:#fff }
+  .w-input { flex:1;border:1px solid #e2e8f0;border-radius:12px;padding:9px 12px;font-size:12.5px;resize:none;outline:none;font-family:inherit;max-height:80px;transition:border-color .15s }
+  .w-input:focus { border-color:#198D87;box-shadow:0 0 0 3px rgba(25,141,135,.1) }
+  .w-mic-btn-sm { width:36px;height:36px;border:none;flex-shrink:0;background:#f1f5f9;color:#64748b;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s }
+  .w-mic-btn-sm:hover { background:#e4f5f4;color:#198D87 }
+  .w-mic-btn-sm.recording { background:#fde8ea;color:#ef4444;animation:wMicPulse 1s infinite }
+  @keyframes wMicPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  .w-send { width:36px;height:36px;border:none;flex-shrink:0;background:linear-gradient(135deg,#0E5C59,#198D87);color:#fff;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:opacity .15s }
+  .w-send:hover { opacity:.88 } .w-send:disabled { opacity:.4;cursor:not-allowed }
+  .w-news-list { padding:12px 14px;display:flex;flex-direction:column;gap:10px }
+  .w-news-card { background:#fff;border-radius:12px;padding:13px 14px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:3px solid #198D87;transition:box-shadow .15s }
+  .w-news-card:hover { box-shadow:0 3px 12px rgba(0,0,0,.12) }
+  .w-news-card-top { display:flex;align-items:center;gap:8px;margin-bottom:6px }
+  .w-news-card-icon { color:#198D87;font-size:15px }
+  .w-news-card-cat { font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#198D87;background:#e4f5f4;padding:2px 8px;border-radius:8px }
+  .w-news-card-pinned { font-size:10px;color:#f59e0b;background:#fef3c7;padding:2px 8px;border-radius:8px;font-weight:700 }
+  .w-news-card-title { font-size:13px;font-weight:700;color:#1e293b;margin-bottom:4px;line-height:1.3 }
+  .w-news-card-summary { font-size:11.5px;color:#64748b;line-height:1.5 }
+  .w-news-card-time { font-size:10px;color:#94a3b8;margin-top:6px }
+  .w-help-list { padding:14px;display:flex;flex-direction:column;gap:10px }
+  .w-help-card { background:#fff;border-radius:12px;padding:13px 15px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;transition:box-shadow .15s }
+  .w-help-card:hover { box-shadow:0 3px 12px rgba(0,0,0,.1) }
+  .w-help-card-q { font-size:12.5px;font-weight:600;color:#1e293b;display:flex;align-items:center;gap:8px }
+  .w-help-card-q i { color:#198D87;font-size:14px;flex-shrink:0 }
+  .w-nav { display:flex;border-top:1px solid #e2e8f0;background:#fff;flex-shrink:0;border-radius:0 0 22px 22px;overflow:hidden }
+  .w-nav-btn { flex:1;border:none;background:none;cursor:pointer;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:4px;transition:background .15s;color:#94a3b8;position:relative }
+  .w-nav-btn:hover { background:#f8fafc } .w-nav-btn.active { color:#198D87 }
+  .w-nav-btn i { font-size:20px } .w-nav-btn span { font-size:10px;font-weight:600 }
+  .w-nav-indicator { position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:2px;background:#198D87;border-radius:2px;opacity:0;transition:opacity .15s }
+  .w-nav-btn.active .w-nav-indicator { opacity:1 }
+</style>
+
+<button class="w-bubble" id="wBubble" title="WIND-IS Assistant">
+  <i class="bi bi-robot" id="wBubbleIcon"></i>
+  <div class="w-bubble-badge" id="wBubbleBadge">5</div>
+</button>
+
+<div class="w-panel" id="wPanel">
+  <div class="w-header">
+    <button class="w-close" id="wClose"><i class="bi bi-x-lg"></i></button>
+    <div class="w-header-top">
+      <div class="w-header-greeting">
+        <div class="hello">Hello! I'm<br><span style="font-size:18px;opacity:.9">Your Digital Assistant</span></div>
+      </div>
+      <div class="w-header-logo"><img src="/assets/logo.png" alt="WIND-IS"></div>
+    </div>
+    <div class="w-search"><i class="bi bi-search"></i><input type="text" id="wSearchInput" placeholder="Search for help..."></div>
+  </div>
+
+  <div class="w-body">
+    <!-- Home -->
+    <div class="w-tab-pane active" id="wTabHome">
+      <div class="w-action-card" onclick="WWidget.switchTab('message')">
+        <div class="w-action-card-icon"><i class="bi bi-chat-dots-fill"></i></div>
+        <div class="w-action-card-text"><div class="title">Ask HR Assistant</div><div class="sub">Ask about policies, I'll respond promptly.</div></div>
+        <i class="bi bi-chevron-right w-action-card-arrow"></i>
+      </div>
+      <div class="w-section-list">
+        <div class="w-section-item" onclick="WWidget.switchTab('message')">
+          <div class="w-section-item-left"><div class="w-section-item-icon teal"><i class="bi bi-file-earmark-text"></i></div><div><div class="w-section-item-title">HR Policies</div><div class="w-section-item-sub">Leave, conduct, dress code & more</div></div></div>
+          <i class="bi bi-chevron-right w-section-item-arrow"></i>
+        </div>
+        <div class="w-section-item" onclick="WWidget.switchTab('updates')">
+          <div class="w-section-item-left"><div class="w-section-item-icon blue"><i class="bi bi-megaphone"></i></div><div><div class="w-section-item-title">Announcements</div><div class="w-section-item-sub">Latest news & company updates</div></div></div>
+          <i class="bi bi-chevron-right w-section-item-arrow"></i>
+        </div>
+        <div class="w-section-item" onclick="WWidget.switchTab('help')">
+          <div class="w-section-item-left"><div class="w-section-item-icon green"><i class="bi bi-question-circle"></i></div><div><div class="w-section-item-title">Quick Help</div><div class="w-section-item-sub">Common questions answered</div></div></div>
+          <i class="bi bi-chevron-right w-section-item-arrow"></i>
+        </div>
+        <div class="w-section-item" onclick="window.location.href='/helpdesk'">
+          <div class="w-section-item-left"><div class="w-section-item-icon coral"><i class="bi bi-headset"></i></div><div><div class="w-section-item-title">Help Desk</div><div class="w-section-item-sub">Submit or track a support ticket</div></div></div>
+          <i class="bi bi-chevron-right w-section-item-arrow"></i>
+        </div>
+        <div class="w-section-item" onclick="window.location.href='/leaves'">
+          <div class="w-section-item-left"><div class="w-section-item-icon purple"><i class="bi bi-calendar2-check"></i></div><div><div class="w-section-item-title">Leave Requests</div><div class="w-section-item-sub">Apply or manage your leave</div></div></div>
+          <i class="bi bi-chevron-right w-section-item-arrow"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message -->
+    <div class="w-tab-pane" id="wTabMessage">
+      <div class="w-messages" id="wMessages">
+        <div class="w-msg bot">
+          <div class="w-msg-avatar"><i class="bi bi-robot"></i></div>
+          <div class="w-msg-bubble">Hi! Ask me anything about WIND-IS HR policies — leave, dress code, smoking, remote work, performance, IT security, and more.</div>
+        </div>
+      </div>
+      <div class="w-input-bar">
+        <textarea class="w-input" id="wInput" rows="1" placeholder="Ask about HR policies..." maxlength="400"></textarea>
+        <button class="w-mic-btn-sm" id="wMicBtn" title="Voice input"><i class="bi bi-mic-fill" id="wMicIcon"></i></button>
+        <button class="w-send" id="wSend"><i class="bi bi-send-fill"></i></button>
+      </div>
+    </div>
+
+    <!-- Help -->
+    <div class="w-tab-pane" id="wTabHelp">
+      <div class="w-help-list">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#94a3b8;margin-bottom:2px">Frequently Asked</div>
+        <div class="w-help-card" onclick="WWidget.askQuestion('How many annual leave days do I get?')"><div class="w-help-card-q"><i class="bi bi-chevron-right"></i>How many annual leave days do I get?</div></div>
+        <div class="w-help-card" onclick="WWidget.askQuestion('What is the dress code policy?')"><div class="w-help-card-q"><i class="bi bi-chevron-right"></i>What is the dress code policy?</div></div>
+        <div class="w-help-card" onclick="WWidget.askQuestion('Where can I smoke on company premises?')"><div class="w-help-card-q"><i class="bi bi-chevron-right"></i>Where can I smoke on company premises?</div></div>
+        <div class="w-help-card" onclick="WWidget.askQuestion('How does remote work eligibility work?')"><div class="w-help-card-q"><i class="bi bi-chevron-right"></i>How does remote work eligibility work?</div></div>
+        <div class="w-help-card" onclick="WWidget.askQuestion('What are the travel expense limits?')"><div class="w-help-card-q"><i class="bi bi-chevron-right"></i>What are the travel expense limits?</div></div>
+        <div class="w-help-card" onclick="WWidget.askQuestion('Can I post about work on social media?')"><div class="w-help-card-q"><i class="bi bi-chevron-right"></i>Can I post about work on social media?</div></div>
+        <div class="w-help-card" onclick="WWidget.askQuestion('How does the performance appraisal process work?')"><div class="w-help-card-q"><i class="bi bi-chevron-right"></i>How does the performance appraisal work?</div></div>
+        <div class="w-help-card" onclick="WWidget.askQuestion('What should I do if I get a phishing email?')"><div class="w-help-card-q"><i class="bi bi-chevron-right"></i>What should I do if I get a phishing email?</div></div>
+      </div>
+    </div>
+
+    <!-- Updates -->
+    <div class="w-tab-pane" id="wTabUpdates">
+      <div class="w-news-list" id="wNewsList">
+        <div style="text-align:center;padding:20px;color:#94a3b8;font-size:13px">Loading updates...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-nav">
+    <button class="w-nav-btn active" id="wNavHome" onclick="WWidget.switchTab('home')"><i class="bi bi-house-door-fill"></i><span>Home</span><div class="w-nav-indicator"></div></button>
+    <button class="w-nav-btn" id="wNavMessage" onclick="WWidget.switchTab('message')"><i class="bi bi-chat-dots-fill"></i><span>Message</span><div class="w-nav-indicator"></div></button>
+    <button class="w-nav-btn" id="wNavHelp" onclick="WWidget.switchTab('help')"><i class="bi bi-question-circle-fill"></i><span>Help</span><div class="w-nav-indicator"></div></button>
+    <button class="w-nav-btn" id="wNavUpdates" onclick="WWidget.switchTab('updates')"><i class="bi bi-bell-fill"></i><span>Updates</span><div class="w-nav-indicator"></div></button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="/js/api.js"></script>
@@ -716,6 +901,189 @@ async function loadNews() {
       </div>`;
   }).join('');
 }
+</script>
+<script>
+const WWidget = (() => {
+  let panelOpen = false;
+  let chatBusy  = false;
+  let voiceActive = false;
+  let recognition = null;
+  let newsLoaded  = false;
+  let currentTab  = 'home';
+
+  // ── Toggle panel ──
+  function togglePanel() {
+    panelOpen = !panelOpen;
+    document.getElementById('wPanel').classList.toggle('open', panelOpen);
+    document.getElementById('wBubbleIcon').className = panelOpen ? 'bi bi-x-lg' : 'bi bi-robot';
+    if (panelOpen) {
+      document.getElementById('wBubbleBadge').style.display = 'none';
+      if (!newsLoaded) loadNews();
+    }
+  }
+
+  // ── Tab switching ──
+  function switchTab(tab) {
+    currentTab = tab;
+    ['home','message','voice','updates'].forEach(t => {
+      document.getElementById('wTab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
+      document.getElementById('wNav'  + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
+    });
+    if (tab === 'message') setTimeout(() => document.getElementById('wInput').focus(), 150);
+  }
+
+  // ── Chat ──
+  function appendMsg(role, text) {
+    const wrap = document.getElementById('wMessages');
+    const div  = document.createElement('div');
+    div.className = `w-msg ${role}`;
+    div.innerHTML = `
+      <div class="w-msg-avatar"><i class="bi ${role === 'bot' ? 'bi-robot' : 'bi-person'}"></i></div>
+      <div class="w-msg-bubble">${text}</div>`;
+    wrap.appendChild(div);
+    wrap.scrollTop = wrap.scrollHeight;
+  }
+
+  function showTyping() {
+    const wrap = document.getElementById('wMessages');
+    const div  = document.createElement('div');
+    div.className = 'w-msg bot'; div.id = 'wTyping';
+    div.innerHTML = `<div class="w-msg-avatar"><i class="bi bi-robot"></i></div>
+      <div class="w-msg-bubble"><div class="w-typing"><div class="w-dot"></div><div class="w-dot"></div><div class="w-dot"></div></div></div>`;
+    wrap.appendChild(div);
+    wrap.scrollTop = wrap.scrollHeight;
+  }
+  function removeTyping() { const el = document.getElementById('wTyping'); if (el) el.remove(); }
+
+  async function sendChat() {
+    const input = document.getElementById('wInput');
+    const text  = input.value.trim();
+    if (!text || chatBusy) return;
+    chatBusy = true;
+    document.getElementById('wSend').disabled = true;
+    input.value = ''; input.style.height = 'auto';
+    appendMsg('user', text);
+    showTyping();
+    try {
+      const res  = await fetch('/api/hr-chat/ask', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ question: text }) });
+      const data = await res.json();
+      removeTyping();
+      appendMsg('bot', data.answer || data.message || 'Something went wrong.');
+    } catch { removeTyping(); appendMsg('bot', 'Unable to reach the HR assistant.'); }
+    finally { chatBusy = false; document.getElementById('wSend').disabled = false; }
+  }
+
+  // ── Voice ──
+  function setVoiceState(on) {
+    voiceActive = on;
+    document.getElementById('wMicBtn').classList.toggle('active', on);
+    document.getElementById('wMicRing').classList.toggle('listening', on);
+    document.getElementById('wWaveform').classList.toggle('visible', on);
+    document.getElementById('wMicIcon').className = on ? 'bi bi-stop-fill' : 'bi bi-mic-fill';
+    document.getElementById('wVoiceStatus').textContent = on ? 'Listening...' : 'Tap the mic to speak';
+    document.getElementById('wVoiceSub').textContent    = on ? 'Speak clearly — I\'m listening' : 'Ask your HR question by voice';
+  }
+
+  function addTranscript(role, text) {
+    const t = document.getElementById('wTranscript');
+    t.classList.add('has-content');
+    const div = document.createElement('div');
+    div.className = `w-tr-msg ${role}`;
+    div.innerHTML = `<div class="w-tr-avatar"><i class="bi ${role==='bot'?'bi-robot':'bi-person'}"></i></div><div class="w-tr-bubble">${text}</div>`;
+    t.appendChild(div); t.scrollTop = t.scrollHeight;
+  }
+
+  async function processVoice(spoken) {
+    addTranscript('user', spoken);
+    setVoiceState(false);
+    document.getElementById('wVoiceStatus').textContent = 'Processing...';
+    document.getElementById('wMicIcon').className = 'bi bi-hourglass-split';
+    try {
+      const res  = await fetch('/api/hr-chat/ask', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ question: spoken }) });
+      const data = await res.json();
+      addTranscript('bot', data.answer || data.message || 'Something went wrong.');
+    } catch { addTranscript('bot', 'Unable to reach the HR assistant.'); }
+    document.getElementById('wVoiceStatus').textContent = 'Tap the mic to speak';
+    document.getElementById('wMicIcon').className = 'bi bi-mic-fill';
+  }
+
+  function toggleVoice() {
+    if (voiceActive) { if (recognition) recognition.stop(); setVoiceState(false); return; }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SR) {
+      recognition = new SR(); recognition.lang = 'en-US'; recognition.interimResults = false;
+      recognition.onstart  = () => setVoiceState(true);
+      recognition.onresult = e  => processVoice(e.results[0][0].transcript);
+      recognition.onerror  = () => { setVoiceState(false); document.getElementById('wVoiceStatus').textContent = 'Could not hear you — try again'; };
+      recognition.onend    = () => { if (voiceActive) setVoiceState(false); };
+      recognition.start();
+    } else {
+      setVoiceState(true);
+      setTimeout(() => processVoice('What is the dress code policy?'), 2200);
+    }
+  }
+
+  // ── News ──
+  async function loadNews() {
+    newsLoaded = true;
+    try {
+      const data = await fetch('/api/news').then(r => r.json());
+      const list = document.getElementById('wNewsList');
+      if (!data?.success || !data.news?.length) { list.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:13px">No announcements.</div>'; return; }
+      list.innerHTML = data.news.map(n => {
+        const d = new Date(n.postedAt);
+        const ago = isNaN(d) ? '' : (() => {
+          const diff = Math.floor((Date.now() - d) / 1000);
+          if (diff < 3600)  return Math.floor(diff/60) + 'm ago';
+          if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+          return Math.floor(diff/86400) + 'd ago';
+        })();
+        return `<div class="w-news-card">
+          <div class="w-news-card-top">
+            <i class="bi ${n.icon||'bi-bell'} w-news-card-icon"></i>
+            <span class="w-news-card-cat">${n.category||''}</span>
+            ${n.pinned ? '<span class="w-news-card-pinned">📌 Pinned</span>' : ''}
+          </div>
+          <div class="w-news-card-title">${n.title}</div>
+          <div class="w-news-card-summary">${n.summary}</div>
+          <div class="w-news-card-time">${ago}</div>
+        </div>`;
+      }).join('');
+    } catch { document.getElementById('wNewsList').innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:13px">Could not load updates.</div>'; }
+  }
+
+  // ── Search ──
+  function initSearch() {
+    document.getElementById('wSearchInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.target.value.trim()) {
+        const q = e.target.value.trim();
+        e.target.value = '';
+        switchTab('message');
+        setTimeout(() => { document.getElementById('wInput').value = q; sendChat(); }, 100);
+      }
+    });
+  }
+
+  // ── Init ──
+  function init() {
+    document.getElementById('wBubble').addEventListener('click', togglePanel);
+    document.getElementById('wClose').addEventListener('click',  togglePanel);
+    document.getElementById('wSend').addEventListener('click',   sendChat);
+    document.getElementById('wMicBtn').addEventListener('click', toggleVoice);
+    document.getElementById('wInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+    });
+    document.getElementById('wInput').addEventListener('input', e => {
+      e.target.style.height = 'auto';
+      e.target.style.height = Math.min(e.target.scrollHeight, 80) + 'px';
+    });
+    initSearch();
+  }
+
+  return { init, switchTab };
+})();
+
+document.addEventListener('DOMContentLoaded', () => WWidget.init());
 </script>
 </body>
 </html>

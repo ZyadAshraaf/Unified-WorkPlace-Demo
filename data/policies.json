@@ -52,5 +52,41 @@
     "effectiveDate": "2025-01-01",
     "content": "Employees are entitled to sick leave as follows: first 30 days of sick leave per year are paid at full salary; days 31–90 are paid at 75% salary; days 91–120 are unpaid. Sick leave must be reported to the manager on the first day of absence. For absences of 3 or more consecutive days, a medical certificate from a licensed physician is required. Sick leave during annual leave is not counted as annual leave and requires a medical certificate. Chronic illness cases are reviewed individually by HR. Abuse of sick leave policy may result in disciplinary action.",
     "keywords": ["sick leave", "medical leave", "illness", "medical certificate", "sick", "doctor", "health"]
+  },
+  {
+    "id": "p007",
+    "title": "Dress Code Policy",
+    "category": "Workplace",
+    "version": "1.3",
+    "effectiveDate": "2026-01-01",
+    "content": "WIND-IS maintains a professional business casual dress code for all employees. Business days (Monday–Thursday): Business casual attire is required. This includes collared shirts, blouses, trousers, dress pants, skirts of appropriate length, and clean formal shoes. Casual Fridays: Smart casual is permitted, including neat jeans without tears, polo shirts, and casual shoes. Client-facing days: Business formal is required when meeting clients or attending external events — suits, ties for men, and formal attire for women are expected. Prohibited at all times: torn or distressed clothing, sportswear, sleeveless tops (unless covered), flip-flops or open-toed sandals in office areas, clothing with offensive graphics or slogans. Remote work: While working from home, employees must maintain a professional appearance during video calls. Violations may result in being asked to change attire and repeated violations may lead to disciplinary action.",
+    "keywords": ["dress code", "attire", "clothing", "uniform", "formal", "casual", "business casual", "appearance", "outfit"]
+  },
+  {
+    "id": "p008",
+    "title": "Smoking Policy",
+    "category": "Workplace",
+    "version": "1.1",
+    "effectiveDate": "2025-06-01",
+    "content": "WIND-IS maintains a smoke-free workplace in compliance with applicable health and safety regulations. Smoking (including e-cigarettes, vaping, and hookah) is strictly prohibited inside all company buildings, offices, meeting rooms, corridors, restrooms, and company vehicles. Designated smoking areas: Smoking is only permitted in the clearly marked outdoor designated smoking zones located at least 10 meters from building entrances. Smoking breaks: Employees may use designated smoking areas during official break times only. Excessive smoking breaks that impact productivity are subject to disciplinary review. Non-compliance: Employees found smoking in non-designated areas will receive a formal written warning. A second violation may result in further disciplinary action up to and including termination. Visitors and contractors are also required to comply with this policy.",
+    "keywords": ["smoking", "smoke", "cigarette", "vaping", "e-cigarette", "tobacco", "smoking area", "smoke-free", "hookah"]
+  },
+  {
+    "id": "p009",
+    "title": "Travel & Expense Policy",
+    "category": "Finance",
+    "version": "2.3",
+    "effectiveDate": "2026-01-01",
+    "content": "Business travel must be pre-approved by the direct manager and HR before booking. Economy class is the standard for flights under 4 hours. Business class may be approved for flights exceeding 6 hours or for Senior Management. Hotel accommodation must fall within approved per-diem rates: domestic SAR 500/night, international up to USD 200/night. Meal allowances: domestic SAR 150/day, international USD 80/day. All expenses must be submitted within 14 days of returning from travel with original receipts. Personal expenses, entertainment not related to business, and alcohol are not reimbursable. Company credit cards may be issued for frequent travelers upon manager and Finance approval. Misuse of company funds or expense falsification will result in immediate disciplinary action and potential legal action.",
+    "keywords": ["travel", "expense", "reimbursement", "business trip", "flight", "hotel", "per diem", "allowance", "receipt", "business class"]
+  },
+  {
+    "id": "p010",
+    "title": "Social Media Policy",
+    "category": "Ethics",
+    "version": "1.0",
+    "effectiveDate": "2025-09-01",
+    "content": "Employees are personally responsible for content they publish on social media platforms. The following guidelines apply: Do not share confidential company information, client data, financial results, or unreleased product details on any social media platform. When identifying yourself as a WIND-IS employee, make clear that opinions expressed are your own and not the company's official position. Do not post negative, defamatory, or misleading content about WIND-IS, its clients, partners, or colleagues. Do not share photos or videos taken inside company premises without prior approval from Communications. Employees in client-facing roles must obtain approval before mentioning clients by name. Company social media accounts may only be managed by the designated Communications team. Violations of this policy may result in disciplinary action up to and including termination, and may also carry legal consequences.",
+    "keywords": ["social media", "facebook", "instagram", "twitter", "linkedin", "posting", "online", "internet", "confidential", "brand"]
   }
 ]
