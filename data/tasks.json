@@ -40,7 +40,7 @@
     "sourceSystem": "Accounting",
     "type": "task",
     "priority": "critical",
-    "status": "in-progress",
+    "status": "pending",
     "assignedTo": "u004",
     "createdBy": "u002",
     "dueDate": "2026-03-31",
@@ -136,7 +136,7 @@
     "sourceSystem": "IT",
     "type": "task",
     "priority": "high",
-    "status": "in-progress",
+    "status": "pending",
     "assignedTo": "u005",
     "createdBy": "u001",
     "dueDate": "2026-04-10",
@@ -171,7 +171,7 @@
     "sourceSystem": "HR",
     "type": "task",
     "priority": "medium",
-    "status": "in-progress",
+    "status": "pending",
     "assignedTo": "u005",
     "createdBy": "u003",
     "dueDate": "2026-03-25",
@@ -615,6 +615,90 @@
         "by": "u001",
         "at": "2026-04-02T10:57:30.344Z",
         "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TWFH005",
+    "title": "Approve WFH Request — Omar Al-Farsi",
+    "description": "Omar Al-Farsi has requested to work from home for 2 day(s) (2026-04-13 to 2026-04-14). Reason: Child's school event on Monday, need flexibility.",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u001",
+    "createdBy": "u005",
+    "dueDate": "2026-04-13",
+    "createdAt": "2026-04-02T14:00:00.000Z",
+    "updatedAt": "2026-04-02T14:00:00.000Z",
+    "metadata": {
+      "wfhId": "W005"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u005",
+        "at": "2026-04-02T14:00:00.000Z",
+        "note": "WFH request submitted"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TWFH006",
+    "title": "Approve WFH Request — Sara Hassan",
+    "description": "Sara Hassan has requested to work from home for 1 day(s) (2026-04-14 to 2026-04-14). Reason: Car maintenance appointment in the morning.",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-04-14",
+    "createdAt": "2026-04-02T15:30:00.000Z",
+    "updatedAt": "2026-04-02T15:30:00.000Z",
+    "metadata": {
+      "wfhId": "W006"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-02T15:30:00.000Z",
+        "note": "WFH request submitted"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TWFH008",
+    "title": "Approve WFH Request — Khalid Al-Mansouri",
+    "description": "Khalid Al-Mansouri has requested to work from home for 2 day(s) (2026-04-21 to 2026-04-22). Reason: Home office setup — awaiting ergonomic chair delivery.",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u001",
+    "createdBy": "u002",
+    "dueDate": "2026-04-21",
+    "createdAt": "2026-04-02T16:00:00.000Z",
+    "updatedAt": "2026-04-02T16:00:00.000Z",
+    "metadata": {
+      "wfhId": "W008"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u002",
+        "at": "2026-04-02T16:00:00.000Z",
+        "note": "WFH request submitted"
       }
     ],
     "comments": [],

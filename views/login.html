@@ -7,13 +7,15 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://res.cdn.office.net/teams-js/2.24.0/js/MicrosoftTeams.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/theme.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       min-height: 100vh;
-      background: #0b1d1c;
+      background: var(--color-primary-darker);
       overflow: hidden;
     }
 
@@ -23,7 +25,7 @@
       inset: 0;
       z-index: 0;
       overflow: hidden;
-      background: #071a18; /* dark fallback */
+      background: var(--color-primary-darker); /* dark fallback */
     }
     /* Layer 1 — full-screen blurred stretch (covers any edge gaps) */
     .bg-blur {
@@ -54,13 +56,13 @@
       z-index: 2;
       background:
         linear-gradient(90deg,
-          rgba(10,40,36,0.45) 0%,
-          rgba(10,40,36,0.05) 50%,
-          rgba(10,40,36,0.72) 100%),
+          rgba(var(--color-primary-rgb),0.45) 0%,
+          rgba(var(--color-primary-rgb),0.05) 50%,
+          rgba(var(--color-primary-rgb),0.72) 100%),
         linear-gradient(180deg,
-          rgba(25,141,135,0.04) 0%,
+          rgba(var(--color-primary-rgb),0.04) 0%,
           rgba(0,0,0,0.0) 60%,
-          rgba(10,40,36,0.3) 100%);
+          rgba(var(--color-primary-rgb),0.3) 100%);
       pointer-events: none;
     }
     /* Film-grain texture — masks compression artifacts, very modern look */
@@ -86,8 +88,8 @@
       background: rgba(255,255,255,0.96);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(25,141,135,0.12);
-      box-shadow: 0 1px 16px rgba(25,141,135,0.08);
+      border-bottom: 1px solid rgba(var(--color-primary-rgb),0.12);
+      box-shadow: 0 1px 16px rgba(var(--color-primary-rgb),0.08);
       gap: 0;
     }
 
@@ -102,11 +104,11 @@
       height: 32px;
       width: auto;
       display: block;
-      /* converts white logo → #198D87 teal */
+      /* converts white logo → var(--color-primary) teal */
       filter: brightness(0) saturate(100%) invert(44%) sepia(96%) saturate(372%) hue-rotate(139deg) brightness(96%);
     }
     .ib-brand-name {
-      color: #198D87;
+      color: var(--color-primary);
       font-weight: 800;
       font-size: 14px;
       letter-spacing: 0.06em;
@@ -115,7 +117,7 @@
     .ib-sep {
       width: 1px;
       height: 20px;
-      background: rgba(25,141,135,0.18);
+      background: rgba(var(--color-primary-rgb),0.18);
       margin: 0 22px;
       flex-shrink: 0;
     }
@@ -125,26 +127,26 @@
       align-items: center;
       gap: 7px;
       font-size: 13px;
-      color: #3d6b68;
+      color: rgba(var(--color-primary-rgb),0.6);
       font-weight: 500;
       white-space: nowrap;
     }
-    .ib-item i { font-size: 13px; color: #198D87; }
-    .ib-item .hl { color: #198D87; font-weight: 700; }
-    .ib-item .prayer-hl { color: #147A75; font-weight: 700; }
+    .ib-item i { font-size: 13px; color: var(--color-primary); }
+    .ib-item .hl { color: var(--color-primary); font-weight: 700; }
+    .ib-item .prayer-hl { color: var(--color-primary-dark); font-weight: 700; }
 
     .ib-right { margin-left: auto; display: flex; align-items: center; }
     .ib-clock {
       font-size: 18px;
       font-weight: 800;
-      color: #198D87;
+      color: var(--color-primary);
       letter-spacing: 0.07em;
       font-variant-numeric: tabular-nums;
       line-height: 1;
     }
     .ib-date {
       font-size: 11px;
-      color: #8AABAA;
+      color: rgba(var(--color-primary-rgb),0.5);
       margin-top: 2px;
       text-align: right;
     }
@@ -172,7 +174,7 @@
       font-weight: 700;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: #6ee7b7;
+      color: var(--color-primary-lighter);
       margin-bottom: 16px;
       display: flex;
       align-items: center;
@@ -183,7 +185,7 @@
       display: inline-block;
       width: 24px;
       height: 2px;
-      background: #6ee7b7;
+      background: var(--color-primary-lighter);
       border-radius: 2px;
     }
 
@@ -196,7 +198,7 @@
       letter-spacing: -0.02em;
       text-shadow: 0 2px 24px rgba(0,0,0,0.35);
     }
-    .wp-headline .accent { color: #4DC5BE; }
+    .wp-headline .accent { color: var(--color-primary-lighter); }
 
     .wp-sub {
       font-size: 15px;
@@ -223,10 +225,10 @@
     .sp-icon {
       width: 36px; height: 36px;
       border-radius: 9px;
-      background: rgba(25,141,135,0.25);
+      background: rgba(var(--color-primary-rgb),0.25);
       display: flex; align-items: center; justify-content: center;
       font-size: 16px;
-      color: #6ee7b7;
+      color: var(--color-primary-lighter);
       flex-shrink: 0;
     }
     .sp-label { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 500; margin-bottom: 1px; }
@@ -247,13 +249,13 @@
     .pc-mosque { font-size: 28px; flex-shrink: 0; }
     .pc-next-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
     .pc-next-name  { font-size: 18px; font-weight: 700; color: white; line-height: 1; }
-    .pc-countdown  { font-size: 12px; color: #6ee7b7; font-weight: 600; margin-top: 3px; }
+    .pc-countdown  { font-size: 12px; color: var(--color-primary-lighter); font-weight: 600; margin-top: 3px; }
     .prayer-times  { margin-left: auto; display: flex; gap: 14px; }
     .pt { text-align: center; }
     .pt-n { font-size: 9px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px; }
     .pt-t { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); }
     .pt.cur .pt-n,
-    .pt.cur .pt-t { color: #6ee7b7; }
+    .pt.cur .pt-t { color: var(--color-primary-lighter); }
 
     /* ── RIGHT: clean white login panel ───────────────────── */
     .login-panel {
@@ -262,7 +264,7 @@
       justify-content: center;
       padding: 32px 48px;
       background: rgba(255,255,255,0.97);
-      border-left: 1px solid rgba(25,141,135,0.1);
+      border-left: 1px solid rgba(var(--color-primary-rgb),0.1);
       box-shadow: -8px 0 48px rgba(0,0,0,0.18);
     }
     .login-card { width: 100%; max-width: 360px; }
@@ -277,21 +279,21 @@
       width: auto;
       display: block;
       margin: 0 auto 14px;
-      /* converts white logo → #198D87 teal on the white login card */
+      /* converts white logo → var(--color-primary) teal on the white login card */
       filter: brightness(0) saturate(100%) invert(44%) sepia(96%) saturate(372%) hue-rotate(139deg) brightness(96%);
     }
     .lc-logo h1 {
-      color: #1A2E2D;
+      color: var(--color-primary-darker);
       font-size: 20px;
       font-weight: 700;
       margin: 0 0 5px;
       letter-spacing: -0.01em;
     }
-    .lc-logo p { color: #8AABAA; font-size: 12px; margin: 0; }
+    .lc-logo p { color: rgba(var(--color-primary-rgb),0.5); font-size: 12px; margin: 0; }
 
     .lc-label {
       display: block;
-      color: #3d6b68;
+      color: rgba(var(--color-primary-rgb),0.6);
       font-size: 12px;
       font-weight: 600;
       margin-bottom: 7px;
@@ -302,55 +304,55 @@
       display: flex;
       border-radius: 10px;
       overflow: hidden;
-      border: 1.5px solid #D6EEEC;
+      border: 1.5px solid var(--color-border);
       transition: border-color 0.2s, box-shadow 0.2s;
       background: #fff;
     }
     .gi-wrap:focus-within {
-      border-color: #198D87;
-      box-shadow: 0 0 0 3px rgba(25,141,135,0.12);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb),0.12);
     }
     .gi-icon {
       display: flex;
       align-items: center;
       padding: 0 12px;
-      background: #F5FAFA;
-      color: #8AABAA;
+      background: var(--color-primary-faint);
+      color: rgba(var(--color-primary-rgb),0.5);
       font-size: 14px;
-      border-right: 1.5px solid #D6EEEC;
+      border-right: 1.5px solid var(--color-border);
       flex-shrink: 0;
     }
     .gi-btn {
       display: flex;
       align-items: center;
       padding: 0 12px;
-      background: #F5FAFA;
-      color: #8AABAA;
+      background: var(--color-primary-faint);
+      color: rgba(var(--color-primary-rgb),0.5);
       font-size: 14px;
       border: none;
-      border-left: 1.5px solid #D6EEEC;
+      border-left: 1.5px solid var(--color-border);
       cursor: pointer;
       flex-shrink: 0;
       transition: color 0.15s;
     }
-    .gi-btn:hover { color: #198D87; }
+    .gi-btn:hover { color: var(--color-primary); }
     .gi-field {
       flex: 1;
       background: #fff;
       border: none;
       outline: none;
       padding: 11px 13px;
-      color: #1A2E2D;
+      color: var(--color-primary-darker);
       font-size: 14px;
       font-family: inherit;
       min-width: 0;
     }
-    .gi-field::placeholder { color: #B0CECE; }
+    .gi-field::placeholder { color: rgba(var(--color-primary-rgb),0.35); }
 
     .btn-signin {
       width: 100%;
       padding: 12px;
-      background: linear-gradient(135deg, #198D87 0%, #147A75 100%);
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
       border: none;
       border-radius: 10px;
       color: white;
@@ -359,11 +361,11 @@
       letter-spacing: 0.03em;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 4px 20px rgba(25,141,135,0.32);
+      box-shadow: 0 4px 20px rgba(var(--color-primary-rgb),0.32);
     }
     .btn-signin:hover:not(:disabled) {
-      background: linear-gradient(135deg, #1FA89F 0%, #198D87 100%);
-      box-shadow: 0 6px 26px rgba(25,141,135,0.45);
+      background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+      box-shadow: 0 6px 26px rgba(var(--color-primary-rgb),0.45);
       transform: translateY(-1px);
     }
     .btn-signin:disabled { opacity: 0.65; transform: none; cursor: default; }
@@ -373,7 +375,7 @@
       align-items: center;
       gap: 10px;
       margin: 20px 0;
-      color: #8AABAA;
+      color: rgba(var(--color-primary-rgb),0.5);
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.1em;
@@ -383,12 +385,12 @@
       content: '';
       flex: 1;
       height: 1px;
-      background: #D6EEEC;
+      background: var(--color-border);
     }
 
     .demo-box {
-      background: #F5FAFA;
-      border: 1px solid #D6EEEC;
+      background: var(--color-primary-faint);
+      border: 1px solid var(--color-border);
       border-radius: 12px;
       padding: 12px 14px;
     }
@@ -396,7 +398,7 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: #8AABAA;
+      color: rgba(var(--color-primary-rgb),0.5);
       font-weight: 700;
       margin-bottom: 8px;
     }
@@ -409,9 +411,9 @@
       cursor: pointer;
       transition: background 0.15s;
     }
-    .demo-row:hover { background: #E4F5F4; }
-    .demo-row strong { color: #1A2E2D; font-size: 13px; font-weight: 600; }
-    .demo-row span   { font-size: 11px; font-weight: 700; color: #198D87; }
+    .demo-row:hover { background: var(--color-primary-faint); }
+    .demo-row strong { color: var(--color-primary-darker); font-size: 13px; font-weight: 600; }
+    .demo-row span   { font-size: 11px; font-weight: 700; color: var(--color-primary); }
 
     .lc-error {
       background: #FDE8EA;
@@ -425,7 +427,7 @@
 
     .lc-footer {
       text-align: center;
-      color: #8AABAA;
+      color: rgba(var(--color-primary-rgb),0.5);
       font-size: 11px;
       margin-top: 18px;
     }

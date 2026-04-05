@@ -91,7 +91,7 @@
       color: #fff;
     }
     .catalog-tab.active.tab-ai .tab-count {
-      background: #0d9488;
+      background: var(--color-primary-dark);
     }
 
     .tab-panel { display: none; }
@@ -100,7 +100,7 @@
     /* AI cards */
     a.ai-card, a.ai-card:hover, a.ai-card:visited { text-decoration: none; }
     .ai-card {
-      background: linear-gradient(160deg, #0d9488, #0f766e);
+      background: linear-gradient(160deg, var(--color-primary), var(--color-primary-dark));
       border-radius: 16px; border: none;
       padding: 24px 20px; display: flex; flex-direction: column;
       align-items: flex-start; gap: 10px;
@@ -238,6 +238,11 @@
           <div class="service-name">Leave Request</div>
           <p class="service-desc">Apply for annual, sick, or emergency leave and track approvals.</p>
         </a>
+        <a href="/wfh" class="service-card">
+          <div class="service-icon"><i class="bi bi-house-door"></i></div>
+          <div class="service-name">Work From Home Request</div>
+          <p class="service-desc">Request remote work days with manager approval.</p>
+        </a>
         <a href="#" class="service-card" onclick="return false">
           <div class="service-icon"><i class="bi bi-airplane"></i></div>
           <div class="service-name">Business Trip Request</div>
@@ -272,11 +277,6 @@
           <div class="service-icon"><i class="bi bi-headset"></i></div>
           <div class="service-name">IT Support Ticket</div>
           <p class="service-desc">Raise IT issues including access, software, or hardware problems.</p>
-        </a>
-        <a href="#" class="service-card" onclick="return false">
-          <div class="service-icon"><i class="bi bi-house-door"></i></div>
-          <div class="service-name">Work From Home Request</div>
-          <p class="service-desc">Request remote work days with manager approval.</p>
         </a>
         <a href="#" class="service-card" onclick="return false">
           <div class="service-icon"><i class="bi bi-calculator"></i></div>

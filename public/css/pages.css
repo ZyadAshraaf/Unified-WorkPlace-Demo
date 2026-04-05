@@ -49,10 +49,10 @@
 
 /* ── Dark table card ──────────────────────────────────────── */
 .dark-table-card {
-  background: #0E5C59;
+  background: var(--color-primary);
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(14,92,89,.25);
+  box-shadow: 0 8px 32px rgba(var(--color-primary-rgb),.25);
   margin-bottom: 20px;
 }
 .dark-table-card .dark-table-head {

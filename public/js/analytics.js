@@ -1,7 +1,13 @@
 /* ── Analytics Page Controller ── Modern redesign ── */
+
+/* Read theme color from CSS variables at runtime */
+function _primary()    { return getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim()    || '#198D87'; }
+function _primaryRGB() { return getComputedStyle(document.documentElement).getPropertyValue('--color-primary-rgb').trim() || '25,141,135'; }
+function _primaryFaint(){ return getComputedStyle(document.documentElement).getPropertyValue('--color-primary-faint').trim() || '#F5FAFA'; }
+
 document.addEventListener('DOMContentLoaded', async () => {
   await Layout.init('analytics');
-  await Promise.all([loadSummary(), loadCharts()]);
+  await Promise.all([loadSummary(), loadCharts(), loadFinance()]);
 });
 
 async function loadSummary() {
@@ -65,8 +71,8 @@ function buildAreaChart(bySystem) {
   if (badge) badge.textContent = `${total} tasks`;
 
   const grad = ctx.createLinearGradient(0, 0, 0, 200);
-  grad.addColorStop(0, 'rgba(25,141,135,0.15)');
-  grad.addColorStop(1, 'rgba(25,141,135,0.0)');
+  grad.addColorStop(0, `rgba(${_primaryRGB()},0.15)`);
+  grad.addColorStop(1, `rgba(${_primaryRGB()},0.0)`);
 
   new Chart(canvas, {
     type: 'line',
@@ -76,9 +82,9 @@ function buildAreaChart(bySystem) {
         data: values,
         fill: true,
         backgroundColor: grad,
-        borderColor: '#198D87',
+        borderColor: _primary(),
         borderWidth: 2.5,
-        pointBackgroundColor: '#198D87',
+        pointBackgroundColor: _primary(),
         pointBorderColor: '#fff',
         pointBorderWidth: 2,
         pointRadius: 5,
@@ -126,7 +132,7 @@ function buildStatusDonut(byStatus) {
   const values = Object.values(d);
   const total  = values.reduce((a, b) => a + b, 0);
 
-  const palette = ['#198D87', '#0dd4c8', '#5eead4', '#0e7490'];
+  const palette = [_primary(), '#0dd4c8', '#5eead4', '#0e7490'];
 
   const donutTotalEl = document.getElementById('donutTotal');
   if (donutTotalEl) donutTotalEl.textContent = total;
@@ -216,7 +222,7 @@ function buildSystemBar(bySystem) {
   const badgeEl = document.getElementById('systemBadge');
   if (badgeEl) badgeEl.textContent = `${total} total`;
 
-  const sysColors = ['#198D87','#0D7BB5','#6f42c1','#e6a817','#1A9E6A','#fd7e14'];
+  const sysColors = [_primary(),'#0D7BB5','#6f42c1','#e6a817','#1A9E6A','#fd7e14'];
 
   new Chart(canvas, {
     type: 'bar',
@@ -308,7 +314,7 @@ function buildLeaveChart(leaveSum) {
   if (!canvas || !leaveSum?.success) return;
   const bt = leaveSum.byType;
 
-  const palette = ['#198D87','#0D7BB5','#6f42c1','#e6a817'];
+  const palette = [_primary(),'#0D7BB5','#6f42c1','#e6a817'];
 
   new Chart(canvas, {
     type: 'bar',
@@ -353,6 +359,300 @@ function buildLeaveChart(leaveSum) {
   });
 }
 
+/* ════════════════════════════════════════════════════
+   FINANCE & ACCOUNTING
+   ════════════════════════════════════════════════════ */
+
+function formatSAR(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000)    return (n / 1000).toFixed(0) + 'K';
+  return n.toLocaleString();
+}
+
+async function loadFinance() {
+  const [summary, quarters, cashflow, apAging, expenses] = await Promise.all([
+    API.get('/api/finance/summary'),
+    API.get('/api/finance/revenue-quarters'),
+    API.get('/api/finance/cashflow'),
+    API.get('/api/finance/ap-aging'),
+    API.get('/api/finance/expenses')
+  ]);
+
+  // KPI cards
+  if (summary?.success) {
+    const s = summary;
+    document.getElementById('finPOs').textContent       = s.openPurchaseOrders;
+    document.getElementById('finOverduePOs').textContent = s.overduePOs;
+    document.getElementById('finInvoices').textContent  = s.openInvoices;
+    document.getElementById('finOverdueInv').textContent = s.overdueInvoices;
+    document.getElementById('finTurnover').textContent  = formatSAR(s.ytdTurnover);
+    document.getElementById('finBudget').textContent    = s.budgetUtilization + '%';
+    document.getElementById('finDSO').textContent       = s.dso;
+    document.getElementById('finCollected').textContent = 'SAR ' + formatSAR(s.collectedThisMonth);
+
+    // DSO progress bar (0–60 scale)
+    const prog = document.getElementById('dsoProg');
+    if (prog) prog.style.width = Math.min((s.dso / 60) * 100, 100) + '%';
+  }
+
+  buildRevenueChart(quarters);
+  buildCashflowChart(cashflow);
+  buildAPAgingChart(apAging);
+  buildExpensesDonut(expenses);
+}
+
+/* ── Revenue vs Quarters ── */
+function buildRevenueChart(data) {
+  const canvas = document.getElementById('chartRevenue');
+  if (!canvas || !data?.success) return;
+
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: data.labels,
+      datasets: [
+        {
+          label: 'Actual',
+          data: data.revenue,
+          backgroundColor: _primary(),
+          borderRadius: 8,
+          borderSkipped: false,
+          barPercentage: 0.45
+        },
+        {
+          label: 'Target',
+          data: data.target,
+          backgroundColor: '#e0f2fe',
+          borderColor: '#0D7BB5',
+          borderWidth: 1.5,
+          borderRadius: 8,
+          borderSkipped: false,
+          barPercentage: 0.45
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: { usePointStyle: true, pointStyle: 'circle', font: { size: 12 }, color: '#64748b' }
+        },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          titleColor: '#fff',
+          bodyColor: 'rgba(255,255,255,0.8)',
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: { label: ctx => ` SAR ${formatSAR(ctx.parsed.y)}` }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { color: '#94a3b8', font: { size: 11 }, callback: v => 'SAR ' + formatSAR(v) },
+          grid: { color: '#f1f5f9' },
+          border: { display: false }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: '#94a3b8', font: { size: 11, weight: '600' } },
+          border: { display: false }
+        }
+      }
+    }
+  });
+}
+
+/* ── Cash Flow ── */
+function buildCashflowChart(data) {
+  const canvas = document.getElementById('chartCashflow');
+  if (!canvas || !data?.success) return;
+  const ctx = canvas.getContext('2d');
+
+  const inGrad = ctx.createLinearGradient(0, 0, 0, 200);
+  inGrad.addColorStop(0, `rgba(${_primaryRGB()},0.18)`);
+  inGrad.addColorStop(1, `rgba(${_primaryRGB()},0.01)`);
+
+  const outGrad = ctx.createLinearGradient(0, 0, 0, 200);
+  outGrad.addColorStop(0, 'rgba(220,53,69,0.12)');
+  outGrad.addColorStop(1, 'rgba(220,53,69,0.01)');
+
+  new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: data.labels,
+      datasets: [
+        {
+          label: 'Inflows',
+          data: data.inflows,
+          borderColor: _primary(),
+          backgroundColor: inGrad,
+          fill: true,
+          borderWidth: 2.5,
+          pointBackgroundColor: _primary(),
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          tension: 0.4
+        },
+        {
+          label: 'Outflows',
+          data: data.outflows,
+          borderColor: '#dc3545',
+          backgroundColor: outGrad,
+          fill: true,
+          borderWidth: 2.5,
+          pointBackgroundColor: '#dc3545',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: { usePointStyle: true, pointStyle: 'circle', font: { size: 12 }, color: '#64748b' }
+        },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          titleColor: '#fff',
+          bodyColor: 'rgba(255,255,255,0.8)',
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: SAR ${formatSAR(ctx.parsed.y)}` }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          ticks: { color: '#94a3b8', font: { size: 11 }, callback: v => 'SAR ' + formatSAR(v) },
+          grid: { color: '#f1f5f9' },
+          border: { display: false }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: '#94a3b8', font: { size: 11, weight: '600' } },
+          border: { display: false }
+        }
+      }
+    }
+  });
+}
+
+/* ── AP Aging ── */
+function buildAPAgingChart(data) {
+  const canvas = document.getElementById('chartAPAging');
+  if (!canvas || !data?.success) return;
+
+  const colors = [_primary(), '#d97706', '#dc3545', '#7c3aed'];
+
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: data.labels,
+      datasets: [{
+        label: 'Amount (SAR)',
+        data: data.amounts,
+        backgroundColor: colors,
+        borderRadius: 10,
+        borderSkipped: false,
+        barThickness: 40
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          titleColor: '#fff',
+          bodyColor: 'rgba(255,255,255,0.8)',
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: { label: ctx => ` SAR ${formatSAR(ctx.parsed.y)}` }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { color: '#94a3b8', font: { size: 11 }, callback: v => 'SAR ' + formatSAR(v) },
+          grid: { color: '#f1f5f9' },
+          border: { display: false }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: '#5a7270', font: { size: 11, weight: '600' } },
+          border: { display: false }
+        }
+      }
+    }
+  });
+}
+
+/* ── Expense Categories Donut ── */
+function buildExpensesDonut(data) {
+  const canvas = document.getElementById('chartExpenses');
+  if (!canvas || !data?.success) return;
+
+  const colors = [_primary(),'#2563eb','#7c3aed','#d97706','#dc3545','#64748b'];
+  const total  = data.amounts.reduce((a, b) => a + b, 0);
+
+  // Legend
+  const legend = document.getElementById('expenseLegend');
+  if (legend) {
+    legend.innerHTML = data.labels.map((lbl, i) => {
+      const pct = Math.round(data.amounts[i] / total * 100);
+      return `<div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--color-text)">
+        <span style="width:9px;height:9px;border-radius:50%;background:${colors[i]};flex-shrink:0;display:inline-block"></span>
+        ${lbl} <span style="color:var(--color-text-muted)">${pct}%</span>
+      </div>`;
+    }).join('');
+  }
+
+  new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels: data.labels,
+      datasets: [{
+        data: data.amounts,
+        backgroundColor: colors,
+        borderWidth: 3,
+        borderColor: '#fff',
+        borderRadius: 5,
+        spacing: 2,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '68%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          titleColor: '#fff',
+          bodyColor: 'rgba(255,255,255,0.8)',
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: { label: ctx => ` SAR ${formatSAR(ctx.parsed)} (${Math.round(ctx.parsed/total*100)}%)` }
+        }
+      }
+    }
+  });
+}
+
 /* ── Attendance gauge (donut) ── */
 async function buildAttendanceChart() {
   const canvas = document.getElementById('chartAttendance');
@@ -370,7 +670,7 @@ async function buildAttendanceChart() {
       labels: ['Present', 'Absent'],
       datasets: [{
         data: [present, absent],
-        backgroundColor: ['#198D87', '#f0f4f8'],
+        backgroundColor: [_primary(), '#f0f4f8'],
         borderWidth: 0,
         borderRadius: 6,
         hoverOffset: 4

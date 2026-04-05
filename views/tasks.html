@@ -15,7 +15,7 @@
   <style>
     .filter-bar { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 14px 20px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; box-shadow: var(--shadow-sm); }
     .filter-bar .form-control, .filter-bar .form-select { font-size: 13px; border-radius: var(--radius-md); border-color: var(--color-border); }
-    .filter-bar .form-control:focus, .filter-bar .form-select:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(25,141,135,0.12); }
+    .filter-bar .form-control:focus, .filter-bar .form-select:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb),0.12); }
     .search-input { min-width: 220px; flex: 1; }
     .task-table-wrap { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; }
     .task-title-cell { font-weight: 600; font-size: 13px; color: var(--color-text); max-width: 280px; }
@@ -103,7 +103,6 @@
     .dark-table-card .task-row .badge-priority-medium   { color: #92600A; }
     .dark-table-card .task-row .badge-priority-low      { color: var(--color-success); }
     .dark-table-card .task-row .badge-status-pending    { color: #92600A; }
-    .dark-table-card .task-row .badge-status-in-progress{ color: var(--color-info); }
     .dark-table-card .task-row .badge-status-completed  { color: var(--color-success); }
     .dark-table-card .task-row .badge-status-escalated  { color: var(--color-danger); }
     .dark-table-card .task-row .badge-sys-HR            { color: #1a56db; }
@@ -210,13 +209,12 @@
       <div class="tab-stats" id="statusPills">
         <div class="stat-pill active" data-filter="all">All <span id="countAll">0</span></div>
         <div class="stat-pill" data-filter="pending">Pending <span id="countPending">0</span></div>
-        <div class="stat-pill" data-filter="in-progress">In Progress <span id="countInProgress">0</span></div>
         <div class="stat-pill" data-filter="completed">Completed <span id="countCompleted">0</span></div>
         <div class="stat-pill" data-filter="escalated">Escalated <span id="countEscalated">0</span></div>
       </div>
 
       <!-- Filter Bar -->
-      <div class="filter-bar">
+      <div class="filter-bar" style="flex-wrap:wrap;gap:8px">
         <input type="text" class="form-control search-input" id="searchInput" placeholder="Search tasks...">
         <select class="form-select" id="filterSystem" style="width:auto">
           <option value="">All Systems</option>
@@ -227,6 +225,13 @@
           <option value="">All Priorities</option>
           <option>critical</option><option>high</option><option>medium</option><option>low</option>
         </select>
+        <div class="d-flex align-items-center gap-2" style="flex-shrink:0">
+          <i class="bi bi-calendar3" style="color:var(--color-text-muted);font-size:13px"></i>
+          <input type="date" class="form-control form-control-sm" id="filterDateFrom" title="Created from" style="width:140px">
+          <span style="color:var(--color-text-muted);font-size:12px">→</span>
+          <input type="date" class="form-control form-control-sm" id="filterDateTo" title="Created to" style="width:140px">
+          <button class="btn btn-outline-secondary btn-sm" id="btnClearDates" title="Clear dates"><i class="bi bi-x"></i></button>
+        </div>
         <div class="ms-auto d-flex gap-2">
           <button class="btn btn-outline-secondary btn-sm" id="btnRefresh"><i class="bi bi-arrow-clockwise"></i></button>
           <button class="btn btn-primary btn-sm" id="btnCreateTask"><i class="bi bi-plus-lg me-1"></i>New Task</button>
@@ -245,6 +250,7 @@
               <th style="width:90px">Priority</th>
               <th>Task</th>
               <th style="width:90px">System</th>
+              <th style="width:100px">Created</th>
               <th style="width:100px">Due Date</th>
               <th style="width:110px">Status</th>
               <th style="width:140px">Actions</th>

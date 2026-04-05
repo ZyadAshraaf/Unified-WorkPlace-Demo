@@ -36,7 +36,6 @@ router.get('/summary', requireAuth, (req, res) => {
     summary: {
       totalTasks:     myTasks.length,
       pendingTasks:   myTasks.filter(t => t.status === 'pending').length,
-      inProgressTasks:myTasks.filter(t => t.status === 'in-progress').length,
       completedTasks: myTasks.filter(t => t.status === 'completed').length,
       escalatedTasks: myTasks.filter(t => t.escalated).length,
       openTickets:    helpdesk.filter(h => h.submittedBy === user.id && h.status !== 'resolved' && h.status !== 'closed').length,

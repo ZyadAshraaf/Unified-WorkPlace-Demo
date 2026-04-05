@@ -5,9 +5,9 @@
   "id": "fc21a8b4-9503-4b72-8b1e-8493d9e2b67d",
   "developer": {
     "name": "WIND-IS",
-    "websiteUrl": "https://inventory-calculator-lip-viking.trycloudflare.com",
-    "privacyUrl": "https://inventory-calculator-lip-viking.trycloudflare.com/privacy",
-    "termsOfUseUrl": "https://inventory-calculator-lip-viking.trycloudflare.com/terms"
+    "websiteUrl": "https://thin-ultram-iowa-room.trycloudflare.com",
+    "privacyUrl": "https://thin-ultram-iowa-room.trycloudflare.com/privacy",
+    "termsOfUseUrl": "https://thin-ultram-iowa-room.trycloudflare.com/terms"
   },
   "name": {
     "short": "Unified Workspace",
@@ -26,14 +26,14 @@
     {
       "entityId": "unified-home",
       "name": "Home",
-      "contentUrl": "https://inventory-calculator-lip-viking.trycloudflare.com/",
+      "contentUrl": "https://thin-ultram-iowa-room.trycloudflare.com/",
       "scopes": ["personal"]
     }
   ],
   "configurableTabs": [],
   "permissions": ["identity", "messageTeamMembers"],
   "validDomains": [
-    "inventory-calculator-lip-viking.trycloudflare.com"
+    "thin-ultram-iowa-room.trycloudflare.com"
   ],
   "showLoadingIndicator": false
 }

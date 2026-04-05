@@ -75,6 +75,12 @@ const template = `{
       "name": "My Assistant",
       "contentUrl": "{{BASE_URL}}/policy?embed=1",
       "scopes": ["personal"]
+    },
+    {
+      "entityId": "quick-services-tab",
+      "name": "Quick Services",
+      "contentUrl": "{{BASE_URL}}/quick-services?embed=1",
+      "scopes": ["personal"]
     }
   ],
   "configurableTabs": [],

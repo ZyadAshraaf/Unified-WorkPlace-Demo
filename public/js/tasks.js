@@ -45,21 +45,22 @@ function updateCounts() {
   const f = s => allTasks.filter(t => t.status === s).length;
   document.getElementById('countAll').textContent        = allTasks.length;
   document.getElementById('countPending').textContent    = f('pending');
-  document.getElementById('countInProgress').textContent = f('in-progress');
   document.getElementById('countCompleted').textContent  = f('completed');
   document.getElementById('countEscalated').textContent  = allTasks.filter(t => t.escalated).length;
 
-  const pending = f('pending') + f('in-progress');
+  const pending = f('pending');
   const badge   = document.getElementById('tasksBadge');
   if (badge) { badge.textContent = pending; badge.classList.toggle('d-none', pending === 0); }
 }
 
 function getFilteredTasks() {
-  const search   = document.getElementById('searchInput')?.value.toLowerCase() || '';
-  const system   = document.getElementById('filterSystem')?.value || '';
-  const priority = document.getElementById('filterPriority')?.value || '';
+  const search    = document.getElementById('searchInput')?.value.toLowerCase() || '';
+  const system    = document.getElementById('filterSystem')?.value || '';
+  const priority  = document.getElementById('filterPriority')?.value || '';
+  const dateFrom  = document.getElementById('filterDateFrom')?.value || '';
+  const dateTo    = document.getElementById('filterDateTo')?.value || '';
 
-  return allTasks.filter(t => {
+  const filtered = allTasks.filter(t => {
     if (activeFilter !== 'all') {
       if (activeFilter === 'escalated' && !t.escalated) return false;
       else if (activeFilter !== 'escalated' && t.status !== activeFilter) return false;
@@ -67,8 +68,14 @@ function getFilteredTasks() {
     if (search   && !t.title.toLowerCase().includes(search) && !t.description.toLowerCase().includes(search)) return false;
     if (system   && t.sourceSystem !== system) return false;
     if (priority && t.priority !== priority) return false;
+    if (dateFrom && t.createdAt && t.createdAt.slice(0,10) < dateFrom) return false;
+    if (dateTo   && t.createdAt && t.createdAt.slice(0,10) > dateTo)   return false;
     return true;
   });
+
+  // Sort by createdAt descending (newest first)
+  filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  return filtered;
 }
 
 const SYSTEM_ICONS = {
@@ -90,29 +97,8 @@ function renderTasks() {
     return;
   }
 
-  // Group tasks by sourceSystem, preserving insertion order
-  const groups = {};
-  tasks.forEach(t => {
-    const sys = t.sourceSystem || 'Manual';
-    if (!groups[sys]) groups[sys] = [];
-    groups[sys].push(t);
-  });
-
   let html = '';
-  Object.entries(groups).forEach(([system, groupTasks]) => {
-    const icon = SYSTEM_ICONS[system] || 'bi-grid';
-    html += `
-      <tr class="task-group-header">
-        <td colspan="6">
-          <div class="task-group-label">
-            <i class="bi ${icon} task-group-label-icon"></i>
-            <span class="task-group-label-text">${system}</span>
-            <span class="task-group-count">${groupTasks.length}</span>
-          </div>
-        </td>
-      </tr>`;
-
-    groupTasks.forEach(t => {
+  tasks.forEach(t => {
       const overdue = t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'completed';
       const dueLabel = t.dueDate
         ? `<div>${UI.formatDate(t.dueDate)}</div>${overdue ? '<div class="overdue-indicator"><i class="bi bi-exclamation-circle me-1"></i>Overdue</div>' : ''}`
@@ -131,6 +117,7 @@ function renderTasks() {
             ${t.description ? `<div class="task-desc-preview">${t.description}</div>` : ''}
           </td>
           <td>${UI.systemBadge(t.sourceSystem)}</td>
+          <td class="fs-sm" style="color:var(--color-text-muted)">${t.createdAt ? UI.formatDate(t.createdAt) : '—'}</td>
           <td class="fs-sm">${dueLabel}</td>
           <td>${UI.statusBadge(t.status)}</td>
           <td>
@@ -152,7 +139,6 @@ function renderTasks() {
             </div>
           </td>
         </tr>`;
-    });
   });
 
   tbody.innerHTML = html;
@@ -162,6 +148,13 @@ function bindFilters() {
   document.getElementById('searchInput')?.addEventListener('input', renderTasks);
   document.getElementById('filterSystem')?.addEventListener('change', renderTasks);
   document.getElementById('filterPriority')?.addEventListener('change', renderTasks);
+  document.getElementById('filterDateFrom')?.addEventListener('change', renderTasks);
+  document.getElementById('filterDateTo')?.addEventListener('change', renderTasks);
+  document.getElementById('btnClearDates')?.addEventListener('click', () => {
+    document.getElementById('filterDateFrom').value = '';
+    document.getElementById('filterDateTo').value   = '';
+    renderTasks();
+  });
   document.getElementById('btnRefresh')?.addEventListener('click', loadTasks);
 
   document.getElementById('statusPills')?.addEventListener('click', e => {
@@ -213,11 +206,13 @@ async function openDetail(id) {
     </div>`;
 
   const isLeaveApproval = t.type === 'approval' && t.metadata?.leaveId;
+  const isWfhApproval   = t.type === 'approval' && t.metadata?.wfhId;
+  const isApproval      = isLeaveApproval || isWfhApproval;
   const isDone = t.status === 'completed';
 
-  document.getElementById('btnCompleteTask').classList.toggle('d-none', isLeaveApproval || isDone);
-  document.getElementById('btnApproveLeave').classList.toggle('d-none', !isLeaveApproval || isDone);
-  document.getElementById('btnRejectLeave').classList.toggle('d-none', !isLeaveApproval || isDone);
+  document.getElementById('btnCompleteTask').classList.toggle('d-none', isApproval || isDone);
+  document.getElementById('btnApproveLeave').classList.toggle('d-none', !isApproval || isDone);
+  document.getElementById('btnRejectLeave').classList.toggle('d-none', !isApproval || isDone);
 
   taskDetailModal().show();
 }
@@ -240,20 +235,30 @@ function bindModals() {
     else UI.toast(data?.message || 'Error creating task', 'danger');
   });
 
-  // Approve leave
+  // Approve leave or WFH
   document.getElementById('btnApproveLeave')?.addEventListener('click', async () => {
-    if (!activeTask?.metadata?.leaveId) return;
-    const data = await API.put(`/api/leaves/${activeTask.metadata.leaveId}`, { status: 'approved' });
-    if (data?.success) { UI.toast('Leave request approved', 'success'); taskDetailModal().hide(); await loadTasks(); }
-    else UI.toast(data?.message || 'Error approving leave', 'danger');
+    if (!activeTask) return;
+    let data;
+    if (activeTask.metadata?.leaveId) {
+      data = await API.put(`/api/leaves/${activeTask.metadata.leaveId}`, { status: 'approved' });
+    } else if (activeTask.metadata?.wfhId) {
+      data = await API.put(`/api/wfh/${activeTask.metadata.wfhId}`, { status: 'approved' });
+    } else return;
+    if (data?.success) { UI.toast('Request approved', 'success'); taskDetailModal().hide(); await loadTasks(); }
+    else UI.toast(data?.message || 'Error approving request', 'danger');
   });
 
-  // Reject leave
+  // Reject leave or WFH
   document.getElementById('btnRejectLeave')?.addEventListener('click', async () => {
-    if (!activeTask?.metadata?.leaveId) return;
-    const data = await API.put(`/api/leaves/${activeTask.metadata.leaveId}`, { status: 'rejected' });
-    if (data?.success) { UI.toast('Leave request rejected', 'warning'); taskDetailModal().hide(); await loadTasks(); }
-    else UI.toast(data?.message || 'Error rejecting leave', 'danger');
+    if (!activeTask) return;
+    let data;
+    if (activeTask.metadata?.leaveId) {
+      data = await API.put(`/api/leaves/${activeTask.metadata.leaveId}`, { status: 'rejected' });
+    } else if (activeTask.metadata?.wfhId) {
+      data = await API.put(`/api/wfh/${activeTask.metadata.wfhId}`, { status: 'rejected' });
+    } else return;
+    if (data?.success) { UI.toast('Request rejected', 'warning'); taskDetailModal().hide(); await loadTasks(); }
+    else UI.toast(data?.message || 'Error rejecting request', 'danger');
   });
 
   // Complete task

@@ -51,7 +51,7 @@ function renderList() {
           <div>
             <div class="d-flex align-items-center gap-2 mb-1">
               <span class="cycle-badge">${a.cycle}</span>
-              <span class="badge-custom badge-status-${a.status === 'completed' ? 'completed' : a.status === 'self-assessment' ? 'pending' : 'in-progress'} status-badge-ap ${statusClass}">
+              <span class="badge-custom badge-status-${a.status === 'completed' ? 'completed' : 'pending'} status-badge-ap ${statusClass}">
                 ${a.status.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}
               </span>
             </div>

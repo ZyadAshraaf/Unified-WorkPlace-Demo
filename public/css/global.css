@@ -440,7 +440,6 @@ body {
 
 /* ── Badges ──────────────────────────────────────────────── */
 .badge-status-pending      { background: var(--color-warning-light); color: #92600A; }
-.badge-status-in-progress  { background: var(--color-info-light);    color: var(--color-info); }
 .badge-status-completed    { background: var(--color-success-light); color: var(--color-success); }
 .badge-status-escalated    { background: var(--color-danger-light);  color: var(--color-danger); }
 .badge-status-approved     { background: var(--color-success-light); color: var(--color-success); }

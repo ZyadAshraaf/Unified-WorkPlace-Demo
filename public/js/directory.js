@@ -37,7 +37,7 @@ function renderGrid(users) {
     return;
   }
 
-  const avatarColors = ['#198D87','#126660','#0D7BB5','#6f42c1','#fd7e14','#1A9E6A','#E6A817'];
+  const avatarColors = [getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim()||'#198D87','#126660','#0D7BB5','#6f42c1','#fd7e14','#1A9E6A','#E6A817'];
 
   grid.innerHTML = users.map((u, i) => {
     const color = avatarColors[i % avatarColors.length];
@@ -63,7 +63,7 @@ function openProfile(id) {
   const u = allUsers.find(u => u.id === id);
   if (!u) return;
 
-  const avatarColors = ['#198D87','#126660','#0D7BB5','#6f42c1','#fd7e14','#1A9E6A','#E6A817'];
+  const avatarColors = [getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim()||'#198D87','#126660','#0D7BB5','#6f42c1','#fd7e14','#1A9E6A','#E6A817'];
   const color = avatarColors[allUsers.indexOf(u) % avatarColors.length];
 
   document.getElementById('empProfileBody').innerHTML = `

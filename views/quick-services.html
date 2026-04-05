@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leave Requests — Unified Workspace</title>
+  <title>Quick Services — Unified Workspace</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://res.cdn.office.net/teams-js/2.24.0/js/MicrosoftTeams.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -13,50 +13,68 @@
   <script>if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('embed-mode');</script>
   <link rel="stylesheet" href="/css/pages.css">
   <style>
-    .balance-card { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); }
-    .balance-label { font-size: 12px; color: var(--color-text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .balance-value { font-size: 36px; font-weight: 700; color: var(--color-primary); line-height: 1.1; }
-    .balance-sub { font-size: 12px; color: var(--color-text-muted); }
-    .balance-bar { height: 6px; border-radius: 3px; background: var(--color-border); margin-top: 10px; }
-    .balance-bar-fill { height: 100%; border-radius: 3px; background: var(--color-primary); transition: width 0.6s ease; }
+    /* ── Tab Pills ── */
+    .qs-tabs { display: flex; gap: 6px; margin-bottom: 24px; }
+    .qs-tab {
+      padding: 10px 22px; border-radius: 50px; border: 2px solid var(--color-border);
+      background: #fff; color: var(--color-text-muted); font-weight: 600; font-size: 14px;
+      cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 8px;
+    }
+    .qs-tab:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .qs-tab.active {
+      background: var(--color-primary); color: #fff; border-color: var(--color-primary);
+    }
+    .qs-panel { display: none; }
+    .qs-panel.active { display: block; }
 
-    /* ── Leave table rows clickable ── */
-    #myLeavesBody tr { cursor: pointer; transition: background .15s; }
-    #myLeavesBody tr:hover { background: rgba(var(--color-primary-rgb),.04); }
+    /* ── Inline Form Card ── */
+    .qs-form-card {
+      background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+      padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 24px;
+    }
+    .qs-form-card .form-label { font-size: 13px; font-weight: 600; color: var(--color-text-muted); }
+    .qs-form-card .form-control:focus,
+    .qs-form-card .form-select:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb),.15);
+    }
+    .qs-days-badge {
+      background: var(--color-primary-faint); border: 1px solid rgba(var(--color-primary-rgb),.2);
+      border-radius: 10px; padding: 10px 16px; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .qs-days-badge .num { font-size: 22px; font-weight: 800; color: var(--color-primary); line-height: 1; }
+    .qs-days-badge .lbl { font-size: 12px; color: var(--color-primary); font-weight: 600; }
+
+    /* ── Table rows clickable ── */
+    #qsLeavesBody tr, #qsWfhBody tr { cursor: pointer; transition: background .15s; }
+    #qsLeavesBody tr:hover, #qsWfhBody tr:hover { background: rgba(var(--color-primary-rgb),.04); }
 
     /* ── Detail Drawer ── */
-    .leave-drawer-overlay {
+    .qs-drawer-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,.35);
-      z-index: 1040; opacity: 0; pointer-events: none;
-      transition: opacity .25s;
+      z-index: 1040; opacity: 0; pointer-events: none; transition: opacity .25s;
     }
-    .leave-drawer-overlay.open { opacity: 1; pointer-events: all; }
+    .qs-drawer-overlay.open { opacity: 1; pointer-events: all; }
 
-    .leave-drawer {
+    .qs-drawer {
       position: fixed; top: 0; right: 0; height: 100%;
-      width: 420px; max-width: 95vw;
-      background: #fff;
+      width: 420px; max-width: 95vw; background: #fff;
       box-shadow: -8px 0 40px rgba(0,0,0,.12);
-      z-index: 1045;
-      transform: translateX(100%);
+      z-index: 1045; transform: translateX(100%);
       transition: transform .3s cubic-bezier(.4,0,.2,1);
-      display: flex; flex-direction: column;
-      overflow: hidden;
+      display: flex; flex-direction: column; overflow: hidden;
     }
-    .leave-drawer.open { transform: translateX(0); }
+    .qs-drawer.open { transform: translateX(0); }
 
     .ld-header {
-      padding: 22px 24px 18px;
-      border-bottom: 1px solid #eef0f3;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-shrink: 0;
+      padding: 22px 24px 18px; border-bottom: 1px solid #eef0f3;
+      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
     }
     .ld-header-left { display: flex; align-items: center; gap: 12px; }
     .ld-type-icon {
       width: 44px; height: 44px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px; background: var(--color-primary-faint); color: var(--color-primary);
-      flex-shrink: 0;
+      font-size: 20px; background: var(--color-primary-faint); color: var(--color-primary); flex-shrink: 0;
     }
     .ld-title { font-size: 16px; font-weight: 700; color: var(--color-text); margin-bottom: 2px; text-transform: capitalize; }
     .ld-subtitle { font-size: 12px; color: var(--color-text-muted); }
@@ -67,10 +85,8 @@
       cursor: pointer; font-size: 16px; transition: background .15s;
     }
     .ld-close:hover { background: #e8eaed; }
-
     .ld-body { flex: 1; overflow-y: auto; padding: 24px; }
 
-    /* Status banner */
     .ld-status-banner {
       border-radius: 12px; padding: 14px 18px;
       display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
@@ -88,20 +104,15 @@
     .ld-status-text.rejected { color: #dc3545; }
     .ld-status-sub { font-size: 12px; color: var(--color-text-muted); }
 
-    /* Info grid */
     .ld-section-label {
       font-size: 10px; font-weight: 700; text-transform: uppercase;
       letter-spacing: .8px; color: var(--color-text-muted); margin-bottom: 12px;
     }
     .ld-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
-    .ld-info-item {
-      background: #f8fafc; border: 1px solid #eef0f3;
-      border-radius: 10px; padding: 12px 14px;
-    }
+    .ld-info-item { background: #f8fafc; border: 1px solid #eef0f3; border-radius: 10px; padding: 12px 14px; }
     .ld-info-lbl { font-size: 11px; color: var(--color-text-muted); font-weight: 600; margin-bottom: 4px; }
     .ld-info-val { font-size: 14px; font-weight: 700; color: var(--color-text); }
 
-    /* Duration highlight */
     .ld-duration-box {
       background: var(--color-primary-faint); border: 1px solid rgba(var(--color-primary-rgb),.2);
       border-radius: 12px; padding: 16px 18px; margin-bottom: 24px;
@@ -111,14 +122,12 @@
     .ld-duration-lbl { font-size: 13px; color: var(--color-primary); font-weight: 600; }
     .ld-duration-sub { font-size: 11px; color: var(--color-text-muted); }
 
-    /* Reason */
     .ld-reason-box {
       background: #f8fafc; border: 1px solid #eef0f3;
       border-radius: 10px; padding: 14px 16px; margin-bottom: 24px;
       font-size: 13px; color: var(--color-text); line-height: 1.6;
     }
 
-    /* Review info */
     .ld-review-card {
       border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;
       border: 1px solid #eef0f3; background: #fff;
@@ -137,7 +146,6 @@
       font-size: 13px; color: var(--color-text-muted); font-style: italic; line-height: 1.5;
     }
 
-    /* Timeline */
     .ld-timeline { display: flex; flex-direction: column; gap: 0; }
     .ld-tl-item { display: flex; gap: 12px; padding-bottom: 16px; position: relative; }
     .ld-tl-item:not(:last-child)::before {
@@ -152,7 +160,6 @@
     .ld-tl-dot.done   { background: var(--color-primary); color: #fff; }
     .ld-tl-dot.active { background: #fff3e0; color: #d97706; border: 2px solid #d97706; }
     .ld-tl-dot.grey   { background: #f0f2f5; color: #94a3b8; }
-    .ld-tl-content {}
     .ld-tl-label { font-size: 13px; font-weight: 600; color: var(--color-text); }
     .ld-tl-sub   { font-size: 11px; color: var(--color-text-muted); }
   </style>
@@ -209,7 +216,7 @@
     <header class="topbar">
       <button class="topbar-toggle" id="sidebarToggle"><i class="bi bi-list"></i></button>
       <img src="/assets/logo.png" alt="Logo" class="topbar-logo" id="topbarLogo">
-      <h1 class="page-title">Leave Requests</h1>
+      <h1 class="page-title">Quick Services</h1>
       <div class="topbar-right">
         <div class="topbar-search"><i class="bi bi-search"></i><input type="text" placeholder="Search..."></div>
         <button class="icon-btn"><i class="bi bi-bell"></i><span class="notif-dot d-none" id="notifDot"></span></button>
@@ -230,259 +237,203 @@
 
     <main class="content">
       <div class="page-hero">
-        <div class="page-hero-bc">Dashboard &rsaquo; <span>Leave Requests</span></div>
-        <div class="page-hero-title"><i class="bi bi-calendar-check me-2"></i>Leave Requests</div>
-        <div class="page-hero-sub">Request time off and track your leave balances.</div>
-      </div>
-      <!-- Leave Balance Cards -->
-      <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-          <div class="balance-card">
-            <div class="balance-label">Annual Leave</div>
-            <div class="balance-value" id="balAnnual">—</div>
-            <div class="balance-sub">days remaining</div>
-            <div class="balance-bar"><div class="balance-bar-fill" id="balAnnualBar" style="width:0%"></div></div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="balance-card">
-            <div class="balance-label">Sick Leave</div>
-            <div class="balance-value" id="balSick" style="color:var(--color-info)">30</div>
-            <div class="balance-sub">days per year</div>
-            <div class="balance-bar"><div class="balance-bar-fill" style="width:100%;background:var(--color-info)"></div></div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="balance-card">
-            <div class="balance-label">Used This Year</div>
-            <div class="balance-value" id="balUsed" style="color:var(--color-warning)">—</div>
-            <div class="balance-sub">days taken</div>
-            <div class="balance-bar"><div class="balance-bar-fill" id="balUsedBar" style="width:0%;background:var(--color-warning)"></div></div>
-          </div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="balance-card d-flex flex-column justify-content-between" style="min-height:100px">
-            <div class="balance-label">Quick Action</div>
-            <button class="btn btn-primary w-100 mt-2" id="btnRequestLeave">
-              <i class="bi bi-calendar-plus me-2"></i>Request Leave
-            </button>
-          </div>
-        </div>
+        <div class="page-hero-bc">Dashboard &rsaquo; <span>Quick Services</span></div>
+        <div class="page-hero-title"><i class="bi bi-lightning-charge me-2"></i>Quick Services</div>
+        <div class="page-hero-sub">Submit leave or work-from-home requests in seconds.</div>
       </div>
 
-      <!-- My Requests -->
-      <div class="dark-table-card mb-4">
-        <div class="dark-table-head">
-          <h6><i class="bi bi-list-check me-2"></i>My Leave Requests</h6>
-        </div>
-        <div style="overflow-x:auto">
-          <table class="table-custom">
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>From</th>
-                <th>To</th>
-                <th style="width:60px">Days</th>
-                <th>Reason</th>
-                <th style="width:110px">Status</th>
-                <th>Reviewed By</th>
-                <th>Note</th>
-              </tr>
-            </thead>
-            <tbody id="myLeavesBody">
-              <tr><td colspan="8" class="text-center py-4"><div class="spinner-border spinner-border-sm" style="color:var(--color-primary)"></div></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div><!-- /dark-table-card -->
+      <!-- Tab Pills -->
+      <div class="qs-tabs">
+        <button class="qs-tab active" data-tab="leave" id="qsTabLeave">
+          <i class="bi bi-calendar-check"></i> Leave Request
+        </button>
+        <button class="qs-tab" data-tab="wfh" id="qsTabWfh">
+          <i class="bi bi-house-door"></i> Work From Home
+        </button>
+      </div>
 
-      <!-- Manager: Pending Approvals -->
-      <div id="pendingApprovalsSection" class="d-none">
-        <div class="card">
-          <div class="card-header">
-            <span><i class="bi bi-hourglass-split text-warning me-2"></i>Pending Approvals</span>
-            <span class="badge bg-warning text-dark" id="pendingCount">0</span>
+      <!-- ═══════════════ LEAVE PANEL ═══════════════ -->
+      <div class="qs-panel active" id="qsPanelLeave">
+
+        <!-- Inline Leave Form -->
+        <div class="qs-form-card">
+          <h6 class="mb-3" style="font-weight:700;color:var(--color-text)"><i class="bi bi-calendar-plus me-2" style="color:var(--color-primary)"></i>New Leave Request</h6>
+          <div class="row g-3 align-items-end">
+            <div class="col-md-2">
+              <label class="form-label">Type *</label>
+              <select class="form-select" id="qsLeaveType">
+                <option value="annual">Annual</option>
+                <option value="sick">Sick</option>
+                <option value="emergency">Emergency</option>
+                <option value="unpaid">Unpaid</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">From *</label>
+              <input type="date" class="form-control" id="qsLeaveStart">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">To *</label>
+              <input type="date" class="form-control" id="qsLeaveEnd">
+            </div>
+            <div class="col-md-auto">
+              <div class="qs-days-badge">
+                <span class="num" id="qsLeaveDays">—</span>
+                <span class="lbl">days</span>
+              </div>
+            </div>
+            <div class="col-md">
+              <label class="form-label">Reason</label>
+              <input type="text" class="form-control" id="qsLeaveReason" placeholder="Optional reason...">
+            </div>
+            <div class="col-md-auto">
+              <button class="btn btn-primary" id="qsBtnSubmitLeave">
+                <i class="bi bi-send me-1"></i>Submit
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- My Leave Requests Table -->
+        <div class="dark-table-card">
+          <div class="dark-table-head">
+            <h6><i class="bi bi-list-check me-2"></i>My Leave Requests</h6>
           </div>
           <div style="overflow-x:auto">
             <table class="table-custom">
               <thead>
                 <tr>
-                  <th>Employee</th>
                   <th>Type</th>
                   <th>From</th>
                   <th>To</th>
                   <th style="width:60px">Days</th>
                   <th>Reason</th>
-                  <th style="width:140px">Actions</th>
+                  <th style="width:110px">Status</th>
+                  <th>Reviewed By</th>
                 </tr>
               </thead>
-              <tbody id="pendingApprovalsBody"></tbody>
+              <tbody id="qsLeavesBody">
+                <tr><td colspan="7" class="text-center py-4"><div class="spinner-border spinner-border-sm" style="color:var(--color-primary)"></div></td></tr>
+              </tbody>
             </table>
           </div>
         </div>
       </div>
+
+      <!-- ═══════════════ WFH PANEL ═══════════════ -->
+      <div class="qs-panel" id="qsPanelWfh">
+
+        <!-- Inline WFH Form -->
+        <div class="qs-form-card">
+          <h6 class="mb-3" style="font-weight:700;color:var(--color-text)"><i class="bi bi-house-door me-2" style="color:var(--color-primary)"></i>New WFH Request</h6>
+          <div class="row g-3 align-items-end">
+            <div class="col-md-2">
+              <label class="form-label">From *</label>
+              <input type="date" class="form-control" id="qsWfhStart">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">To *</label>
+              <input type="date" class="form-control" id="qsWfhEnd">
+            </div>
+            <div class="col-md-auto">
+              <div class="qs-days-badge">
+                <span class="num" id="qsWfhDays">—</span>
+                <span class="lbl">days</span>
+              </div>
+            </div>
+            <div class="col-md">
+              <label class="form-label">Reason</label>
+              <input type="text" class="form-control" id="qsWfhReason" placeholder="Optional reason...">
+            </div>
+            <div class="col-md-auto">
+              <button class="btn btn-primary" id="qsBtnSubmitWfh">
+                <i class="bi bi-send me-1"></i>Submit
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- My WFH Requests Table -->
+        <div class="dark-table-card">
+          <div class="dark-table-head">
+            <h6><i class="bi bi-list-check me-2"></i>My WFH Requests</h6>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="table-custom">
+              <thead>
+                <tr>
+                  <th>From</th>
+                  <th>To</th>
+                  <th style="width:60px">Days</th>
+                  <th>Reason</th>
+                  <th>Submitted</th>
+                  <th style="width:110px">Status</th>
+                </tr>
+              </thead>
+              <tbody id="qsWfhBody">
+                <tr><td colspan="6" class="text-center py-4"><div class="spinner-border spinner-border-sm" style="color:var(--color-primary)"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>
 
-<!-- Request Leave Modal -->
-<div class="modal fade" id="requestLeaveModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title"><i class="bi bi-calendar-plus me-2"></i>New Leave Request</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="leaveForm">
-          <div class="mb-3">
-            <label class="form-label">Leave Type *</label>
-            <select class="form-select" id="leaveType" required>
-              <option value="annual">Annual Leave</option>
-              <option value="sick">Sick Leave</option>
-              <option value="emergency">Emergency Leave</option>
-              <option value="unpaid">Unpaid Leave</option>
-            </select>
-          </div>
-          <div class="row g-3 mb-3">
-            <div class="col-6">
-              <label class="form-label">Start Date *</label>
-              <input type="date" class="form-control" id="leaveStart" required>
-            </div>
-            <div class="col-6">
-              <label class="form-label">End Date *</label>
-              <input type="date" class="form-control" id="leaveEnd" required>
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="p-3 rounded" style="background:var(--color-primary-faint);border:1px solid var(--color-border)">
-              <span class="fw-600" style="color:var(--color-primary)">Duration: <span id="leaveDaysCalc">—</span> working day(s)</span>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Reason</label>
-            <textarea class="form-control" id="leaveReason" rows="3" placeholder="Optional: provide reason for your leave request"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="btnSubmitLeave">
-          <i class="bi bi-send me-1"></i>Submit Request
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Approve/Reject Modal -->
-<div class="modal fade" id="reviewModal" tabindex="-1">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="reviewModalTitle">Review Leave</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3 p-3 rounded" style="background:var(--color-surface);border:1px solid var(--color-border)" id="reviewLeaveInfo"></div>
-        <div class="mb-3">
-          <label class="form-label">Note (optional)</label>
-          <textarea class="form-control" id="reviewNote" rows="3" placeholder="Add a note for the employee..."></textarea>
-        </div>
-      </div>
-      <div class="modal-footer gap-2">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger" id="btnReject"><i class="bi bi-x-lg me-1"></i>Reject</button>
-        <button type="button" class="btn btn-success" id="btnApprove"><i class="bi bi-check-lg me-1"></i>Approve</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Leave Detail Drawer -->
-<div class="leave-drawer-overlay" id="leaveDrawerOverlay"></div>
-<div class="leave-drawer" id="leaveDrawer">
+<!-- Detail Drawer -->
+<div class="qs-drawer-overlay" id="qsDrawerOverlay"></div>
+<div class="qs-drawer" id="qsDrawer">
   <div class="ld-header">
     <div class="ld-header-left">
-      <div class="ld-type-icon" id="ldTypeIcon"><i class="bi bi-calendar-check"></i></div>
+      <div class="ld-type-icon" id="qdTypeIcon"><i class="bi bi-calendar-check"></i></div>
       <div>
-        <div class="ld-title" id="ldTitle">Leave Request</div>
-        <div class="ld-subtitle" id="ldSubtitle">Details</div>
+        <div class="ld-title" id="qdTitle">Request</div>
+        <div class="ld-subtitle" id="qdSubtitle">Details</div>
       </div>
     </div>
-    <button class="ld-close" id="leaveDrawerClose"><i class="bi bi-x-lg"></i></button>
+    <button class="ld-close" id="qsDrawerClose"><i class="bi bi-x-lg"></i></button>
   </div>
   <div class="ld-body">
-
-    <!-- Status Banner -->
-    <div class="ld-status-banner" id="ldStatusBanner">
-      <i class="ld-status-icon" id="ldStatusIcon"></i>
+    <div class="ld-status-banner" id="qdStatusBanner">
+      <i class="ld-status-icon" id="qdStatusIcon"></i>
       <div>
-        <div class="ld-status-text" id="ldStatusText">—</div>
-        <div class="ld-status-sub" id="ldStatusSub">—</div>
+        <div class="ld-status-text" id="qdStatusText">—</div>
+        <div class="ld-status-sub" id="qdStatusSub">—</div>
       </div>
     </div>
-
-    <!-- Duration highlight -->
     <div class="ld-duration-box">
-      <div>
-        <div class="ld-duration-num" id="ldDays">—</div>
-      </div>
+      <div><div class="ld-duration-num" id="qdDays">—</div></div>
       <div>
         <div class="ld-duration-lbl">Working Days</div>
-        <div class="ld-duration-sub" id="ldDateRange">—</div>
+        <div class="ld-duration-sub" id="qdDateRange">—</div>
       </div>
     </div>
-
-    <!-- Info grid -->
-    <div class="ld-section-label">Leave Details</div>
-    <div class="ld-info-grid">
-      <div class="ld-info-item">
-        <div class="ld-info-lbl">Type</div>
-        <div class="ld-info-val" id="ldType">—</div>
-      </div>
-      <div class="ld-info-item">
-        <div class="ld-info-lbl">Start Date</div>
-        <div class="ld-info-val" id="ldStart">—</div>
-      </div>
-      <div class="ld-info-item">
-        <div class="ld-info-lbl">End Date</div>
-        <div class="ld-info-val" id="ldEnd">—</div>
-      </div>
-      <div class="ld-info-item">
-        <div class="ld-info-lbl">Submitted</div>
-        <div class="ld-info-val" id="ldSubmitted">—</div>
-      </div>
-    </div>
-
-    <!-- Reason -->
+    <div class="ld-section-label">Details</div>
+    <div class="ld-info-grid" id="qdInfoGrid"></div>
     <div class="ld-section-label">Reason</div>
-    <div class="ld-reason-box" id="ldReason">—</div>
-
-    <!-- Reviewer -->
-    <div id="ldReviewSection">
+    <div class="ld-reason-box" id="qdReason">—</div>
+    <div id="qdReviewSection" style="display:none">
       <div class="ld-section-label">Reviewed By</div>
       <div class="ld-review-card">
         <div class="ld-reviewer">
-          <div class="ld-reviewer-avatar" id="ldReviewerAvatar">—</div>
+          <div class="ld-reviewer-avatar" id="qdReviewerAvatar">—</div>
           <div>
-            <div class="ld-reviewer-name" id="ldReviewerName">—</div>
+            <div class="ld-reviewer-name" id="qdReviewerName">—</div>
             <div class="ld-reviewer-role">Manager</div>
           </div>
         </div>
-        <div class="ld-review-note" id="ldReviewNote" style="display:none"></div>
+        <div class="ld-review-note" id="qdReviewNote" style="display:none"></div>
       </div>
     </div>
-
-    <!-- Timeline -->
     <div class="ld-section-label mt-3">Timeline</div>
-    <div class="ld-timeline" id="ldTimeline"></div>
-
+    <div class="ld-timeline" id="qdTimeline"></div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/api.js"></script>
-<script src="/js/leaves.js"></script>
+<script src="/js/quick-services.js"></script>
 </body>
 </html>

@@ -18,7 +18,6 @@ async function loadTickets() {
 
 function updateStats() {
   document.getElementById('statOpen').textContent       = allTickets.filter(t => t.status === 'open').length;
-  document.getElementById('statInProgress').textContent = allTickets.filter(t => t.status === 'in-progress').length;
   document.getElementById('statResolved').textContent   = allTickets.filter(t => t.status === 'resolved' || t.status === 'closed').length;
   document.getElementById('statCritical').textContent   = allTickets.filter(t => t.priority === 'critical').length;
 }

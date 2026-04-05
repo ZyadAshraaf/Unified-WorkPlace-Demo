@@ -108,17 +108,16 @@
         <div class="page-hero-sub">Submit and track IT support tickets. We're here to help.</div>
       </div>
       <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon info"><i class="bi bi-ticket-detailed"></i></div><div><div class="stat-value" id="statOpen">—</div><div class="stat-label">Open Tickets</div></div></div></div>
-        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon warning"><i class="bi bi-hourglass-split"></i></div><div><div class="stat-value" id="statInProgress">—</div><div class="stat-label">In Progress</div></div></div></div>
-        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon success"><i class="bi bi-check-circle"></i></div><div><div class="stat-value" id="statResolved">—</div><div class="stat-label">Resolved</div></div></div></div>
-        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon danger"><i class="bi bi-exclamation-diamond"></i></div><div><div class="stat-value" id="statCritical">—</div><div class="stat-label">Critical</div></div></div></div>
+        <div class="col-6 col-md-4"><div class="stat-card"><div class="stat-icon info"><i class="bi bi-ticket-detailed"></i></div><div><div class="stat-value" id="statOpen">—</div><div class="stat-label">Open Tickets</div></div></div></div>
+        <div class="col-6 col-md-4"><div class="stat-card"><div class="stat-icon success"><i class="bi bi-check-circle"></i></div><div><div class="stat-value" id="statResolved">—</div><div class="stat-label">Resolved</div></div></div></div>
+        <div class="col-6 col-md-4"><div class="stat-card"><div class="stat-icon danger"><i class="bi bi-exclamation-diamond"></i></div><div><div class="stat-value" id="statCritical">—</div><div class="stat-label">Critical</div></div></div></div>
       </div>
 
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="d-flex gap-2">
           <select class="form-select form-select-sm" id="filterTicketStatus" style="width:auto">
             <option value="">All Status</option>
-            <option>open</option><option>in-progress</option><option>resolved</option><option>closed</option>
+            <option>open</option><option>resolved</option><option>closed</option>
           </select>
           <select class="form-select form-select-sm" id="filterTicketPriority" style="width:auto">
             <option value="">All Priorities</option>
