@@ -5,9 +5,9 @@
   "id": "fc21a8b4-9503-4b72-8b1e-8493d9e2b67d",
   "developer": {
     "name": "WIND-IS",
-    "websiteUrl": "https://thin-ultram-iowa-room.trycloudflare.com",
-    "privacyUrl": "https://thin-ultram-iowa-room.trycloudflare.com/privacy",
-    "termsOfUseUrl": "https://thin-ultram-iowa-room.trycloudflare.com/terms"
+    "websiteUrl": "http://localhost:3002",
+    "privacyUrl": "http://localhost:3002/privacy",
+    "termsOfUseUrl": "http://localhost:3002/terms"
   },
   "name": {
     "short": "Unified Workspace",
@@ -26,14 +26,14 @@
     {
       "entityId": "unified-home",
       "name": "Home",
-      "contentUrl": "https://thin-ultram-iowa-room.trycloudflare.com/",
+      "contentUrl": "http://localhost:3002/",
       "scopes": ["personal"]
     }
   ],
   "configurableTabs": [],
   "permissions": ["identity", "messageTeamMembers"],
   "validDomains": [
-    "thin-ultram-iowa-room.trycloudflare.com"
+    "localhost:3002"
   ],
   "showLoadingIndicator": false
 }

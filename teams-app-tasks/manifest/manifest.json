@@ -5,9 +5,9 @@
   "id": "a7e3c1d9-4f82-4b6a-9e15-3d8f0c2b1a47",
   "developer": {
     "name": "WIND-IS",
-    "websiteUrl": "https://gps-transaction-promising-media.trycloudflare.com",
-    "privacyUrl": "https://gps-transaction-promising-media.trycloudflare.com/privacy",
-    "termsOfUseUrl": "https://gps-transaction-promising-media.trycloudflare.com/terms"
+    "websiteUrl": "https://caught-journalist-confident-collecting.trycloudflare.com",
+    "privacyUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/privacy",
+    "termsOfUseUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/terms"
   },
   "name": {
     "short": "Wind-IS Hub",
@@ -26,32 +26,32 @@
     {
       "entityId": "tasks-tab",
       "name": "My Tasks",
-      "contentUrl": "https://gps-transaction-promising-media.trycloudflare.com/tasks?embed=1",
+      "contentUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/tasks?embed=1",
       "scopes": ["personal"]
     },
     {
       "entityId": "analytics-tab",
       "name": "Analytics",
-      "contentUrl": "https://gps-transaction-promising-media.trycloudflare.com/analytics?embed=1",
+      "contentUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/analytics?embed=1",
       "scopes": ["personal"]
     },
     {
       "entityId": "policy-tab",
       "name": "My Assistant",
-      "contentUrl": "https://gps-transaction-promising-media.trycloudflare.com/policy?embed=1",
+      "contentUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/policy?embed=1",
       "scopes": ["personal"]
     },
     {
       "entityId": "quick-services-tab",
       "name": "Quick Services",
-      "contentUrl": "https://gps-transaction-promising-media.trycloudflare.com/quick-services?embed=1",
+      "contentUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/quick-services?embed=1",
       "scopes": ["personal"]
     }
   ],
   "configurableTabs": [],
   "permissions": ["identity", "messageTeamMembers"],
   "validDomains": [
-    "gps-transaction-promising-media.trycloudflare.com"
+    "caught-journalist-confident-collecting.trycloudflare.com"
   ],
   "activities": {
     "activityTypes": [
