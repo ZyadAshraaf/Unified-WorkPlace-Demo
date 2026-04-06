@@ -144,6 +144,7 @@ app.use('/api/customize', require('./routes/customize'));
 app.use('/api/finance',  require('./routes/finance'));
 app.use('/api/wfh',      require('./routes/wfh'));
 app.use('/api/hr-chat',   require('./routes/hr-chat'));
+app.use('/api/doceval-proxy', require('./routes/doceval'));
 
 app.get('/api/me', requireAuth, (req, res) => {
   res.json({ success: true, user: req.session.user });
@@ -162,7 +163,7 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-const pages = ['', 'tasks', 'leaves', 'wfh', 'services', 'analytics', 'goals', 'appraisal', 'attendance', 'policy', 'helpdesk', 'directory', 'customize', 'erp-dialogue', 'leave-assistant', 'voice-agent', 'quick-services'];
+const pages = ['', 'tasks', 'leaves', 'wfh', 'services', 'analytics', 'goals', 'appraisal', 'attendance', 'policy', 'helpdesk', 'directory', 'customize', 'erp-dialogue', 'leave-assistant', 'voice-agent', 'quick-services', 'proposal-eval', 'resume-eval', 'doc-chat'];
 
 pages.forEach(page => {
   const route = page === '' ? '/' : `/${page}`;
