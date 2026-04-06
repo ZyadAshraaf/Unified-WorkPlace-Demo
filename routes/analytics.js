@@ -18,7 +18,7 @@ router.get('/summary', requireAuth, (req, res) => {
   const attendance = read('attendance.json');
   const user       = req.session.user;
 
-  const myTasks    = tasks.filter(t => t.assignedTo === user.id);
+  const myTasks    = (user.role === 'admin' || user.role === 'hr') ? tasks : tasks.filter(t => t.assignedTo === user.id);
   const myLeaves   = leaves.filter(l => l.userId === user.id);
   const myAttend   = attendance[user.id] || [];
 
