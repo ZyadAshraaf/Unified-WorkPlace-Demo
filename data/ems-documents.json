@@ -1,0 +1,250 @@
+[
+  {
+    "id": "DOC1A2B3C01",
+    "title": "Q1 2026 Vendor Invoice - Acme Corp",
+    "description": "Quarterly service invoice from Acme Corporation",
+    "folderId": "FLD1A2B3C02",
+    "docTypeId": "DT001",
+    "metadata": {
+      "invoice_number": "INV-202601",
+      "vendor_name": "Acme Corporation",
+      "invoice_date": "2026-03-15",
+      "amount": 45750,
+      "currency": "SAR",
+      "due_date": "2026-04-15"
+    },
+    "status": "active",
+    "createdBy": "u002",
+    "createdAt": "2026-03-15T10:00:00Z",
+    "updatedAt": "2026-03-20T14:30:00Z",
+    "currentVersion": 1,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "acme-invoice-q1-2026.pdf",
+        "storagePath": "uploads/ems/DOC1A2B3C01_v1.pdf",
+        "mimeType": "application/pdf",
+        "size": 245760,
+        "uploadedBy": "u002",
+        "uploadedAt": "2026-03-15T10:00:00Z",
+        "notes": "Initial upload"
+      }
+    ],
+    "signatures": [],
+    "watermark": {
+      "enabled": false,
+      "text": "CONFIDENTIAL",
+      "opacity": 0.15,
+      "angle": -30
+    },
+    "annotations": [],
+    "starred": [
+      "u001"
+    ],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
+  },
+  {
+    "id": "DOC1A2B3C02",
+    "title": "NDA - Tech Partners Inc.",
+    "description": "Non-disclosure agreement with Tech Partners",
+    "folderId": "FLD1A2B3C03",
+    "docTypeId": "DT002",
+    "metadata": {
+      "contract_number": "CTR-202601",
+      "parties": "Our Company & Tech Partners Inc.",
+      "effective_date": "2026-02-01",
+      "expiration_date": "2027-02-01",
+      "contract_value": 0,
+      "contract_type": "NDA"
+    },
+    "status": "active",
+    "createdBy": "u001",
+    "createdAt": "2026-02-01T08:00:00Z",
+    "updatedAt": "2026-02-05T11:20:00Z",
+    "currentVersion": 2,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "nda-techpartners-draft.pdf",
+        "storagePath": "uploads/ems/DOC1A2B3C02_v1.pdf",
+        "mimeType": "application/pdf",
+        "size": 185000,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-02-01T08:00:00Z",
+        "notes": "Draft version"
+      },
+      {
+        "version": 2,
+        "filename": "nda-techpartners-signed.pdf",
+        "storagePath": "uploads/ems/DOC1A2B3C02_v2.pdf",
+        "mimeType": "application/pdf",
+        "size": 210000,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-02-05T11:20:00Z",
+        "notes": "Signed by both parties"
+      }
+    ],
+    "signatures": [
+      {
+        "signatureId": "SIG00000001",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-02-05T11:15:00Z",
+        "type": "drawn"
+      }
+    ],
+    "watermark": {
+      "enabled": true,
+      "text": "CONFIDENTIAL",
+      "opacity": 0.12,
+      "angle": -35
+    },
+    "annotations": [],
+    "starred": [],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
+  },
+  {
+    "id": "DOC1A2B3C03",
+    "title": "IT Security Policy v3",
+    "description": "Information security policy for all employees",
+    "folderId": "FLD1A2B3C05",
+    "docTypeId": "DT003",
+    "metadata": {
+      "policy_number": "POL-IT-003",
+      "department": "IT",
+      "effective_date": "2026-01-01",
+      "review_date": "2026-07-01",
+      "approver": "Ahmed Al-Rashidi"
+    },
+    "status": "active",
+    "createdBy": "u001",
+    "createdAt": "2026-01-01T08:00:00Z",
+    "updatedAt": "2026-01-01T08:00:00Z",
+    "currentVersion": 1,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "it-security-policy-v3.pdf",
+        "storagePath": "uploads/ems/DOC1A2B3C03_v1.pdf",
+        "mimeType": "application/pdf",
+        "size": 520000,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-01-01T08:00:00Z",
+        "notes": "Version 3 - updated access control section"
+      }
+    ],
+    "signatures": [],
+    "watermark": {
+      "enabled": true,
+      "text": "INTERNAL USE ONLY",
+      "opacity": 0.1,
+      "angle": -30
+    },
+    "annotations": [],
+    "starred": [
+      "u002"
+    ],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
+  },
+  {
+    "id": "DOC1A2B3C04",
+    "title": "Board Meeting Minutes - March 2026",
+    "description": "Minutes from monthly board meeting",
+    "folderId": "FLD1A2B3C08",
+    "docTypeId": "DT009",
+    "metadata": {
+      "meeting_title": "March 2026 Board Meeting",
+      "meeting_date": "2026-03-28",
+      "attendees": "Ahmed, Khalid, Sara, Omar",
+      "department": "Executive"
+    },
+    "status": "active",
+    "createdBy": "u004",
+    "createdAt": "2026-03-28T16:00:00Z",
+    "updatedAt": "2026-04-07T09:15:33.169Z",
+    "currentVersion": 2,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "board-minutes-march-2026.pdf",
+        "storagePath": "uploads/ems/DOC1A2B3C04_v1.pdf",
+        "mimeType": "application/pdf",
+        "size": 98000,
+        "uploadedBy": "u004",
+        "uploadedAt": "2026-03-28T16:00:00Z",
+        "notes": "Final minutes"
+      },
+      {
+        "version": 2,
+        "filename": "RFP.pdf",
+        "storagePath": "uploads/ems/DOC1A2B3C04_v2.pdf",
+        "mimeType": "application/pdf",
+        "size": 223296,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-04-07T09:15:33.169Z",
+        "notes": "Version 2"
+      }
+    ],
+    "signatures": [],
+    "watermark": {
+      "enabled": false,
+      "text": "",
+      "opacity": 0.15,
+      "angle": -30
+    },
+    "annotations": [],
+    "starred": [],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
+  },
+  {
+    "id": "DOC3B11FE59",
+    "title": "dddd",
+    "description": "jfdnvhjfd",
+    "folderId": "FLD1A2B3C08",
+    "docTypeId": "DT007",
+    "metadata": {
+      "proposal_number": "100",
+      "client_name": "dkfslfj",
+      "proposal_date": "2026-04-08",
+      "proposal_amount": 55,
+      "validity_days": 30
+    },
+    "status": "active",
+    "createdBy": "u001",
+    "createdAt": "2026-04-07T11:25:37.220Z",
+    "updatedAt": "2026-04-07T11:25:37.220Z",
+    "currentVersion": 1,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "Foundational Proposal (Saudi Version).docx",
+        "storagePath": "uploads/ems/DOC3B11FE59_v1.docx",
+        "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "size": 7043757,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-04-07T11:25:37.220Z",
+        "notes": "Initial upload"
+      }
+    ],
+    "signatures": [],
+    "watermark": {
+      "enabled": false,
+      "text": "CONFIDENTIAL",
+      "opacity": 0.15,
+      "angle": -30
+    },
+    "annotations": [],
+    "starred": [],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
+  }
+]

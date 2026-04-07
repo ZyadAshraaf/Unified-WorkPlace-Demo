@@ -143,23 +143,56 @@
     .criteria-col-labels .lbl-del    { width: 30px; }
 
     /* ── RFP Mode Toggle ─────────────────────────────────────── */
-    .rfp-mode-toggle {
-      display: flex; gap: 0;
-      background: var(--color-surface); border: 1px solid var(--color-border);
-      border-radius: 10px; padding: 3px; margin-bottom: 14px;
-    }
-    .rfp-mode-btn {
-      flex: 1; border: none; background: transparent;
-      border-radius: 8px; padding: 7px 10px; font-size: 12px; font-weight: 600;
-      color: var(--color-text-muted); cursor: pointer; transition: all 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 5px;
-    }
-    .rfp-mode-btn.active {
-      background: white; color: var(--color-primary);
-      box-shadow: 0 1px 6px rgba(var(--color-primary-rgb), 0.15);
+    .rfp-tab-group {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; margin-bottom: 18px;
+      background: var(--color-surface);
       border: 1px solid var(--color-border);
+      border-radius: 16px; padding: 4px;
+      position: relative;
     }
-    .rfp-mode-btn:not(.active):hover { color: var(--color-text); background: var(--color-surface-alt); }
+    /* sliding green pill */
+    .rfp-tab-group::before {
+      content: '';
+      position: absolute; top: 4px; left: 4px;
+      width: calc(50% - 4px); height: calc(100% - 8px);
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--color-primary-darker) 0%, var(--color-primary) 60%, var(--color-primary-light) 100%);
+      box-shadow: 0 4px 18px rgba(var(--color-primary-rgb), 0.38);
+      transition: transform 0.32s cubic-bezier(.4,0,.2,1);
+      z-index: 0;
+    }
+    /* slide pill to the right tab */
+    .rfp-tab-group:has(button:last-child.active)::before {
+      transform: translateX(100%);
+    }
+    .rfp-tab {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: 12px;
+      border: none; background: transparent; cursor: pointer;
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+      text-align: left; width: 100%;
+      position: relative; z-index: 1;
+    }
+    .rfp-tab:hover:not(.active) { background: rgba(0,0,0,0.04); }
+    .rfp-tab-icon {
+      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 17px;
+      background: var(--color-border); color: var(--color-text-muted);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    }
+    .rfp-tab.active .rfp-tab-icon {
+      background: rgba(255,255,255,0.18);
+      color: white;
+    }
+    .rfp-tab-title {
+      font-size: 12.5px; font-weight: 700; line-height: 1.2;
+      color: var(--color-text-muted); transition: color 0.2s;
+    }
+    .rfp-tab-desc { font-size: 11px; color: var(--color-text-muted); margin-top: 2px; opacity: 0.7; transition: all 0.2s; }
+    .rfp-tab.active .rfp-tab-title { color: white; }
+    .rfp-tab.active .rfp-tab-desc  { color: rgba(255,255,255,0.75); opacity: 1; }
+    .rfp-tab-active-dot { display: none; }
 
     /* ── Compact RFP Upload Zone ─────────────────────────────── */
     .rfp-upload-zone {
@@ -365,6 +398,10 @@
         <a href="/resume-eval" class="nav-item" data-page="resume-eval"><i class="bi bi-person-lines-fill"></i><span>Talent Assessor</span></a>
         <a href="/doc-chat" class="nav-item" data-page="doc-chat"><i class="bi bi-chat-square-text"></i><span>Knowledge Assistant</span></a>
       </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Enterprise</div>
+        <a href="/ems" class="nav-item" data-page="ems"><i class="bi bi-building-gear"></i><span>Enterprise DMS</span></a>
+      </div>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
@@ -494,12 +531,22 @@
                   <i class="bi bi-journal-text me-1" style="color:var(--color-primary)"></i>RFP Document
                 </div>
 
-                <div class="rfp-mode-toggle" role="group">
-                  <button class="rfp-mode-btn active" id="rfpModeSelect" type="button">
-                    <i class="bi bi-list-ul"></i> Select Existing
+                <div class="rfp-tab-group" role="group">
+                  <button class="rfp-tab active" id="rfpModeSelect" type="button">
+                    <div class="rfp-tab-icon"><i class="bi bi-collection"></i></div>
+                    <div>
+                      <div class="rfp-tab-title">Select Existing</div>
+                      <div class="rfp-tab-desc">Choose from uploaded RFPs</div>
+                    </div>
+                    <div class="rfp-tab-active-dot"></div>
                   </button>
-                  <button class="rfp-mode-btn" id="rfpModeUpload" type="button">
-                    <i class="bi bi-upload"></i> Upload RFP
+                  <button class="rfp-tab" id="rfpModeUpload" type="button">
+                    <div class="rfp-tab-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                    <div>
+                      <div class="rfp-tab-title">Upload RFP</div>
+                      <div class="rfp-tab-desc">PDF or DOCX document</div>
+                    </div>
+                    <div class="rfp-tab-active-dot"></div>
                   </button>
                 </div>
 

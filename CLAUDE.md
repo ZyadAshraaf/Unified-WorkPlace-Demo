@@ -38,7 +38,18 @@ No build step, no test runner, no TypeScript. The server runs directly with `nod
 │   ├── news.js
 │   ├── policy.js
 │   ├── tasks.js
-│   └── wfh.js
+│   ├── travel.js              #   Business travel (flight/hotel search + approval)
+│   ├── wfh.js
+│   └── ems/                   #   Enterprise Document Management System
+│       ├── index.js           #     Sub-router mounting all EMS sub-routes at /api/ems
+│       ├── documents.js       #     CRUD + file upload for documents
+│       ├── folders.js         #     Folder tree management
+│       ├── groups.js          #     User groups / access control
+│       ├── signatures.js      #     Digital signature workflows
+│       ├── users.js           #     EMS-scoped user management
+│       ├── audit.js           #     Audit trail read endpoint
+│       ├── doctypes.js        #     Document type definitions
+│       └── metadata.js        #     Custom metadata schemas
 ├── views/                     # HTML pages (1-to-1 with public/js controllers)
 │   ├── login.html
 │   ├── landing.html           #   Dashboard / home page
@@ -59,13 +70,17 @@ No build step, no test runner, no TypeScript. The server runs directly with `nod
 │   ├── resume-eval.html       #   Resume evaluation (AI feature)
 │   ├── services.html
 │   ├── tasks.html
+│   ├── travel.html            #   Business travel module
 │   ├── voice-agent.html       #   WIP — no matching route file
-│   └── wfh.html
+│   ├── wfh.html
+│   └── ems/
+│       └── index.html         #   EMS single-page app (tab-based, self-contained)
 ├── public/                    # Static assets served by Express
 │   ├── css/
 │   │   ├── variables.css      #   CSS variable defaults (overridden by /theme.css)
 │   │   ├── global.css         #   Shared layout & component styles
-│   │   └── pages.css          #   Page-specific styles
+│   │   ├── pages.css          #   Page-specific styles
+│   │   └── ems.css            #   EMS-specific styles (split-pane layout, folder tree, etc.)
 │   ├── js/
 │   │   ├── api.js             #   Shared utilities (API, Layout, Heartbeat, UI)
 │   │   ├── landing.js         #   Controller for landing/dashboard
@@ -83,7 +98,19 @@ No build step, no test runner, no TypeScript. The server runs directly with `nod
 │   │   ├── quick-services.js
 │   │   ├── resume-eval.js     #   Resume evaluation controller (AI feature)
 │   │   ├── tasks.js
-│   │   └── wfh.js
+│   │   ├── travel.js          #   Business travel controller
+│   │   ├── wfh.js
+│   │   └── ems/               #   EMS sub-controllers (loaded by views/ems/index.html)
+│   │       ├── index.js       #     Tab orchestrator + shared EMS state
+│   │       ├── documents.js   #     Document list, upload, download
+│   │       ├── folder-tree.js #     Recursive folder tree rendering
+│   │       ├── doc-viewer.js  #     In-page document preview
+│   │       ├── groups.js
+│   │       ├── users.js
+│   │       ├── audit.js
+│   │       ├── doctypes-mgr.js
+│   │       ├── metadata-mgr.js
+│   │       └── signature-pad.js #   Canvas-based digital signature capture
 │   └── assets/
 │       ├── logo.png
 │       └── login-bg.jpg
@@ -100,7 +127,18 @@ No build step, no test runner, no TypeScript. The server runs directly with `nod
 │   ├── news.json
 │   ├── notifications.json
 │   ├── policies.json
-│   └── settings.json          #   Theme colors, app name, logo path
+│   ├── settings.json          #   Theme colors, app name, logo path
+│   ├── travel.json            #   Business travel requests
+│   ├── ems-documents.json     #   EMS document records (metadata, not file bytes)
+│   ├── ems-folders.json       #   Folder tree
+│   ├── ems-groups.json        #   Access control groups
+│   ├── ems-users.json         #   EMS user permissions
+│   ├── ems-signatures.json    #   Signature request/completion records
+│   ├── ems-audit.json         #   Audit trail entries
+│   ├── ems-doctypes.json      #   Document type definitions
+│   └── ems-metadata.json      #   Custom metadata field schemas
+├── uploads/
+│   └── ems/                   #   Uploaded document files (served at /uploads/ems/*)
 ├── utils/
 │   └── teamsNotify.js         # Teams channel notification helper
 ├── teams-app/                 # Teams tab app (main portal)
@@ -274,6 +312,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 **Teams iframe support:** `Content-Security-Policy` frame-ancestors header allows Teams/Outlook domains. `X-Frame-Options` is removed. `app.set('trust proxy', 1)` is required for ngrok HTTPS detection.
 
+### Enterprise Document Management System (EMS)
+
+The EMS module (`/ems`) is architecturally different from all other modules:
+
+- **Single-page app inside the app:** `views/ems/index.html` is a self-contained SPA with a tab bar. It does not follow the 1-to-1 view/controller pattern — instead it loads multiple sub-controllers from `public/js/ems/` dynamically.
+- **Sub-router:** All API calls go to `/api/ems/*`, handled by `routes/ems/index.js` which mounts eight sub-routers.
+- **File uploads:** Actual document files are stored under `uploads/ems/` and served at `/uploads/ems/*` via a dedicated static route (no auth guard — session middleware runs before static). Document metadata is stored in `data/ems-documents.json`.
+- **Dedicated CSS:** `public/css/ems.css` contains EMS-specific layout (split-pane with resizable folder panel, tab panels, signature pad). Do not put EMS styles in `global.css` or `pages.css`.
+- **No approval workflow integration:** EMS does not create tasks in `data/tasks.json` — it manages its own access control via groups (`ems-groups.json`) and per-document permissions.
+
 ## Gotchas
 
 - `/theme.css` is dynamic — changes to `data/settings.json` colors reflect immediately without restart
@@ -285,5 +333,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 - **Data reset:** To reset all data to defaults, delete or truncate files in `data/` — there is no migration system
 - **Session reset:** Delete the `.sessions/` directory to log out all users (sessions stored as files here)
 - `data/settings.json` full structure: `colors.primary` (default `#198D87`), `colors.secondary` (default `#2C3E50`), `appName`, `logoPath`, and optionally `teamsGraph: { tenantId, clientId, clientSecret }`
+- **EMS uploads** are served without an auth guard because `express.static` runs before the session check at that mount point — keep this in mind if adding sensitive document types
+- **EMS is a SPA exception:** the standard 1-to-1 view/controller rule does not apply to `views/ems/` — `index.html` orchestrates multiple `public/js/ems/*.js` sub-controllers via script tags
 - Entity IDs are auto-generated as a type prefix + first 8 chars of uuid (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `W3A4F2G1` for WFH, `HD9B1C3D` for helpdesk). Helpdesk tickets additionally get a human-readable `ticketNo` in `TKT-YYYY-NNN` format
 - **WIP/Incomplete pages:** `erp-dialogue.html`, `leave-assistant.html`, `voice-agent.html` exist with HTML but lack JS controllers — do not rely on these functioning

@@ -1,0 +1,779 @@
+{
+  "info": {
+    "_postman_id": "0b4c2a4d-f8de-49b9-b82a-4ffa16ea6e63",
+    "name": "DocEval API V2 Unified Workplace Copy",
+    "description": "REST API collection for the DocEval AI evaluation platform. Base URL: https://doceval-8362469192e8.herokuapp.com",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29547552"
+  },
+  "item": [
+    {
+      "name": "RFP",
+      "item": [
+        {
+          "name": "List RFP Contexts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/rfp/contexts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rfp",
+                "contexts"
+              ]
+            },
+            "description": "Returns all available RFP contexts"
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"contexts\": [\n        {\n            \"context_id\": \"RFP1\",\n            \"title\": \"RFP1: Integrated Digital Platform Build\"\n        },\n        {\n            \"context_id\": \"RFP2\",\n            \"title\": \"RFP2: Digital Platform SOW Delivery\"\n        },\n        {\n            \"context_id\": \"RFP3\",\n            \"title\": \"RFP3: Enterprise Platform Transformation\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Fetch RFP Criteria",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/rfp/context/{{rfp_context_id}}/criteria",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rfp",
+                "context",
+                "{{rfp_context_id}}",
+                "criteria"
+              ]
+            },
+            "description": "Returns weighted criteria for a specific RFP context"
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"context_id\": \"RFP1\",\n    \"criteria\": [\n        {\"name\": \"Technical Architecture\", \"weight\": 25},\n        {\"name\": \"Vendor Experience\", \"weight\": 25},\n        {\"name\": \"Functional Coverage\", \"weight\": 20},\n        {\"name\": \"Security & Compliance\", \"weight\": 15},\n        {\"name\": \"Cost & Support Model\", \"weight\": 15}\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Upload RFP Context",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "RFP document (PDF or DOCX). The LLM will extract title, criteria, and requirements automatically.",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/rfp/upload-context",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rfp",
+                "upload-context"
+              ]
+            },
+            "description": "Upload an RFP PDF or DOCX file. The server extracts criteria and requirements via LLM and persists the context to rfp_data.json. Returns a context_id to use in subsequent analyze calls."
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"context_id\": \"UPLOAD_A1B2C3D4\",\n    \"title\": \"RFP: Cloud Infrastructure Modernization\",\n    \"criteria\": [\n        {\"name\": \"Technical Architecture\", \"weight\": 30},\n        {\"name\": \"Security & Compliance\", \"weight\": 25},\n        {\"name\": \"Cost Structure\", \"weight\": 25},\n        {\"name\": \"Vendor Experience\", \"weight\": 20}\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Analyze RFP Proposals",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "context_id",
+                  "value": "{{rfp_context_id}}",
+                  "type": "text",
+                  "description": "The RFP context ID"
+                },
+                {
+                  "key": "criteria_payload",
+                  "value": "[{\"name\":\"Cloud Architecture\",\"weight\":40},{\"name\":\"Security Standards\",\"weight\":20},{\"name\":\"Data Residency\",\"weight\":20},{\"name\":\"Cost Structure\",\"weight\":20}]",
+                  "type": "text",
+                  "description": "Stringified JSON array of criteria with weights (must sum to 100)"
+                },
+                {
+                  "key": "files",
+                  "type": "file",
+                  "description": "One or more proposal PDF files",
+                  "src": [
+                    "/D:/Pre Sales/Generic Demos/Unified Workplace Demo/AI Test Files/Proposal_Alpha_Digital_Solutions.pdf",
+                    "/D:/Pre Sales/Generic Demos/Unified Workplace Demo/AI Test Files/Proposal_Beta_Tech_Innovations.pdf",
+                    "/D:/Pre Sales/Generic Demos/Unified Workplace Demo/AI Test Files/Proposal_Gamma_Innovations.pdf"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/rfp/analyze",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rfp",
+                "analyze"
+              ]
+            },
+            "description": "Upload proposal files and evaluate them against weighted RFP criteria"
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"report_id\": \"rpt_ae1d4be4\",\n    \"sections\": []\n}"
+            }
+          ]
+        },
+        {
+          "name": "RFP Report Chat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Add a section about culture fit\",\n  \"chat_history\": [],\n  \"previous_report\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/rfp/reports/{{report_id}}/chat",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "rfp",
+                "reports",
+                "{{report_id}}",
+                "chat"
+              ]
+            },
+            "description": "Chat with the RFP report to refine or extend it. Pass the full previous report in `previous_report` and conversation history in `chat_history`."
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"message\": \"Added 'culture fit' section and recalculated all scores.\",\n    \"full_report\": {\n        \"sections\": []\n    }\n}"
+            }
+          ]
+        }
+      ],
+      "description": "RFP context, criteria, analysis and chat endpoints"
+    },
+    {
+      "name": "HR",
+      "item": [
+        {
+          "name": "List HR Contexts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/hr/contexts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "hr",
+                "contexts"
+              ]
+            },
+            "description": "Returns all available HR job requirement contexts"
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"contexts\": [\n        {\"context_id\": \"ENG\", \"title\": \"REQ-1001: Senior Full-Stack Engineer\"},\n        {\"context_id\": \"PM\", \"title\": \"REQ-1002: Infrastructure Project Manager\"},\n        {\"context_id\": \"DIR\", \"title\": \"REQ-1003: Director of Cloud Operations\"},\n        {\"context_id\": \"UX\", \"title\": \"REQ-1004: UX / UI Designer\"},\n        {\"context_id\": \"AIE\", \"title\": \"REQ-1005: AI Engineer\"}\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Fetch HR Criteria",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/hr/context/{{hr_context_id}}/criteria",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "hr",
+                "context",
+                "{{hr_context_id}}",
+                "criteria"
+              ]
+            },
+            "description": "Returns weighted evaluation criteria for a specific HR job context"
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"context_id\": \"ENG\",\n    \"criteria\": [\n        {\"name\": \"System Design\", \"weight\": 40},\n        {\"name\": \"React/Node.js Expertise\", \"weight\": 30},\n        {\"name\": \"Agile Experience\", \"weight\": 15},\n        {\"name\": \"Cultural Fit\", \"weight\": 15}\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Analyze HR Resumes",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "context_id",
+                  "value": "{{hr_context_id}}",
+                  "type": "text",
+                  "description": "The HR context ID"
+                },
+                {
+                  "key": "criteria_payload",
+                  "value": "[{\"name\":\"Python\",\"weight\":30},{\"name\":\"ML Experience\",\"weight\":40},{\"name\":\"Communication\",\"weight\":30}]",
+                  "type": "text",
+                  "description": "Stringified JSON array of criteria with weights (must sum to 100)"
+                },
+                {
+                  "key": "files",
+                  "type": "file",
+                  "description": "One or more resume files (PDF or DOCX)",
+                  "src": [
+                    "/D:/Pre Sales/Generic Demos/Unified Workplace Demo/AI Test Files/EbrahimMoustafaAbdelmawgoud(ML)_.pdf",
+                    "/D:/Pre Sales/Generic Demos/Unified Workplace Demo/AI Test Files/OmarWaleedCV.pdf",
+                    "/D:/Pre Sales/Generic Demos/Unified Workplace Demo/AI Test Files/Youssef_Ashraf_Resume - Copy.pdf"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/hr/analyze",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "hr",
+                "analyze"
+              ]
+            },
+            "description": "Upload resume files and evaluate them against a predefined HR context and weighted criteria"
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"report_id\": \"rpt_738c34c5\",\n    \"sections\": []\n}"
+            }
+          ]
+        },
+        {
+          "name": "Analyze HR Resumes (Custom Description)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "custom_description",
+                  "value": "We are looking for a senior Python developer with 5+ years of experience in FastAPI, cloud platforms (AWS or Azure), and machine learning pipelines. The ideal candidate has strong communication skills and experience working in agile teams.",
+                  "type": "text",
+                  "description": "Free-text job description to evaluate candidates against"
+                },
+                {
+                  "key": "criteria_payload",
+                  "value": "[{\"name\":\"Python\",\"weight\":40},{\"name\":\"ML Experience\",\"weight\":35},{\"name\":\"Communication\",\"weight\":25}]",
+                  "type": "text",
+                  "description": "Stringified JSON array of criteria with weights (must sum to 100)"
+                },
+                {
+                  "key": "files",
+                  "type": "file",
+                  "description": "One or more resume files (PDF or DOCX)",
+                  "src": [
+                    "/D:/Pre Sales/Generic Demos/Unified Workplace Demo/AI Test Files/EbrahimMoustafaAbdelmawgoud(ML)_.pdf",
+                    "/D:/Pre Sales/Generic Demos/Unified Workplace Demo/AI Test Files/OmarWaleedCV.pdf"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/hr/analyze/custom_job_description",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "hr",
+                "analyze",
+                "custom_job_description"
+              ]
+            },
+            "description": "Upload resume files and evaluate them against a custom free-text job description instead of a predefined context"
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"report_id\": \"rpt_a1b2c3d4\",\n    \"sections\": []\n}"
+            }
+          ]
+        },
+        {
+          "name": "Generate HR Criteria from Description",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"We are looking for a senior Python developer with 5+ years of experience in FastAPI, cloud platforms (AWS or Azure), and machine learning pipelines. The ideal candidate has strong communication skills and experience working in agile teams.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/hr/generate-criteria",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "hr",
+                "generate-criteria"
+              ]
+            },
+            "description": "Pass a free-text job description and the LLM will extract and return a weighted criteria list automatically"
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"criteria\": [\n        {\"name\": \"Python\", \"weight\": 35},\n        {\"name\": \"FastAPI\", \"weight\": 25},\n        {\"name\": \"ML Pipelines\", \"weight\": 25},\n        {\"name\": \"Agile & Communication\", \"weight\": 15}\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "HR Report Chat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Add a section about soft skills\",\n  \"chat_history\": [],\n  \"previous_report\": {\n    \"report_id\": \"{{report_id}}\",\n    \"sections\": []\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/hr/reports/{{report_id}}/chat",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "hr",
+                "reports",
+                "{{report_id}}",
+                "chat"
+              ]
+            },
+            "description": "Chat with the HR report to refine or extend it. Pass the full previous report in `previous_report` and conversation history in `chat_history`."
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"message\": \"A new section on soft skills has been added for each candidate.\",\n    \"full_report\": {\n        \"sections\": [],\n        \"report_id\": \"rpt_738c34c5\"\n    }\n}"
+            }
+          ]
+        }
+      ],
+      "description": "HR context, criteria, resume analysis and chat endpoints"
+    },
+    {
+      "name": "General Knowledge Base",
+      "item": [
+        {
+          "name": "Ingest Documents",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "description": "One or more PDF files (max 5)",
+                  "src": [
+                    "/D:/Pre Sales/Generic Demos/Unified Workplace Demo/AI Test Files/Proposal_Alpha_Digital_Solutions.pdf",
+                    "/D:/Pre Sales/Generic Demos/Unified Workplace Demo/AI Test Files/Proposal_Beta_Tech_Innovations.pdf",
+                    "/D:/Pre Sales/Generic Demos/Unified Workplace Demo/AI Test Files/Proposal_Gamma_Innovations.pdf"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/general/ingest",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "general",
+                "ingest"
+              ]
+            },
+            "description": "Upload PDF files to create a queryable knowledge base session. Returns a session_id to use in subsequent queries."
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"session_id\": \"general_a619a6ec\",\n    \"message\": \"PDFs ingested successfully.\",\n    \"files\": [\n        \"Proposal_Alpha_Digital_Solutions.pdf\",\n        \"Proposal_Beta_Tech_Innovations.pdf\",\n        \"Proposal_Gamma_Innovations.pdf\"\n    ],\n    \"chunks\": 27\n}"
+            }
+          ]
+        },
+        {
+          "name": "Query Knowledge Base",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{general_session_id}}\",\n  \"question\": \"What is the main topic?\",\n  \"chat_history\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/general/query",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "general",
+                "query"
+              ]
+            },
+            "description": "Query the ingested documents using a question. Pass `chat_history` as an array to maintain conversational context across multiple queries."
+          },
+          "response": [
+            {
+              "name": "Sample Response",
+              "originalRequest": {
+                "header": [],
+                "url": {
+                  "raw": ""
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "Text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"session_id\": \"general_a619a6ec\",\n    \"answer\": \"The main topic is proposals for the development, support, and maintenance of digital platforms.\",\n    \"sources\": [\n        \"Proposal_Alpha_Digital_Solutions.pdf\",\n        \"Proposal_Gamma_Innovations.pdf\",\n        \"Proposal_Beta_Tech_Innovations.pdf\"\n    ],\n    \"retrieved_chunks\": 5\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Ingest and query generic documents"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://doceval-8362469192e8.herokuapp.com"
+    },
+    {
+      "key": "rfp_context_id",
+      "value": "RFP1"
+    },
+    {
+      "key": "hr_context_id",
+      "value": "ENG"
+    },
+    {
+      "key": "report_id",
+      "value": "rpt_12345678"
+    },
+    {
+      "key": "general_session_id",
+      "value": "general_abcdef12"
+    }
+  ]
+}

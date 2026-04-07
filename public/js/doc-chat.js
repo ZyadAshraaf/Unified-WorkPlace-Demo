@@ -43,10 +43,36 @@ async function dePost(path, body, isFormData = false) {
 /* ════════════════════════════════════════════════════════════
    Wizard step management
    ════════════════════════════════════════════════════════════ */
+let _loadingStepInterval = null;
+
+function startLoadingStepCycle() {
+  const steps = document.querySelectorAll('#step2 .ai-loading-step');
+  let current = 0;
+  steps.forEach((s, i) => s.classList.toggle('active', i === 0));
+  _loadingStepInterval = setInterval(() => {
+    if (current >= steps.length - 1) {
+      clearInterval(_loadingStepInterval);
+      _loadingStepInterval = null;
+      return;
+    }
+    steps[current].classList.remove('active');
+    current++;
+    steps[current].classList.add('active');
+  }, 4000);
+}
+
+function stopLoadingStepCycle() {
+  if (_loadingStepInterval) { clearInterval(_loadingStepInterval); _loadingStepInterval = null; }
+  document.querySelectorAll('#step2 .ai-loading-step').forEach((s, i) => s.classList.toggle('active', i === 0));
+}
+
 function showStep(n) {
   document.getElementById('step1').classList.toggle('d-none', n !== 1);
   document.getElementById('step2').classList.toggle('d-none', n !== 2);
   document.getElementById('step3').classList.toggle('d-none', n !== 3);
+
+  if (n === 2) startLoadingStepCycle();
+  else         stopLoadingStepCycle();
 
   [1, 2, 3].forEach(i => {
     const el = document.getElementById(`wizStep${i}`);

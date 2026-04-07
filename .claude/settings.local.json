@@ -135,7 +135,8 @@
       "Bash(node teams-app-tasks/update-url.js https://gps-transaction-promising-media.trycloudflare.com)",
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\" https://gps-transaction-promising-media.trycloudflare.com/)",
       "Bash(xargs grep:*)",
-      "Bash(wc -l \"D:\\\\Pre Sales\\\\Generic Demos\\\\Unified Workplace Demo\\\\data\"/*.json)"
+      "Bash(wc -l \"D:\\\\Pre Sales\\\\Generic Demos\\\\Unified Workplace Demo\\\\data\"/*.json)",
+      "Bash(mkdir:*)"
     ]
   }
 }

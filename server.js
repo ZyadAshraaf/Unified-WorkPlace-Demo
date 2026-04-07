@@ -60,9 +60,13 @@ function buildThemeCSS(settings) {
 app.set('trust proxy', 1);
 
 // ─── Middleware ────────────────────────────────────────────────────────────────
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve EMS uploads (no separate auth guard — session middleware runs after static,
+// and files are referenced by opaque document IDs; download API has its own auth)
+app.use('/uploads/ems', express.static(path.join(__dirname, 'uploads', 'ems')));
 
 // Allow embedding in Microsoft Teams iframe
 app.use((req, res, next) => {
@@ -146,6 +150,7 @@ app.use('/api/wfh',      require('./routes/wfh'));
 app.use('/api/hr-chat',   require('./routes/hr-chat'));
 app.use('/api/doceval-proxy', require('./routes/doceval'));
 app.use('/api/travel',   require('./routes/travel'));
+app.use('/api/ems',      require('./routes/ems/index'));
 
 app.get('/api/me', requireAuth, (req, res) => {
   res.json({ success: true, user: req.session.user });
@@ -172,6 +177,11 @@ pages.forEach(page => {
   app.get(route, requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', `${file}.html`));
   });
+});
+
+// ─── EMS View Route ──────────────────────────────────────────────────────────
+app.get('/ems', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'ems', 'index.html'));
 });
 
 // ─── 404 ──────────────────────────────────────────────────────────────────────
