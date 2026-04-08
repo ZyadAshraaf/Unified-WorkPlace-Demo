@@ -287,5 +287,48 @@
     "trashedAt": null,
     "lockedBy": null,
     "lockedAt": null
+  },
+  {
+    "id": "DOC4041BA18",
+    "title": "Proposal",
+    "description": "Proposal",
+    "folderId": "FLD1A2B3C08",
+    "docTypeId": "DT007",
+    "metadata": {
+      "proposal_number": "100",
+      "client_name": "Proposal",
+      "proposal_date": "2026-04-24",
+      "proposal_amount": 100,
+      "validity_days": 30
+    },
+    "status": "active",
+    "createdBy": "u001",
+    "createdAt": "2026-04-08T16:21:20.621Z",
+    "updatedAt": "2026-04-08T16:21:20.622Z",
+    "currentVersion": 1,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "Proposal_Alpha_Digital_Solutions.pdf",
+        "storagePath": "uploads/ems/DOC4041BA18_v1.pdf",
+        "mimeType": "application/pdf",
+        "size": 227895,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-04-08T16:21:20.622Z",
+        "notes": "Initial upload"
+      }
+    ],
+    "signatures": [],
+    "watermark": {
+      "enabled": false,
+      "text": "CONFIDENTIAL",
+      "opacity": 0.15,
+      "angle": -30
+    },
+    "annotations": [],
+    "starred": [],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
   }
 ]

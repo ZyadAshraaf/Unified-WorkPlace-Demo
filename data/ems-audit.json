@@ -262,5 +262,16 @@
     "userName": "Ahmed Al-Rashidi",
     "details": "Applied signature",
     "timestamp": "2026-04-08T09:24:22.613Z"
+  },
+  {
+    "id": "AUD5425CF63",
+    "action": "document.upload",
+    "entityType": "document",
+    "entityId": "DOC4041BA18",
+    "entityName": "Proposal",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Created document with file upload",
+    "timestamp": "2026-04-08T16:21:20.624Z"
   }
 ]

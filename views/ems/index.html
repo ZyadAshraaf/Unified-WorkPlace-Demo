@@ -162,6 +162,8 @@
                   <ul class="dropdown-menu">
                     <li><button class="dropdown-item" id="btnBulkMove"><i class="bi bi-folder-symlink me-1"></i>Move</button></li>
                     <li><button class="dropdown-item text-danger" id="btnBulkDelete"><i class="bi bi-trash3 me-1"></i>Delete</button></li>
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li><button class="dropdown-item" id="btnBulkKnowledgeChat"><i class="bi bi-chat-dots me-1"></i>Knowledge Conversation</button></li>
                   </ul>
                 </div>
               </div>
@@ -858,6 +860,40 @@
   </div>
 </div>
 
+<!-- Knowledge Chat Drawer (fixed right panel) -->
+<div class="kc-backdrop" id="kcBackdrop"></div>
+<div class="kc-drawer" id="knowledgeChatWrap">
+  <div class="kc-drawer-header">
+    <div class="kc-drawer-title-wrap">
+      <i class="bi bi-chat-dots-fill kc-header-icon"></i>
+      <div>
+        <div class="kc-drawer-title" id="knowledgeChatTitle">Ask Documents</div>
+        <div class="kc-drawer-sub" id="kcDocSubtitle"></div>
+      </div>
+    </div>
+    <button class="kc-close-btn" id="btnBackFromChat" title="Close"><i class="bi bi-x-lg"></i></button>
+  </div>
+
+  <!-- Loading state -->
+  <div class="kc-loading-state" id="knowledgeChatLoading">
+    <div class="kc-loading-spinner">
+      <span class="spinner-border" style="width:36px;height:36px;color:var(--color-primary);"></span>
+    </div>
+    <div class="kc-loading-label">Indexing documents…</div>
+    <div class="kc-loading-sub">This may take a few seconds</div>
+  </div>
+
+  <!-- Chat state (hidden until ready) -->
+  <div class="kc-body d-none" id="kcChatBody">
+    <div class="kc-doc-chips" id="kcDocChips"></div>
+    <div class="kc-messages" id="kcMessages"></div>
+    <div class="kc-input-row" id="kcInputRow">
+      <input type="text" class="form-control" id="kcInput" placeholder="Ask a question…">
+      <button class="btn btn-primary kc-send-btn" id="kcSendBtn"><i class="bi bi-send"></i></button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/ems/folder-tree.js"></script>
@@ -867,6 +903,7 @@
 <script src="/js/ems/audit.js"></script>
 <script src="/js/ems/signature-pad.js"></script>
 <script src="/js/ems/doc-viewer.js"></script>
+<script src="/js/ems/knowledge-chat.js"></script>
 <script src="/js/ems/doctypes-mgr.js"></script>
 <script src="/js/ems/metadata-mgr.js"></script>
 <script src="/js/ems/index.js"></script>

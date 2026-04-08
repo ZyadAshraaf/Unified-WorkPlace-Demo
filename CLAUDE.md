@@ -40,6 +40,7 @@ No build step, no test runner, no TypeScript. The server runs directly with `nod
 │   ├── tasks.js
 │   ├── travel.js              #   Business travel (flight/hotel search + approval)
 │   ├── wfh.js
+│   ├── doceval.js             #   Transparent proxy to external Heroku AI service (avoids CORS)
 │   └── ems/                   #   Enterprise Document Management System
 │       ├── index.js           #     Sub-router mounting all EMS sub-routes at /api/ems
 │       ├── documents.js       #     CRUD + file upload for documents
