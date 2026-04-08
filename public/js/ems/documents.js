@@ -119,7 +119,7 @@ const EMS_Documents = (() => {
         <td><span class="doc-type-badge" style="background:${dt.color}15;color:${dt.color};"><i class="bi ${dt.icon} me-1"></i>${dt.name}</span></td>
         <td class="text-center">v${doc.currentVersion || 0}</td>
         <td><small>${UI.formatDate(doc.updatedAt)}</small></td>
-        <td onclick="event.stopPropagation();">
+        <td>
           <div class="d-flex align-items-center gap-1">
             <span class="doc-star ${isStarred ? 'starred' : ''}" onclick="EMS_Documents.toggleStar('${doc.id}')" title="Star">
               <i class="bi ${isStarred ? 'bi-star-fill' : 'bi-star'}"></i>
@@ -282,6 +282,7 @@ const EMS_Documents = (() => {
       document.getElementById('docViewerWrap').classList.add('d-none');
       activeDocId = null;
     });
+
   }
 
   // ─── Upload Flow ──────────────────────────────

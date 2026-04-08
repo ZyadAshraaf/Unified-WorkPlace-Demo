@@ -556,7 +556,11 @@
                   <textarea
                     id="jdTextarea"
                     class="jd-textarea"
-                    placeholder="Paste or type the full job description here — role, responsibilities, requirements, skills…"></textarea>
+                    placeholder="Paste or type the full job description here — role, responsibilities, requirements, skills…"
+                    oninput="updateJdCharCount()"></textarea>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;margin-bottom:10px">
+                    <span id="jdCharCount" style="font-size:11px;color:var(--color-text-muted)">0 / 6,000 characters</span>
+                  </div>
                   <button class="btn-generate" id="btnGenerateCriteria" type="button">
                     <i class="bi bi-stars"></i> Generate Evaluation Criteria
                   </button>

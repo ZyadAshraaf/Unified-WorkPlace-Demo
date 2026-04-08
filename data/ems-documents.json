@@ -167,8 +167,8 @@
     "status": "active",
     "createdBy": "u004",
     "createdAt": "2026-03-28T16:00:00Z",
-    "updatedAt": "2026-04-07T09:15:33.169Z",
-    "currentVersion": 2,
+    "updatedAt": "2026-04-08T09:24:22.612Z",
+    "currentVersion": 3,
     "versions": [
       {
         "version": 1,
@@ -189,13 +189,54 @@
         "uploadedBy": "u001",
         "uploadedAt": "2026-04-07T09:15:33.169Z",
         "notes": "Version 2"
+      },
+      {
+        "version": 3,
+        "filename": "OmarWaleedCV.pdf",
+        "storagePath": "uploads/ems/DOC1A2B3C04_v3.pdf",
+        "mimeType": "application/pdf",
+        "size": 89173,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-04-07T21:39:37.849Z",
+        "notes": "Version 3"
       }
     ],
-    "signatures": [],
+    "signatures": [
+      {
+        "signatureId": "SIGBC3D8BEE",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-04-08T09:21:28.416Z",
+        "type": "drawn",
+        "x": 5,
+        "y": 70,
+        "width": 22
+      },
+      {
+        "signatureId": "SIGBC3D8BEE",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-04-08T09:24:06.615Z",
+        "type": "drawn",
+        "x": 30.4,
+        "y": 41.6,
+        "width": 22
+      },
+      {
+        "signatureId": "SIG29BAE277",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-04-08T09:24:22.612Z",
+        "type": "drawn",
+        "x": 41.6,
+        "y": 40,
+        "width": 22
+      }
+    ],
     "watermark": {
-      "enabled": false,
-      "text": "",
-      "opacity": 0.15,
+      "enabled": true,
+      "text": "CONFIDENTIAL",
+      "opacity": 0.5,
       "angle": -30
     },
     "annotations": [],

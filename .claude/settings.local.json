@@ -136,7 +136,17 @@
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\" https://gps-transaction-promising-media.trycloudflare.com/)",
       "Bash(xargs grep:*)",
       "Bash(wc -l \"D:\\\\Pre Sales\\\\Generic Demos\\\\Unified Workplace Demo\\\\data\"/*.json)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(node -e \"require\\('pdf-lib'\\); console.log\\('ok'\\)\")",
+      "Bash(node -e \"const d=require\\('./data/ems-documents.json'\\); const doc=d.find\\(x=>x.versions&&x.versions.length\\); if\\(doc\\){const v=doc.versions[doc.versions.length-1]; console.log\\('storagePath:', v.storagePath\\); console.log\\('mimeType:', v.mimeType\\);} else console.log\\('no docs with versions'\\);\")",
+      "Bash(node -e ':*)",
+      "Bash(node -e \"try { require\\('pdf-lib'\\); console.log\\('pdf-lib OK'\\); } catch\\(e\\) { console.log\\('MISSING:', e.message\\); }\")",
+      "Bash(node -e \"const sigs = JSON.parse\\(require\\('fs'\\).readFileSync\\('data/ems-signatures.json','utf8'\\)\\); console.log\\('Total sigs:', sigs.length\\); sigs.forEach\\(s => console.log\\(s.id, s.name, 'hasImage:', !!s.imageData, 'imageLen:', \\(s.imageData||''\\).length\\)\\)\")",
+      "Bash(tasklist)",
+      "Bash(wmic process:*)",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Select-Object Id, CommandLine | Format-Table -AutoSize\")",
+      "Bash(powershell:*)",
+      "Bash(node -e \"const u = JSON.parse\\(require\\('fs'\\).readFileSync\\('data/users.json','utf8'\\)\\); u.forEach\\(x => console.log\\(x.id, x.email, x.role\\)\\)\")"
     ]
   }
 }

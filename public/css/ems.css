@@ -124,6 +124,20 @@
 .saved-sig-card img { max-height: 50px; max-width: 100%; }
 .saved-sig-card .sig-name { font-size: 11px; color: var(--color-text-muted); margin-top: 4px; }
 
+/* Signature placement banner */
+.sig-placement-banner { display: flex; align-items: center; gap: 10px; padding: 8px 16px; background: var(--color-primary-faint); border-bottom: 2px solid var(--color-primary-lighter); font-size: 13px; font-weight: 500; color: var(--color-primary-dark); flex-shrink: 0; }
+
+/* Draggable ghost during placement */
+.sig-placement-ghost { position: absolute; width: 22%; min-width: 120px; cursor: grab; z-index: 30; opacity: 0.9; border: 2px dashed var(--color-primary); border-radius: 6px; background: rgba(255,255,255,0.85); padding: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); user-select: none; touch-action: none; }
+.sig-placement-ghost:active { cursor: grabbing; }
+.sig-placement-ghost img { width: 100%; display: block; pointer-events: none; }
+.sig-placement-ghost-hint { font-size: 10px; text-align: center; color: var(--color-primary); margin-top: 4px; }
+
+/* Placed signature overlays */
+.sig-placed-overlay { position: absolute; z-index: 10; pointer-events: none; }
+.sig-placed-overlay img { width: 100%; display: block; }
+.sig-placed-meta { font-size: 9px; color: var(--color-text-muted); text-align: right; margin-top: 1px; white-space: nowrap; }
+
 /* Version history */
 .version-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--color-border-light); }
 .version-item:last-child { border-bottom: none; }

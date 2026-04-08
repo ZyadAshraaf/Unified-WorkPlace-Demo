@@ -260,27 +260,97 @@ router.delete('/:id/permanent', requireAuth, (req, res) => {
   res.json({ success: true });
 });
 
-// POST — apply signature
-router.post('/:id/sign', requireAuth, (req, res) => {
-  const { signatureId } = req.body;
-  if (!signatureId) return res.status(400).json({ success: false, message: 'signatureId is required' });
+// POST — apply signature: embeds it into the PDF using pdf-lib (async)
+router.post('/:id/sign', requireAuth, async (req, res) => {
+  try {
+    const { signatureId, x, y, width } = req.body;
+    console.log('[SIGN] Request received for doc:', req.params.id, 'sig:', signatureId, 'pos:', { x, y, width });
 
-  const docs = readDocs();
-  const idx = docs.findIndex(d => d.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ success: false, message: 'Document not found' });
+    if (!signatureId) return res.status(400).json({ success: false, message: 'signatureId is required' });
+    if (x == null || y == null) return res.status(400).json({ success: false, message: 'Position (x, y) is required' });
 
-  docs[idx].signatures.push({
-    signatureId,
-    userId: req.session.user.id,
-    userName: req.session.user.name,
-    signedAt: new Date().toISOString(),
-    type: 'drawn'
-  });
-  docs[idx].updatedAt = new Date().toISOString();
+    const docs = readDocs();
+    const idx  = docs.findIndex(d => d.id === req.params.id);
+    if (idx === -1) return res.status(404).json({ success: false, message: 'Document not found' });
 
-  writeDocs(docs);
-  logAudit('document.sign', 'document', docs[idx].id, docs[idx].title, req.session.user, 'Applied signature');
-  res.json({ success: true, document: docs[idx] });
+    const doc = docs[idx];
+
+    // Look up the signature imageData (base64 PNG)
+    const sigDataPath = path.join(__dirname, '../../data/ems-signatures.json');
+    const sigs        = JSON.parse(fs.readFileSync(sigDataPath, 'utf8'));
+    const sig         = sigs.find(s => s.id === signatureId);
+    if (!sig?.imageData) {
+      console.log('[SIGN] Signature not found or no imageData. sigId:', signatureId, 'found:', !!sig);
+      return res.status(400).json({ success: false, message: 'Signature image not found' });
+    }
+
+    const xPct     = parseFloat(x)     || 10;
+    const yPct     = parseFloat(y)     || 80;
+    const widthPct = parseFloat(width) || 20;
+    console.log('[SIGN] Parsed position: x=', xPct, 'y=', yPct, 'w=', widthPct);
+
+    // If the document has a PDF version, bake the signature into the file
+    const latestVer = doc.versions?.[doc.versions.length - 1];
+    console.log('[SIGN] Latest version:', latestVer?.storagePath, 'mime:', latestVer?.mimeType);
+
+    if (latestVer && latestVer.mimeType === 'application/pdf') {
+      const { PDFDocument } = require('pdf-lib');
+
+      const pdfFilePath = path.join(__dirname, '../../', latestVer.storagePath);
+      console.log('[SIGN] PDF path:', pdfFilePath, 'exists:', fs.existsSync(pdfFilePath));
+
+      if (!fs.existsSync(pdfFilePath)) {
+        console.warn('[SIGN] PDF file not found on disk:', pdfFilePath);
+      } else {
+        const pdfBytes = fs.readFileSync(pdfFilePath);
+        console.log('[SIGN] PDF loaded, size:', pdfBytes.length);
+
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+
+        const base64Data = sig.imageData.replace(/^data:image\/\w+;base64,/, '');
+        const imgBytes   = Buffer.from(base64Data, 'base64');
+        const pngImage   = await pdfDoc.embedPng(imgBytes);
+        console.log('[SIGN] PNG embedded, dims:', pngImage.width, 'x', pngImage.height);
+
+        const page  = pdfDoc.getPages()[0];
+        const pageW = page.getWidth();
+        const pageH = page.getHeight();
+
+        const sigW = (widthPct / 100) * pageW;
+        const sigH = sigW * (pngImage.height / pngImage.width);
+        const sigX = (xPct / 100) * pageW;
+        const sigY = pageH - (yPct / 100) * pageH - sigH;
+        console.log('[SIGN] Draw at:', { sigX, sigY, sigW, sigH, pageW, pageH });
+
+        page.drawImage(pngImage, { x: sigX, y: sigY, width: sigW, height: sigH });
+
+        const savedPdf = await pdfDoc.save();
+        fs.writeFileSync(pdfFilePath, Buffer.from(savedPdf));
+        console.log('[SIGN] PDF written, new size:', savedPdf.length);
+      }
+    }
+
+    // Record the signature in the document metadata
+    doc.signatures.push({
+      signatureId,
+      userId:   req.session.user.id,
+      userName: req.session.user.name,
+      signedAt: new Date().toISOString(),
+      type:     'drawn',
+      x:        xPct,
+      y:        yPct,
+      width:    widthPct
+    });
+    doc.updatedAt = new Date().toISOString();
+
+    writeDocs(docs);
+    logAudit('document.sign', 'document', doc.id, doc.title, req.session.user, 'Applied signature');
+    console.log('[SIGN] Success — metadata saved, responding');
+    res.json({ success: true, document: doc });
+  } catch (err) {
+    console.error('[SIGN] Error:', err);
+    res.status(500).json({ success: false, message: 'Failed to apply signature: ' + err.message });
+  }
 });
 
 // PUT — watermark config

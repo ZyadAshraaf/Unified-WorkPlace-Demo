@@ -199,6 +199,16 @@
                   <button class="btn btn-sm btn-outline-primary" id="btnViewerLock" title="Lock"><i class="bi bi-lock"></i></button>
                 </div>
               </div>
+              <!-- Signature placement banner (hidden until placement mode) -->
+              <div id="signPlacementBanner" class="sig-placement-banner d-none">
+                <i class="bi bi-cursor-fill"></i>
+                <span>Drag the signature to where you want it on the document</span>
+                <div class="ms-auto d-flex gap-2">
+                  <button class="btn btn-sm btn-outline-secondary" onclick="EMS_DocViewer.cancelPlacement()">Cancel</button>
+                  <button class="btn btn-sm btn-primary" onclick="EMS_DocViewer.confirmPlacement()"><i class="bi bi-check2 me-1"></i>Place Signature</button>
+                </div>
+              </div>
+
               <div class="doc-viewer-body" id="docViewerBody">
                 <div class="doc-viewer-placeholder">
                   <i class="bi bi-file-earmark-text" style="font-size:4rem;opacity:.2;"></i>
@@ -527,7 +537,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-primary" id="btnApplySignature"><i class="bi bi-pen me-1"></i>Apply Signature</button>
+        <button class="btn btn-primary" id="btnApplySignature"><i class="bi bi-cursor me-1"></i>Place on Document</button>
       </div>
     </div>
   </div>

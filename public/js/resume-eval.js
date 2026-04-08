@@ -47,8 +47,17 @@ async function dePost(path, body, isFormData = false) {
   const res = await fetch(DOCEVAL_BASE + path, opts);
   if (!res.ok) {
     let detail = '';
-    try { const j = await res.json(); detail = j.detail || j.error || j.message || ''; } catch {}
-    throw new Error(`${res.status} ${res.statusText}${detail ? ' — ' + detail : ''}`);
+    try {
+      const ct = res.headers.get('content-type') || '';
+      if (ct.includes('application/json')) {
+        const j = await res.json();
+        detail = j.message || j.detail || j.error || '';
+      } else {
+        // HTML or plain-text error (e.g. raw Heroku error page leaking through)
+        detail = 'The AI service returned an unexpected error. Please try again.';
+      }
+    } catch {}
+    throw new Error(`${res.status}${detail ? ' — ' + detail : ' ' + res.statusText}`);
   }
   return res.json();
 }
@@ -248,9 +257,24 @@ async function runEvaluation() {
     return UI.toast('Upload at least one CV / resume PDF', 'warning');
 
   if (jdMode === 'custom') {
-    customDescription = document.getElementById('jdTextarea').value.trim();
+    // Sanitize: normalize line endings, replace multi-byte Unicode punctuation with
+    // ASCII equivalents, and strip control chars. Some Python multipart parsers on
+    // Heroku misread non-ASCII bytes in form fields when no charset is declared,
+    // which crashes the server. Safe ASCII-equivalent substitutions preserve meaning.
+    customDescription = document.getElementById('jdTextarea').value
+      .replace(/\r\n/g, '\n').replace(/\r/g, '\n')               // normalise CRLF → LF
+      .replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'")   // curly single quotes → '
+      .replace(/[\u201C\u201D\u201E\u201F\u2033\u2036]/g, '"')   // curly double quotes → "
+      .replace(/[\u2013\u2014\u2015\u2212]/g, '-')               // en-dash, em-dash, minus → -
+      .replace(/[\u2022\u2023\u2024\u2025]/g, '*')               // bullet variants → *
+      .replace(/\u2026/g, '...')                                  // ellipsis → ...
+      .replace(/[\u00A0\u202F\u2009\u200A]/g, ' ')               // non-breaking / thin spaces → space
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')         // strip remaining control chars
+      .trim();
     if (!customDescription)
       return UI.toast('Enter a job description before running evaluation', 'warning');
+    if (customDescription.length > 6000)
+      return UI.toast(`Job description is too long (${customDescription.length} chars). Please keep it under 6,000 characters to avoid timeouts.`, 'warning');
   } else {
     if (!selectedContext)
       return UI.toast('Select a job vacancy from the dropdown', 'warning');
@@ -537,6 +561,7 @@ function resetState() {
   document.getElementById('fileList').innerHTML        = '';
   document.getElementById('contextSelect').value       = '';
   document.getElementById('jdTextarea').value          = '';
+  updateJdCharCount();
   document.getElementById('reportContainer').innerHTML = '';
   document.getElementById('jdModeSelect').classList.add('active');
   document.getElementById('jdModeCustom').classList.remove('active');
@@ -619,6 +644,21 @@ function bindEvents() {
 
   // ── Generate Criteria button ─────────────────────────────
   document.getElementById('btnGenerateCriteria').addEventListener('click', generateCriteria);
+}
+
+/* ════════════════════════════════════════════════════════════
+   JD character counter
+   ════════════════════════════════════════════════════════════ */
+function updateJdCharCount() {
+  const val = document.getElementById('jdTextarea').value;
+  const count = val.length;
+  const el = document.getElementById('jdCharCount');
+  el.textContent = `${count.toLocaleString()} / 6,000 characters`;
+  el.style.color = count > 6000
+    ? 'var(--color-danger)'
+    : count > 5000
+      ? 'var(--color-warning)'
+      : 'var(--color-text-muted)';
 }
 
 /* ════════════════════════════════════════════════════════════

@@ -163,5 +163,104 @@
     "userName": "Ahmed Al-Rashidi",
     "details": "Created document with file upload",
     "timestamp": "2026-04-07T11:25:37.221Z"
+  },
+  {
+    "id": "AUD2B117809",
+    "action": "document.version",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C04",
+    "entityName": "Board Meeting Minutes - March 2026",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Uploaded version 3",
+    "timestamp": "2026-04-07T21:39:37.854Z"
+  },
+  {
+    "id": "AUD13441222",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C04",
+    "entityName": "Board Meeting Minutes - March 2026",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-07T21:42:47.029Z"
+  },
+  {
+    "id": "AUD59252587",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C04",
+    "entityName": "Board Meeting Minutes - March 2026",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-07T21:55:53.212Z"
+  },
+  {
+    "id": "AUDA51FA083",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C04",
+    "entityName": "Board Meeting Minutes - March 2026",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-07T22:11:21.167Z"
+  },
+  {
+    "id": "AUDAD06CC86",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C04",
+    "entityName": "Board Meeting Minutes - March 2026",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-07T22:12:08.630Z"
+  },
+  {
+    "id": "AUDACFDA4CC",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C04",
+    "entityName": "Board Meeting Minutes - March 2026",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-07T22:22:26.784Z"
+  },
+  {
+    "id": "AUD2CCED695",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C04",
+    "entityName": "Board Meeting Minutes - March 2026",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-08T09:21:28.418Z"
+  },
+  {
+    "id": "AUDE1812457",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C04",
+    "entityName": "Board Meeting Minutes - March 2026",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-08T09:24:06.616Z"
+  },
+  {
+    "id": "AUD554A0CB7",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C04",
+    "entityName": "Board Meeting Minutes - March 2026",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-08T09:24:22.613Z"
   }
 ]

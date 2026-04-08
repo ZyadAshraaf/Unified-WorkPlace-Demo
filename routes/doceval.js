@@ -22,13 +22,37 @@ router.all('*', (req, res) => {
       hostname: UPSTREAM_HOST,
       path:     req.url,
       method:   req.method,
-      headers:  upstreamHeaders
+      headers:  upstreamHeaders,
+      timeout:  120000   // 120 s — upstream LLM calls can be slow
     }, proxyRes => {
+      const upstreamContentType = (proxyRes.headers['content-type'] || '').toLowerCase();
+      const isJsonResponse = upstreamContentType.includes('application/json');
+
+      // When the upstream returns an error page (HTML / plain-text), intercept it and
+      // convert to a JSON error so the client always gets a parseable response.
+      if (!isJsonResponse && proxyRes.statusCode >= 400) {
+        const chunks = [];
+        proxyRes.on('data', c => chunks.push(c));
+        proxyRes.on('end', () => {
+          if (res.headersSent) return;
+          res.status(proxyRes.statusCode).json({
+            error:   'Upstream error',
+            message: `AI service returned HTTP ${proxyRes.statusCode}. The service may be temporarily unavailable — please try again in a moment.`
+          });
+        });
+        return;
+      }
+
       res.status(proxyRes.statusCode);
       for (const [k, v] of Object.entries(proxyRes.headers)) {
         if (k.toLowerCase() !== 'transfer-encoding') res.setHeader(k, v);
       }
       proxyRes.pipe(res);
+    });
+
+    proxy.on('timeout', () => {
+      proxy.destroy();
+      if (!res.headersSent) res.status(504).json({ error: 'Upstream timeout', message: 'The AI service did not respond in time. Try a shorter job description or fewer files.' });
     });
 
     proxy.on('error', err => {

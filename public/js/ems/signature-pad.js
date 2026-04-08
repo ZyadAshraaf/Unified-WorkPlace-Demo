@@ -4,46 +4,56 @@
 const EMS_SignaturePad = (() => {
   let canvas, ctx;
   let drawing = false;
-  let paths = []; // Array of path arrays for undo
+  let paths = [];
   let currentPath = [];
   let savedSignatures = [];
   let selectedSavedId = null;
   let targetDocId = null;
+  let eventsAttached = false; // prevent stacking listeners on repeated opens
 
-  function initCanvas() {
+  /* ── Canvas sizing ─────────────────────────────────────
+     Must run AFTER the modal is visible so getBoundingClientRect()
+     returns the real layout width (not 0 from a hidden element).   */
+  function resizeCanvas() {
     canvas = document.getElementById('signatureCanvas');
     if (!canvas) return;
     ctx = canvas.getContext('2d');
 
-    // Scale for high-DPI
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * 2;
+    const w = rect.width || 600; // fallback if layout hasn't settled
+    canvas.width  = w * 2;       // 2× for high-DPI
     canvas.height = 200 * 2;
     canvas.style.height = '200px';
     ctx.scale(2, 2);
-    ctx.lineCap = 'round';
+    ctx.lineCap  = 'round';
     ctx.lineJoin = 'round';
     clearCanvas();
+  }
+
+  /* ── Event listeners (bound once per page load) ──────── */
+  function attachEvents() {
+    if (eventsAttached) return;
+    eventsAttached = true;
+
+    canvas = document.getElementById('signatureCanvas');
+    if (!canvas) return;
 
     canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseup',   endDraw);
     canvas.addEventListener('mouseleave', endDraw);
 
-    // Touch support
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(touchToMouse(e)); });
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(touchToMouse(e)); });
-    canvas.addEventListener('touchend', (e) => { e.preventDefault(); endDraw(); });
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(touchToMouse(e)); }, { passive: false });
+    canvas.addEventListener('touchmove',  e => { e.preventDefault(); draw(touchToMouse(e)); },      { passive: false });
+    canvas.addEventListener('touchend',   e => { e.preventDefault(); endDraw(); },                  { passive: false });
 
-    // Controls
     document.getElementById('btnSignClear')?.addEventListener('click', clearCanvas);
     document.getElementById('btnSignUndo')?.addEventListener('click', undo);
     document.getElementById('btnSaveSignature')?.addEventListener('click', saveSignature);
     document.getElementById('btnApplySignature')?.addEventListener('click', applySignature);
 
-    // Tab switching
     document.querySelectorAll('#signTabs .nav-link').forEach(tab => {
-      tab.addEventListener('click', (e) => {
+      tab.addEventListener('click', e => {
         e.preventDefault();
         document.querySelectorAll('#signTabs .nav-link').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
@@ -51,6 +61,11 @@ const EMS_SignaturePad = (() => {
         document.getElementById('signDrawTab').classList.toggle('d-none', target !== 'draw');
         document.getElementById('signSavedTab').classList.toggle('d-none', target !== 'saved');
       });
+    });
+
+    // Resize canvas AFTER Bootstrap finishes showing the modal
+    document.getElementById('signatureModal')?.addEventListener('shown.bs.modal', () => {
+      resizeCanvas();
     });
   }
 
@@ -60,7 +75,7 @@ const EMS_SignaturePad = (() => {
     return { offsetX: touch.clientX - rect.left, offsetY: touch.clientY - rect.top };
   }
 
-  function getColor() { return document.getElementById('signColor')?.value || '#000000'; }
+  function getColor()     { return document.getElementById('signColor')?.value || '#000000'; }
   function getThickness() { return parseInt(document.getElementById('signThickness')?.value || '3'); }
 
   function startDraw(e) {
@@ -69,7 +84,7 @@ const EMS_SignaturePad = (() => {
     ctx.beginPath();
     ctx.moveTo(e.offsetX, e.offsetY);
     ctx.strokeStyle = getColor();
-    ctx.lineWidth = getThickness();
+    ctx.lineWidth   = getThickness();
   }
 
   function draw(e) {
@@ -88,8 +103,7 @@ const EMS_SignaturePad = (() => {
 
   function clearCanvas() {
     if (!ctx) return;
-    const rect = canvas.getBoundingClientRect();
-    ctx.clearRect(0, 0, rect.width, 200);
+    ctx.clearRect(0, 0, canvas.width / 2, canvas.height / 2); // clear in CSS-pixel space
     paths = [];
     currentPath = [];
   }
@@ -101,28 +115,27 @@ const EMS_SignaturePad = (() => {
   }
 
   function redraw() {
-    const rect = canvas.getBoundingClientRect();
-    ctx.clearRect(0, 0, rect.width, 200);
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width / 2, canvas.height / 2);
     paths.forEach(pathArr => {
       if (pathArr.length < 2) return;
       ctx.beginPath();
       ctx.strokeStyle = pathArr[0].color;
-      ctx.lineWidth = pathArr[0].thickness;
+      ctx.lineWidth   = pathArr[0].thickness;
       ctx.moveTo(pathArr[0].x, pathArr[0].y);
-      for (let i = 1; i < pathArr.length; i++) {
-        ctx.lineTo(pathArr[i].x, pathArr[i].y);
-      }
+      for (let i = 1; i < pathArr.length; i++) ctx.lineTo(pathArr[i].x, pathArr[i].y);
       ctx.stroke();
     });
   }
 
   function getCanvasData() {
-    // Scale back to 1x for export
     const tmpCanvas = document.createElement('canvas');
-    const rect = canvas.getBoundingClientRect();
-    tmpCanvas.width = rect.width;
-    tmpCanvas.height = 200;
+    tmpCanvas.width  = canvas.width  / 2;
+    tmpCanvas.height = canvas.height / 2;
     const tmpCtx = tmpCanvas.getContext('2d');
+    // White background so the signature is always visible when embedded in a PDF
+    tmpCtx.fillStyle = '#ffffff';
+    tmpCtx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
     tmpCtx.drawImage(canvas, 0, 0, tmpCanvas.width, tmpCanvas.height);
     return tmpCanvas.toDataURL('image/png');
   }
@@ -149,7 +162,7 @@ const EMS_SignaturePad = (() => {
 
   function renderSaved() {
     const container = document.getElementById('savedSignaturesList');
-    const empty = document.getElementById('noSavedSignatures');
+    const empty     = document.getElementById('noSavedSignatures');
     if (!container) return;
 
     if (!savedSignatures.length) {
@@ -189,15 +202,14 @@ const EMS_SignaturePad = (() => {
   async function applySignature() {
     if (!targetDocId) return;
 
-    // Check if using drawn or saved
     const activeTab = document.querySelector('#signTabs .nav-link.active')?.dataset.signtab;
+    let sigId, imageData;
 
-    let sigId;
     if (activeTab === 'saved' && selectedSavedId) {
-      sigId = selectedSavedId;
+      sigId     = selectedSavedId;
+      imageData = savedSignatures.find(s => s.id === selectedSavedId)?.imageData;
     } else if (activeTab === 'draw' && paths.length) {
-      // Save signature first, then apply
-      const imageData = getCanvasData();
+      imageData      = getCanvasData();
       const saveData = await API.post('/api/ems/signatures', { name: 'Quick Sign', imageData, type: 'drawn' });
       if (!saveData?.success) return UI.toast('Failed to save signature', 'danger');
       sigId = saveData.signature.id;
@@ -205,21 +217,24 @@ const EMS_SignaturePad = (() => {
       return UI.toast('Please draw or select a signature', 'warning');
     }
 
-    const data = await API.post(`/api/ems/documents/${targetDocId}/sign`, { signatureId: sigId });
-    if (data?.success) {
-      UI.toast('Signature applied');
-      bootstrap.Modal.getOrCreateInstance(document.getElementById('signatureModal')).hide();
-    } else {
-      UI.toast(data?.message || 'Failed to apply signature', 'danger');
-    }
+    // Close the drawing modal then enter placement mode on the doc viewer
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('signatureModal')).hide();
+    EMS_DocViewer.enterSignaturePlacementMode(targetDocId, sigId, imageData);
   }
 
   function openForDoc(docId) {
-    targetDocId = docId;
+    targetDocId    = docId;
     selectedSavedId = null;
-    clearCanvas();
-    initCanvas();
+    paths          = [];
+    currentPath    = [];
+    drawing        = false;
+
+    // Attach events once (idempotent after first call)
+    attachEvents();
+
     loadSaved();
+
+    // Show modal — canvas will be properly sized in the 'shown.bs.modal' handler
     bootstrap.Modal.getOrCreateInstance(document.getElementById('signatureModal')).show();
   }
 
