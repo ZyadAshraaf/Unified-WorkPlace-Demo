@@ -67,7 +67,8 @@ const EMS_DocViewer = (() => {
     const url    = `/${latest.storagePath}`;
 
     if (latest.mimeType === 'application/pdf') {
-      body.innerHTML = `<iframe src="${url}" style="width:100%;height:100%;border:none;"></iframe>`;
+      const viewUrl = `/api/ems/documents/${currentDoc.id}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`;
+      body.innerHTML = `<iframe src="${viewUrl}" style="width:100%;height:100%;border:none;"></iframe>`;
     } else if (latest.mimeType?.startsWith('image/')) {
       body.innerHTML = `<img src="${url}" alt="${currentDoc.title}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
     } else {
@@ -214,28 +215,32 @@ const EMS_DocViewer = (() => {
   async function confirmPlacement() {
     if (!placement) return;
 
-    const data = await API.post(`/api/ems/documents/${placement.docId}/sign`, {
+    // Save before cancelPlacement() clears the state
+    const docId = placement.docId;
+    const page  = Math.max(1, parseInt(document.getElementById('signPlacementPage')?.value || '1'));
+
+    const data = await API.post(`/api/ems/documents/${docId}/sign`, {
       signatureId: placement.sigId,
       x:           Math.round(placement.x     * 10) / 10,
       y:           Math.round(placement.y     * 10) / 10,
-      width:       Math.round(placement.width * 10) / 10
+      width:       Math.round(placement.width * 10) / 10,
+      page
     });
 
     if (data?.success) {
-      UI.toast('Signature placed successfully', 'success');
+      UI.toast(`Signature placed on page ${page}`, 'success');
       currentDoc = data.document;
       cancelPlacement(); // removes ghost + banner
 
-      // Reload the PDF iframe so the baked-in signature becomes visible.
-      // Remove + re-insert the iframe entirely — browsers ignore src changes
-      // and query-string cache-busts for native PDF iframes.
+      // Reload PDF via the /view endpoint (no-cache, inline) — guarantees
+      // the browser fetches the freshly-written file rather than a cached copy.
       const body   = document.getElementById('docViewerBody');
       const iframe = body?.querySelector('iframe');
       if (iframe) {
-        const newSrc = iframe.src.split('?')[0] + '?t=' + Date.now();
+        const viewUrl = `/api/ems/documents/${docId}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`;
         iframe.remove();
         const fresh = document.createElement('iframe');
-        fresh.src   = newSrc;
+        fresh.src   = viewUrl;
         fresh.style.cssText = 'width:100%;height:100%;border:none;';
         body.appendChild(fresh);
       }

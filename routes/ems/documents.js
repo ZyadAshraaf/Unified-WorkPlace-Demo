@@ -181,7 +181,7 @@ router.post('/:id/versions', requireAuth, upload.single('file'), (req, res) => {
   res.json({ success: true, document: doc });
 });
 
-// GET — download specific version
+// GET — download specific version (attachment)
 router.get('/:id/versions/:version/download', requireAuth, (req, res) => {
   const doc = readDocs().find(d => d.id === req.params.id);
   if (!doc) return res.status(404).json({ success: false, message: 'Document not found' });
@@ -193,6 +193,23 @@ router.get('/:id/versions/:version/download', requireAuth, (req, res) => {
   if (!fs.existsSync(filePath)) return res.status(404).json({ success: false, message: 'File not found on disk' });
 
   res.download(filePath, ver.filename);
+});
+
+// GET — view specific version inline (no-cache, for iframe display after signing)
+router.get('/:id/versions/:version/view', requireAuth, (req, res) => {
+  const doc = readDocs().find(d => d.id === req.params.id);
+  if (!doc) return res.status(404).json({ success: false, message: 'Document not found' });
+
+  const ver = doc.versions.find(v => v.version === parseInt(req.params.version));
+  if (!ver) return res.status(404).json({ success: false, message: 'Version not found' });
+
+  const filePath = path.join(__dirname, '../../', ver.storagePath);
+  if (!fs.existsSync(filePath)) return res.status(404).json({ success: false, message: 'File not found on disk' });
+
+  res.setHeader('Content-Type', ver.mimeType || 'application/pdf');
+  res.setHeader('Content-Disposition', 'inline');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.sendFile(filePath);
 });
 
 // PUT — update document metadata
@@ -300,7 +317,7 @@ router.post('/:id/sign', requireAuth, async (req, res) => {
       console.log('[SIGN] PDF path:', pdfFilePath, 'exists:', fs.existsSync(pdfFilePath));
 
       if (!fs.existsSync(pdfFilePath)) {
-        console.warn('[SIGN] PDF file not found on disk:', pdfFilePath);
+        return res.status(404).json({ success: false, message: 'PDF file not found on disk. Please re-upload the document.' });
       } else {
         const pdfBytes = fs.readFileSync(pdfFilePath);
         console.log('[SIGN] PDF loaded, size:', pdfBytes.length);
@@ -312,9 +329,11 @@ router.post('/:id/sign', requireAuth, async (req, res) => {
         const pngImage   = await pdfDoc.embedPng(imgBytes);
         console.log('[SIGN] PNG embedded, dims:', pngImage.width, 'x', pngImage.height);
 
-        const page  = pdfDoc.getPages()[0];
-        const pageW = page.getWidth();
-        const pageH = page.getHeight();
+        const pageIdx = Math.max(0, (parseInt(req.body.page) || 1) - 1);
+        const pages   = pdfDoc.getPages();
+        const page    = pages[Math.min(pageIdx, pages.length - 1)];
+        const pageW   = page.getWidth();
+        const pageH   = page.getHeight();
 
         const sigW = (widthPct / 100) * pageW;
         const sigH = sigW * (pngImage.height / pngImage.width);

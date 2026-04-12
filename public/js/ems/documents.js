@@ -276,6 +276,53 @@ const EMS_Documents = (() => {
       if (data?.success) { UI.toast(`Deleted ${data.deleted} documents`); selectedDocIds.clear(); await loadDocs(); }
     });
 
+    document.getElementById('btnBulkKnowledgeChat')?.addEventListener('click', async () => {
+      if (selectedDocIds.size === 0) return;
+      if (selectedDocIds.size > 5) {
+        UI.toast('Select up to 5 documents for Knowledge Conversation', 'warning');
+        return;
+      }
+
+      const selectedDocs = [...selectedDocIds]
+        .map(id => allDocs.find(d => d.id === id))
+        .filter(d => d && d.currentVersion > 0);
+
+      if (selectedDocs.length === 0) {
+        UI.toast('Selected documents have no uploaded files', 'warning');
+        return;
+      }
+
+      // Open drawer immediately in loading state
+      EMS_KnowledgeChat.openLoading(selectedDocs.map(d => d.title));
+
+      try {
+        const fd = new FormData();
+        for (const doc of selectedDocs) {
+          const ver = doc.versions?.find(v => v.version === doc.currentVersion);
+          const filename = ver?.filename || `${doc.title}.pdf`;
+          const resp = await fetch(
+            `/api/ems/documents/${doc.id}/versions/${doc.currentVersion}/download`,
+            { credentials: 'include' }
+          );
+          if (!resp.ok) throw new Error(`Could not fetch "${doc.title}"`);
+          const blob = await resp.blob();
+          fd.append('files', blob, filename);
+        }
+
+        const ingestResp = await fetch('/api/doceval-proxy/api/general/ingest', {
+          method: 'POST', credentials: 'include', body: fd
+        });
+        if (!ingestResp.ok) throw new Error('Ingest failed: ' + ingestResp.statusText);
+        const ingestData = await ingestResp.json();
+
+        EMS_KnowledgeChat.open(ingestData.session_id, selectedDocs.map(d => d.title));
+
+      } catch (err) {
+        EMS_KnowledgeChat.close();
+        UI.toast('Ask Documents failed: ' + err.message, 'danger');
+      }
+    });
+
     // Back to list from viewer
     document.getElementById('btnBackToList')?.addEventListener('click', () => {
       document.getElementById('docListWrap').classList.remove('d-none');

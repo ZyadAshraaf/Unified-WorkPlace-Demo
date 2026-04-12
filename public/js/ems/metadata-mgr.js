@@ -43,7 +43,7 @@ const EMS_MetadataMgr = (() => {
           <div class="fw-bold" style="font-size:13px;">${c.name}</div>
           <div style="font-size:11px;color:var(--color-text-muted);">${c.description || ''}</div>
         </td>
-        <td><span class="badge bg-primary bg-opacity-10 text-primary">${(c.fields || []).length} fields</span></td>
+        <td><span class="badge" style="background:var(--color-primary-faint);color:var(--color-primary-darker);font-weight:600;font-size:11px;border:1px solid var(--color-border);">${(c.fields || []).length} fields</span></td>
         <td style="max-width:300px;">${fieldBadges || '<span class="text-muted" style="font-size:11px;">No fields</span>'}</td>
         <td>
           <div class="d-flex gap-1">
