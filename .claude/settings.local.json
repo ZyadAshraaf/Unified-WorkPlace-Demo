@@ -146,7 +146,8 @@
       "Bash(wmic process:*)",
       "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Select-Object Id, CommandLine | Format-Table -AutoSize\")",
       "Bash(powershell:*)",
-      "Bash(node -e \"const u = JSON.parse\\(require\\('fs'\\).readFileSync\\('data/users.json','utf8'\\)\\); u.forEach\\(x => console.log\\(x.id, x.email, x.role\\)\\)\")"
+      "Bash(node -e \"const u = JSON.parse\\(require\\('fs'\\).readFileSync\\('data/users.json','utf8'\\)\\); u.forEach\\(x => console.log\\(x.id, x.email, x.role\\)\\)\")",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }

@@ -704,5 +704,41 @@
     "comments": [],
     "escalated": false,
     "delegatedFrom": null
+  },
+  {
+    "id": "TE76C3A4",
+    "title": "Performance Management - Setting Objectives - Line Manager Approval",
+    "description": "Review and approve objectives for 2025 Performance Management Plan",
+    "assignedTo": "u001",
+    "assignedBy": "u005",
+    "status": "pending",
+    "priority": "high",
+    "type": "approval",
+    "createdAt": "2026-04-08T13:43:12.140Z",
+    "dueDate": null,
+    "metadata": {
+      "planId": "plan002",
+      "approvalType": "objectives"
+    },
+    "history": [],
+    "comments": []
+  },
+  {
+    "id": "TEDD7570",
+    "title": "Performance Management - Setting Objectives - Line Manager Approval",
+    "description": "Review and approve objectives for 2025 Performance Management Plan",
+    "assignedTo": "u001",
+    "assignedBy": "u005",
+    "status": "pending",
+    "priority": "high",
+    "type": "approval",
+    "createdAt": "2026-04-08T13:43:57.847Z",
+    "dueDate": null,
+    "metadata": {
+      "planId": "plan002",
+      "approvalType": "objectives"
+    },
+    "history": [],
+    "comments": []
   }
 ]
