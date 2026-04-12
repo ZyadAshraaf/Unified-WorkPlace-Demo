@@ -2,21 +2,30 @@
    Enterprise DMS — Styles
    ═══════════════════════════════════════════════════════ */
 
+/* Full-height shell — zero padding, flex column, fills below topbar */
+.ems-content-shell {
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--topbar-height, 62px));
+  overflow: hidden;
+}
+
 /* Tab bar */
-.ems-tabs { border-bottom: 2px solid var(--color-border); background: white; border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: 0 12px; }
-.ems-tabs .nav-link { color: var(--color-text-muted); font-size: 13px; font-weight: 600; padding: 10px 18px; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .15s; }
+.ems-tabs { border-bottom: 2px solid var(--color-border); background: white; padding: 0 20px; flex-shrink: 0; }
+.ems-tabs .nav-link { color: var(--color-text-muted); font-size: 13px; font-weight: 600; padding: 12px 20px; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .15s; }
 .ems-tabs .nav-link:hover { color: var(--color-primary); }
 .ems-tabs .nav-link.active { color: var(--color-primary); border-bottom-color: var(--color-primary); background: transparent; }
 
 /* Tab panels */
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
+.tab-panel { display: none; flex: 1; min-height: 0; }
+.tab-panel.active { display: flex; flex-direction: column; }
 
 /* Split pane layout */
-.ems-split-pane { display: flex; height: calc(100vh - 240px); min-height: 500px; border: 1px solid var(--color-border); border-top: none; border-radius: 0 0 var(--radius-lg) var(--radius-lg); overflow: hidden; background: #fff; }
+.ems-split-pane { display: flex; flex: 1; min-height: 0; border-top: 1px solid var(--color-border); overflow: hidden; background: #fff; }
 
 /* Folder panel */
-.ems-folder-panel { width: 250px; min-width: 200px; max-width: 350px; background: var(--color-primary); display: flex; flex-direction: column; flex-shrink: 0; }
+.ems-folder-panel { width: 250px; min-width: 200px; max-width: 350px; background: var(--color-primary); display: flex; flex-direction: column; flex-shrink: 0; border-left: 3px solid var(--color-primary-darker); }
 .folder-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.15); }
 .folder-panel-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
 .folder-tree-wrap { flex: 1; overflow-y: auto; padding: 8px 0; min-height: 0; }
@@ -165,9 +174,15 @@
 .ems-context-menu .ctx-item.text-danger:hover { background: #fff0f0; }
 .ems-context-menu .ctx-divider { height: 1px; background: var(--color-border-light); margin: 4px 0; }
 
+/* Non-documents tabs: scrollable with padding */
+#tab-groups, #tab-users, #tab-audit {
+  overflow-y: auto;
+  padding: 20px 24px 24px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
-  .ems-split-pane { flex-direction: column; height: auto; }
+  .ems-split-pane { flex-direction: column; }
   .ems-folder-panel { width: 100%; max-width: none; max-height: 200px; }
   .doc-toolbar { flex-direction: column; align-items: flex-start; }
   .doc-toolbar-actions { width: 100%; flex-wrap: wrap; }

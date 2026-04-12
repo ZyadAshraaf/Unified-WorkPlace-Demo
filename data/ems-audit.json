@@ -273,5 +273,60 @@
     "userName": "Ahmed Al-Rashidi",
     "details": "Created document with file upload",
     "timestamp": "2026-04-08T16:21:20.624Z"
+  },
+  {
+    "id": "AUD0DFA2518",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC4041BA18",
+    "entityName": "Proposal",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-08T16:45:25.903Z"
+  },
+  {
+    "id": "AUD46AF9D43",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC4041BA18",
+    "entityName": "Proposal",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-08T16:45:48.360Z"
+  },
+  {
+    "id": "AUD120CC667",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC4041BA18",
+    "entityName": "Proposal",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-08T16:50:25.168Z"
+  },
+  {
+    "id": "AUD37D348A7",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC4041BA18",
+    "entityName": "Proposal",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-08T16:57:48.409Z"
+  },
+  {
+    "id": "AUD4A7EE932",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC4041BA18",
+    "entityName": "Proposal",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-08T17:02:46.007Z"
   }
 ]

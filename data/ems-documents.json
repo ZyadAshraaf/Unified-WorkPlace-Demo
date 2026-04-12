@@ -304,7 +304,7 @@
     "status": "active",
     "createdBy": "u001",
     "createdAt": "2026-04-08T16:21:20.621Z",
-    "updatedAt": "2026-04-08T16:21:20.622Z",
+    "updatedAt": "2026-04-08T17:02:46.004Z",
     "currentVersion": 1,
     "versions": [
       {
@@ -318,11 +318,62 @@
         "notes": "Initial upload"
       }
     ],
-    "signatures": [],
+    "signatures": [
+      {
+        "signatureId": "SIGBC3D8BEE",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-04-08T16:45:25.901Z",
+        "type": "drawn",
+        "x": 30.8,
+        "y": 71.5,
+        "width": 22
+      },
+      {
+        "signatureId": "SIG29BAE277",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-04-08T16:45:48.359Z",
+        "type": "drawn",
+        "x": 35.1,
+        "y": 69.5,
+        "width": 22
+      },
+      {
+        "signatureId": "SIGBC3D8BEE",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-04-08T16:50:25.167Z",
+        "type": "drawn",
+        "x": 33.8,
+        "y": 64.9,
+        "width": 22
+      },
+      {
+        "signatureId": "SIGBC3D8BEE",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-04-08T16:57:48.408Z",
+        "type": "drawn",
+        "x": 47.7,
+        "y": 66.9,
+        "width": 22
+      },
+      {
+        "signatureId": "SIGBC3D8BEE",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-04-08T17:02:46.004Z",
+        "type": "drawn",
+        "x": 37.2,
+        "y": 65.1,
+        "width": 22
+      }
+    ],
     "watermark": {
       "enabled": false,
       "text": "CONFIDENTIAL",
-      "opacity": 0.15,
+      "opacity": 0.5,
       "angle": -30
     },
     "annotations": [],

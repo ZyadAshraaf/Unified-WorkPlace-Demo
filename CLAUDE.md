@@ -326,7 +326,7 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 ## Gotchas
 
 - `/theme.css` is dynamic — changes to `data/settings.json` colors reflect immediately without restart
-- JSON body limit is `10mb` in Express config (supports base64 logo upload)
+- JSON body limit is `50mb` in Express config (supports base64 logo upload)
 - Sidebar collapse state is persisted in `localStorage` key `sidebarCollapsed`
 - The heartbeat system (`/api/heartbeat` pinged every 30s) is critical for Teams — without it the iframe disconnects
 - Demo users all use password `demo123` — passwords are plaintext in `data/users.json` (demo only)
@@ -338,3 +338,14 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 - **EMS is a SPA exception:** the standard 1-to-1 view/controller rule does not apply to `views/ems/` — `index.html` orchestrates multiple `public/js/ems/*.js` sub-controllers via script tags
 - Entity IDs are auto-generated as a type prefix + first 8 chars of uuid (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `W3A4F2G1` for WFH, `HD9B1C3D` for helpdesk). Helpdesk tickets additionally get a human-readable `ticketNo` in `TKT-YYYY-NNN` format
 - **WIP/Incomplete pages:** `erp-dialogue.html`, `leave-assistant.html`, `voice-agent.html` exist with HTML but lack JS controllers — do not rely on these functioning
+- `multer` and `pdf-lib` are available as dependencies (multer used for EMS file uploads; pdf-lib available for PDF manipulation)
+
+## Known Demo Limitations
+
+These are intentional gaps — do not "fix" them unless explicitly asked:
+
+- **Policy AI is keyword-based, not AI** — `routes/policy.js` uses word-frequency scoring, not an LLM. The chat UI is cosmetic.
+- **Attendance is read-only** — no punch-in/punch-out endpoints exist; all attendance data is seed data.
+- **Notifications are static** — `data/notifications.json` is pre-seeded demo data; workflows (leave approval, task delegation) do not create new notification records at runtime.
+- **No real external system integration** — `sourceSystem` on tasks (HR, CRM, ERP, etc.) is just a label string. No live data flows from real enterprise systems.
+- **Single-level approval only** — leave/WFH approval goes to the direct manager only; no multi-level chains.
