@@ -348,5 +348,55 @@
     "reviewedBy": null,
     "reviewedAt": null,
     "reviewNote": ""
+  },
+  {
+    "id": "TR-56B5C5E1",
+    "userId": "u001",
+    "destination": "Abha",
+    "origin": "Riyadh",
+    "purpose": "sd",
+    "departureDate": "2026-04-24",
+    "returnDate": "2026-04-27",
+    "days": 4,
+    "travelers": 1,
+    "travelClass": "economy",
+    "flight": {
+      "outbound": {
+        "airline": "Saudia",
+        "flightNo": "SV497",
+        "departure": "19:30",
+        "arrival": "21:16",
+        "class": "Economy",
+        "price": 410
+      },
+      "return": {
+        "airline": "Saudia",
+        "flightNo": "SV116",
+        "departure": "14:00",
+        "arrival": "15:55",
+        "class": "Economy",
+        "price": 435
+      }
+    },
+    "hotel": {
+      "name": "Golden Tulip Abha",
+      "stars": 4,
+      "pricePerNight": 325,
+      "nights": 3,
+      "total": 975
+    },
+    "costBreakdown": {
+      "flights": 845,
+      "hotel": 975,
+      "perDiem": 1000,
+      "transport": 400,
+      "total": 3220
+    },
+    "status": "pending",
+    "taskId": "T1790ED26",
+    "submittedAt": "2026-04-14T12:36:28.901Z",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "reviewNote": ""
   }
 ]

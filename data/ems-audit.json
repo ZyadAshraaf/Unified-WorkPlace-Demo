@@ -361,5 +361,16 @@
     "userName": "Sara Hassan",
     "details": "Created document with file upload",
     "timestamp": "2026-04-12T10:22:44.324Z"
+  },
+  {
+    "id": "AUDB687A66C",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC604A5DD0",
+    "entityName": "Proposal",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-14T12:41:25.893Z"
   }
 ]

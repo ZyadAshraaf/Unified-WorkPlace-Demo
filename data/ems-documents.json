@@ -408,7 +408,7 @@
     "status": "active",
     "createdBy": "u004",
     "createdAt": "2026-04-12T10:22:44.317Z",
-    "updatedAt": "2026-04-12T10:22:44.317Z",
+    "updatedAt": "2026-04-14T12:41:25.891Z",
     "currentVersion": 1,
     "versions": [
       {
@@ -422,7 +422,18 @@
         "notes": "Initial upload"
       }
     ],
-    "signatures": [],
+    "signatures": [
+      {
+        "signatureId": "SIG8F006A12",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-04-14T12:41:25.891Z",
+        "type": "drawn",
+        "x": 38.4,
+        "y": 10.9,
+        "width": 22
+      }
+    ],
     "watermark": {
       "enabled": false,
       "text": "CONFIDENTIAL",

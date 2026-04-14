@@ -14,7 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 No build step, no test runner, no TypeScript. The server runs directly with `node server.js`.
 
 **Environment variables:**
-- `GROQ_API_KEY` — required for `/api/hr-chat` (Groq llama-3.3-70b-versatile model)
+- `GROQ_API_KEY` — required for `/api/hr-chat` and `/api/leave-assistant/chat` (both use Groq llama-3.3-70b-versatile via raw `fetch` to `api.groq.com` — no groq npm package)
 - `PORT` — overrides default port 3000
 
 ## Project Structure
@@ -139,10 +139,11 @@ if (user.role === 'employee') {
 ### AI Features
 
 - **HR Chat** (`/api/hr-chat`) — Groq llama-3.3-70b-versatile; requires `GROQ_API_KEY`
+- **Leave Assistant** (`/api/leave-assistant/chat`) — Conversational AI that checks leave balances AND submits leave, WFH, and travel requests on behalf of the user. The AI collects all required fields via chat, shows a summary, then emits a structured JSON block that `routes/leave-assistant.js` intercepts to call `submitLeave()`, `submitWfh()`, or `submitTravel()` — each of which also creates the approval task in `data/tasks.json`.
 - **Document Chat** (`doc-chat.html`) — Upload PDF → POST `/api/general/ingest` (returns `session_id`) → POST `/api/general/query` with accumulated `chat_history`
 - **Proposal Evaluation** and **Resume Evaluation** — AI-powered document analysis
 
-The document AI features (doc-chat, proposal-eval, resume-eval) all proxy through `routes/doceval.js` at `/api/doceval-proxy` to avoid CORS with an external Heroku service. No auth guard on this proxy route. Sample test files live in `AI Test Files/`.
+The document AI features (doc-chat, proposal-eval, resume-eval) all proxy through `routes/doceval.js` at `/api/doceval-proxy` to avoid CORS with the upstream service at `doceval-8362469192e8.herokuapp.com`. No auth guard on this proxy route. Sample test files live in `AI Test Files/`.
 
 ### Dynamic Theming
 
@@ -164,7 +165,7 @@ The document AI features (doc-chat, proposal-eval, resume-eval) all proxy throug
 The EMS module (`/ems`) is architecturally different from all other modules:
 
 - **SPA inside the app:** `views/ems/index.html` has a tab bar and loads multiple sub-controllers from `public/js/ems/` — does not follow the 1-to-1 view/controller pattern
-- **Sub-router:** All API calls go to `/api/ems/*`, handled by `routes/ems/index.js` which mounts eight sub-routers
+- **Sub-router:** All API calls go to `/api/ems/*`, handled by `routes/ems/index.js` which mounts eight sub-routers: `documents`, `folders`, `groups`, `signatures`, `users`, `audit`, `doctypes`, `metadata`
 - **File uploads:** Stored under `uploads/ems/`, served at `/uploads/ems/*` without an auth guard (static middleware runs first). Metadata in `data/ems-documents.json`
 - **Dedicated CSS:** `public/css/ems.css` for EMS-specific layout (split-pane, resizable folder panel, signature pad). Do not add EMS styles to `global.css` or `pages.css`
 - **No approval workflow integration:** EMS manages access via groups (`ems-groups.json`) and per-document permissions, not `data/tasks.json`
@@ -180,10 +181,11 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 - **Data reset:** Delete/truncate files in `data/` — no migration system
 - **Session reset:** Delete `.sessions/` directory to log out all users
 - Entity IDs: type prefix + first 8 chars of UUID (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `HD9B1C3D` for helpdesk). Helpdesk tickets also get a `ticketNo` in `TKT-YYYY-NNN` format
-- **WIP pages:** `erp-dialogue.html` and `voice-agent.html` have HTML but no JS controllers. `leave-assistant.html` is fully implemented — it has both `public/js/leave-assistant.js` and `routes/leave-assistant.js` (AI-powered leave balance + chat via Groq)
+- **WIP pages (no JS controller):** `erp-dialogue.html` and `voice-agent.html` only. Every other view has a matching controller — including `leave-assistant`, `wfh`, `travel`, `doc-chat`, `proposal-eval`, `resume-eval`, and `quick-services`
 - `views/landing.html` is the home dashboard (entry point after login); `views/services.html` and `views/quick-services.html` are service catalog views
-- `routes/finance.js` and `routes/news.js` exist but are not surfaced prominently in the UI — standard route pattern, JSON-backed
+- `routes/finance.js`, `routes/news.js`, `routes/analytics.js`, `routes/goals.js`, and `routes/directory.js` follow the standard route pattern (JSON-backed, role-filtered) and are not highlighted in the UI. `analytics.js` aggregates cross-module data (tasks, leaves, helpdesk, attendance) for dashboard widgets at `GET /api/analytics/summary`.
 - `multer` and `pdf-lib` are available as dependencies (multer used for EMS uploads; pdf-lib available for PDF manipulation)
+- `claude-cli` is in `package.json` as a runtime dependency (unused in server code — ignore it)
 - `uuid` (`v4`) is the standard ID generator — used everywhere; import with `const { v4: uuidv4 } = require('uuid')`
 - **Travel module** (`routes/travel.js`) has simulated airline/hotel provider data hardcoded in the route file itself (not in `data/`) — it generates realistic mock search results on the fly
 
@@ -196,3 +198,5 @@ These are intentional gaps — do not "fix" them unless explicitly asked:
 - **Notifications are static** — `data/notifications.json` is pre-seeded; workflows do not create new notification records at runtime.
 - **No real external system integration** — `sourceSystem` on tasks is just a label string.
 - **Single-level approval only** — leave/WFH approval goes to direct manager only; no multi-level chains.
+- **Leave balances are hardcoded** — `routes/leave-assistant.js` uses fixed caps of 21 annual days and 30 sick days per year; not configurable from settings.
+- **Helpdesk ticketNo year is hardcoded** — `routes/helpdesk.js` generates `TKT-2026-NNN` with a literal `'2026'` string instead of `new Date().getFullYear()`.

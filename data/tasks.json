@@ -410,5 +410,33 @@
     "comments": [],
     "escalated": false,
     "delegatedFrom": null
+  },
+  {
+    "id": "T1790ED26",
+    "title": "Approve Business Trip — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested a business trip to Abha for 4 day(s) (2026-04-24 to 2026-04-27). Purpose: sd. Total estimated cost: SAR 3,220.",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-04-24",
+    "createdAt": "2026-04-14T12:36:28.957Z",
+    "updatedAt": "2026-04-14T12:36:28.957Z",
+    "metadata": {
+      "travelId": "TR-56B5C5E1"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-14T12:36:28.957Z",
+        "note": "Business travel request submitted"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
   }
 ]
