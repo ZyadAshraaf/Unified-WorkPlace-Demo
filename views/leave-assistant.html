@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leave Assistant — Unified Workspace</title>
+  <title>My Assistant — Unified Workspace</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/variables.css">
@@ -57,7 +57,14 @@
     .typing-dot:nth-child(2) { animation-delay: 0.2s; }
     .typing-dot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes typing { 0%,80%,100%{transform:scale(1);opacity:.5} 40%{transform:scale(1.2);opacity:1} }
-    .api-notice { background: var(--color-primary-faint); border: 1px dashed var(--color-primary); border-radius: var(--radius-md); padding: 8px 12px; font-size: 11px; color: var(--color-primary); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+    .info-row-val.orange { color: #d97706; }
+    .info-row-val.red    { color: #dc2626; }
+    .leave-submitted-card { display: flex; align-items: center; gap: 12px; background: #f0fdf4; border: 1px solid #86efac; border-radius: var(--radius-md); padding: 12px 16px; margin-top: 10px; }
+    .lsc-icon { font-size: 24px; color: #16a34a; flex-shrink: 0; }
+    .lsc-title { font-weight: 700; font-size: 13px; color: #15803d; }
+    .lsc-id { font-size: 12px; color: var(--color-text-muted); margin: 2px 0; }
+    .lsc-link { font-size: 12px; color: var(--color-primary); text-decoration: none; font-weight: 600; }
+    .lsc-link:hover { text-decoration: underline; }
     @media (max-width:768px) { .chat-wrap { flex-direction: column; height: auto; } .chat-sidebar { width: 100%; } }
   </style>
 </head>
@@ -67,40 +74,35 @@
     <div class="sidebar-brand">
       <img src="/assets/logo.png" alt="WIND-IS" class="sidebar-logo">
     </div>
-    <nav class="sidebar-nav">
+        <nav class="sidebar-nav">
       <div class="nav-section">
         <a href="/" class="nav-item" data-page="landing"><i class="bi bi-house-door"></i><span>Home</span></a>
         <a href="/tasks" class="nav-item" data-page="tasks"><i class="bi bi-check2-square"></i><span>My Tasks</span><span class="nav-badge d-none" id="tasksBadge">0</span></a>
       </div>
-      <div class="nav-section">
-        <div class="nav-section-label">Services</div>
+      <div class="nav-section"><div class="nav-section-label">Services</div>
         <a href="/services" class="nav-item" data-page="services"><i class="bi bi-grid-3x3-gap"></i><span>Service Catalog</span></a>
       </div>
-      <div class="nav-section">
-        <div class="nav-section-label">Insights</div>
+      <div class="nav-section"><div class="nav-section-label">Insights</div>
         <a href="/analytics" class="nav-item" data-page="analytics"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
-        <a href="/goals" class="nav-item" data-page="goals"><i class="bi bi-bullseye"></i><span>Goals & OKR</span></a>
-        <a href="/appraisal" class="nav-item" data-page="appraisal"><i class="bi bi-star-half"></i><span>Performance</span></a>
+        <a href="/goals" class="nav-item" data-page="goals"><i class="bi bi-bullseye"></i><span>Goals &amp; OKR</span></a>
+        <a href="/appraisal" class="nav-item" data-page="appraisal"><i class="bi bi-bar-chart-steps"></i><span>Performance</span></a>
         <a href="/attendance" class="nav-item" data-page="attendance"><i class="bi bi-clock-history"></i><span>Attendance</span></a>
       </div>
-      <div class="nav-section">
-        <div class="nav-section-label">Support</div>
+      <div class="nav-section"><div class="nav-section-label">Support</div>
         <a href="/policy" class="nav-item" data-page="policy"><i class="bi bi-robot"></i><span>Policy AI</span></a>
         <a href="/helpdesk" class="nav-item" data-page="helpdesk"><i class="bi bi-headset"></i><span>Help Desk</span></a>
         <a href="/directory" class="nav-item" data-page="directory"><i class="bi bi-people"></i><span>Directory</span></a>
       </div>
-      <div class="nav-section">
-        <div class="nav-section-label">AI Use Cases</div>
+      <div class="nav-section"><div class="nav-section-label">AI Use Cases</div>
         <a href="/erp-dialogue" class="nav-item" data-page="erp-dialogue"><i class="bi bi-database"></i><span>ERP Dialogue</span></a>
-        <a href="/leave-assistant" class="nav-item active" data-page="leave-assistant"><i class="bi bi-person-gear"></i><span>Leave Assistant</span></a>
+        <a href="/leave-assistant" class="nav-item" data-page="leave-assistant"><i class="bi bi-person-gear"></i><span>My Assistant</span></a>
         <a href="/voice-agent" class="nav-item" data-page="voice-agent"><i class="bi bi-telephone-outbound"></i><span>Voice Agent</span></a>
         <a href="/proposal-eval" class="nav-item" data-page="proposal-eval"><i class="bi bi-file-earmark-check"></i><span>Proposal Evaluator</span></a>
         <a href="/resume-eval" class="nav-item" data-page="resume-eval"><i class="bi bi-person-lines-fill"></i><span>Talent Assessor</span></a>
         <a href="/doc-chat" class="nav-item" data-page="doc-chat"><i class="bi bi-chat-square-text"></i><span>Knowledge Assistant</span></a>
       </div>
-      <div class="nav-section">
-        <div class="nav-section-label">Enterprise</div>
-        <a href="/ems" class="nav-item" data-page="ems"><i class="bi bi-building-gear"></i><span>Enterprise DMS</span></a>
+      <div class="nav-section"><div class="nav-section-label">Enterprise</div>
+        <a href="/ems" class="nav-item" data-page="ems"><i class="bi bi-building-gear"></i><span>CMS</span></a>
       </div>
     </nav>
     <div class="sidebar-footer">
@@ -120,7 +122,7 @@
     <header class="topbar">
       <button class="topbar-toggle" id="sidebarToggle"><i class="bi bi-list"></i></button>
       <img src="/assets/logo.png" alt="Logo" class="topbar-logo" id="topbarLogo">
-      <h1 class="page-title">Leave Assistant</h1>
+      <h1 class="page-title">My Assistant</h1>
       <div class="topbar-right">
         <div class="topbar-search"><i class="bi bi-search"></i><input type="text" placeholder="Search..."></div>
         <button class="icon-btn"><i class="bi bi-bell"></i><span class="notif-dot d-none" id="notifDot"></span></button>
@@ -141,28 +143,28 @@
 
     <main class="content">
       <div class="page-hero" style="margin-bottom:18px">
-        <div class="page-hero-bc">Dashboard &rsaquo; AI Use Cases &rsaquo; <span>Leave Assistant</span></div>
-        <div class="page-hero-title"><i class="bi bi-person-gear me-2"></i>HR Self-Service Leave Assistant</div>
-        <div class="page-hero-sub">Submit and manage leave requests through a simple conversation — no forms needed.</div>
+        <div class="page-hero-bc">Dashboard &rsaquo; AI Use Cases &rsaquo; <span>My Assistant</span></div>
+        <div class="page-hero-title"><i class="bi bi-stars me-2"></i>My Assistant</div>
+        <div class="page-hero-sub">Submit leave requests, work-from-home, or business travel — all through a natural conversation.</div>
       </div>
 
       <div class="chat-wrap">
         <!-- Info Sidebar -->
         <div class="chat-sidebar">
-          <div class="chat-sidebar-label">Leave Balance</div>
+          <div class="chat-sidebar-label">My Leave Balance</div>
           <div class="info-card">
             <div class="info-card-title"><i class="bi bi-calendar2-check"></i> Balance Overview</div>
             <div class="info-row">
               <span class="info-row-label">Annual Leave</span>
-              <span class="info-row-val green">18 days</span>
+              <span class="info-row-val green" id="balAnnual">—</span>
             </div>
             <div class="info-row">
               <span class="info-row-label">Sick Leave</span>
-              <span class="info-row-val green">10 days</span>
+              <span class="info-row-val green" id="balSick">—</span>
             </div>
             <div class="info-row">
               <span class="info-row-label">Emergency</span>
-              <span class="info-row-val green">3 days</span>
+              <span class="info-row-val">Available</span>
             </div>
             <div class="info-row">
               <span class="info-row-label">Unpaid</span>
@@ -174,59 +176,55 @@
           <div class="step-card">
             <div class="step-item">
               <div class="step-num">1</div>
-              <span>Tell the assistant what type of leave you need</span>
+              <span>Tell the assistant what you need — leave, WFH, or travel</span>
             </div>
             <div class="step-item">
               <div class="step-num">2</div>
-              <span>Provide your start and end dates</span>
+              <span>Provide dates, destination, and reason</span>
             </div>
             <div class="step-item">
               <div class="step-num">3</div>
-              <span>Confirm the request summary</span>
+              <span>Review the summary and confirm</span>
             </div>
             <div class="step-item">
               <div class="step-num">4</div>
-              <span>Request is submitted for approval</span>
+              <span>Request is submitted and sent for approval</span>
             </div>
           </div>
 
-          <div class="api-notice">
-            <i class="bi bi-plug"></i>
-            API connection pending
-          </div>
         </div>
 
         <!-- Chat Area -->
         <div class="chat-main">
           <div class="chat-header">
-            <div class="chat-header-icon"><i class="bi bi-person-gear"></i></div>
+            <div class="chat-header-icon"><i class="bi bi-stars"></i></div>
             <div>
-              <div class="fw-700" style="font-size:15px">Leave Assistant</div>
-              <div class="fs-sm text-muted">Submit leave requests through conversation</div>
+              <div class="fw-700" style="font-size:15px">My Assistant</div>
+              <div class="fs-sm text-muted">Leave · Work From Home · Business Travel</div>
             </div>
-            <span class="chat-header-badge"><i class="bi bi-circle-fill me-1" style="font-size:8px;color:#f59e0b"></i>API Pending</span>
+            <span class="chat-header-badge" id="statusBadge"><i class="bi bi-circle-fill me-1" style="font-size:8px;color:#f59e0b"></i>Connecting...</span>
           </div>
 
           <div class="chat-messages" id="chatMessages">
             <div class="msg bot">
-              <div class="msg-avatar"><i class="bi bi-person-gear"></i></div>
+              <div class="msg-avatar"><i class="bi bi-stars"></i></div>
               <div>
                 <div class="msg-bubble">
-                  Hi! I'm your Leave Assistant. I can help you submit a leave request, check your balance, or answer any leave-related questions.<br><br>
+                  Hi! I'm My Assistant. I can help you submit a <strong>leave request</strong>, arrange <strong>work from home</strong>, or book a <strong>business trip</strong> — all through a simple conversation.<br><br>
                   Just tell me what you need — for example:
                 </div>
                 <div class="suggested-questions">
                   <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)">I need annual leave next week</button>
-                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)">Request sick leave for tomorrow</button>
+                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)">I want to work from home tomorrow</button>
+                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)">Request a business trip to Dubai</button>
                   <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)">How many leave days do I have left?</button>
-                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)">Cancel my last leave request</button>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="chat-input-bar">
-            <textarea id="chatInput" rows="1" placeholder="Tell me about the leave you need..." maxlength="500"></textarea>
+            <textarea id="chatInput" rows="1" placeholder="Tell me what you need — leave, WFH, or business travel..." maxlength="500"></textarea>
             <button class="btn-send" id="btnSend" title="Send"><i class="bi bi-send-fill"></i></button>
           </div>
         </div>
@@ -236,91 +234,6 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/api.js"></script>
-<script>
-const LeaveAssistant = (() => {
-  let busy = false;
-
-  function appendMsg(role, html) {
-    const wrap = document.getElementById('chatMessages');
-    const div = document.createElement('div');
-    div.className = `msg ${role}`;
-    const avatarIcon = role === 'bot' ? 'bi-person-gear' : 'bi-person';
-    div.innerHTML = `
-      <div class="msg-avatar"><i class="bi ${avatarIcon}"></i></div>
-      <div><div class="msg-bubble">${html}</div></div>`;
-    wrap.appendChild(div);
-    wrap.scrollTop = wrap.scrollHeight;
-    return div;
-  }
-
-  function showTyping() {
-    const wrap = document.getElementById('chatMessages');
-    const div = document.createElement('div');
-    div.className = 'msg bot';
-    div.id = 'typingMsg';
-    div.innerHTML = `
-      <div class="msg-avatar"><i class="bi bi-person-gear"></i></div>
-      <div><div class="msg-bubble">
-        <div class="typing-indicator">
-          <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
-        </div>
-      </div></div>`;
-    wrap.appendChild(div);
-    wrap.scrollTop = wrap.scrollHeight;
-  }
-
-  function removeTyping() {
-    const el = document.getElementById('typingMsg');
-    if (el) el.remove();
-  }
-
-  async function send(text) {
-    if (busy || !text.trim()) return;
-    busy = true;
-    document.getElementById('btnSend').disabled = true;
-    document.getElementById('chatInput').value = '';
-
-    appendMsg('user', text);
-    showTyping();
-
-    // Placeholder until API is connected
-    await new Promise(r => setTimeout(r, 1200));
-    removeTyping();
-
-    appendMsg('bot', `
-      <strong>Request received:</strong> "${text}"<br><br>
-      <em style="color:var(--color-text-muted)">The Leave Assistant backend API is not yet connected. Once the endpoint is configured, I'll process your leave request conversationally — collecting dates, type of leave, and submitting for manager approval.</em>
-    `);
-
-    busy = false;
-    document.getElementById('btnSend').disabled = false;
-  }
-
-  function askSuggestion(btn) {
-    send(btn.textContent.trim());
-  }
-
-  function init() {
-    const input = document.getElementById('chatInput');
-    const btn   = document.getElementById('btnSend');
-
-    btn.addEventListener('click', () => send(input.value));
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input.value); }
-    });
-    input.addEventListener('input', () => {
-      input.style.height = 'auto';
-      input.style.height = Math.min(input.scrollHeight, 120) + 'px';
-    });
-  }
-
-  return { init, askSuggestion };
-})();
-
-document.addEventListener('DOMContentLoaded', async () => {
-  await Layout.init('leave-assistant');
-  LeaveAssistant.init();
-});
-</script>
+<script src="/js/leave-assistant.js"></script>
 </body>
 </html>

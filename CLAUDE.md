@@ -20,140 +20,25 @@ No build step, no test runner, no TypeScript. The server runs directly with `nod
 ## Project Structure
 
 ```
-├── server.js                  # Main Express server (ports 3000 + 3001)
-├── package.json
-├── start-tunnel.ps1           # Cloudflare tunnel launcher for Teams
-├── routes/                    # Express route handlers (one per feature)
-│   ├── auth.js                #   Login/logout, session management
-│   ├── analytics.js
-│   ├── appraisal.js
-│   ├── attendance.js
-│   ├── customize.js           #   Theme/branding settings
-│   ├── directory.js
-│   ├── finance.js
-│   ├── goals.js
-│   ├── helpdesk.js
-│   ├── hr-chat.js
-│   ├── leaves.js
-│   ├── news.js
-│   ├── policy.js
-│   ├── tasks.js
-│   ├── travel.js              #   Business travel (flight/hotel search + approval)
-│   ├── wfh.js
-│   ├── doceval.js             #   Transparent proxy to external Heroku AI service (avoids CORS)
-│   └── ems/                   #   Enterprise Document Management System
-│       ├── index.js           #     Sub-router mounting all EMS sub-routes at /api/ems
-│       ├── documents.js       #     CRUD + file upload for documents
-│       ├── folders.js         #     Folder tree management
-│       ├── groups.js          #     User groups / access control
-│       ├── signatures.js      #     Digital signature workflows
-│       ├── users.js           #     EMS-scoped user management
-│       ├── audit.js           #     Audit trail read endpoint
-│       ├── doctypes.js        #     Document type definitions
-│       └── metadata.js        #     Custom metadata schemas
-├── views/                     # HTML pages (1-to-1 with public/js controllers)
-│   ├── login.html
-│   ├── landing.html           #   Dashboard / home page
-│   ├── analytics.html
-│   ├── appraisal.html
-│   ├── attendance.html
-│   ├── customize.html
-│   ├── directory.html
-│   ├── doc-chat.html          #   Document chat (AI feature)
-│   ├── erp-dialogue.html      #   AI assistant pages (WIP — no matching route file)
-│   ├── goals.html
-│   ├── helpdesk.html
-│   ├── leave-assistant.html   #   WIP — no matching route file
-│   ├── leaves.html
-│   ├── policy.html
-│   ├── proposal-eval.html     #   Proposal evaluation (AI feature)
-│   ├── quick-services.html
-│   ├── resume-eval.html       #   Resume evaluation (AI feature)
-│   ├── services.html
-│   ├── tasks.html
-│   ├── travel.html            #   Business travel module
-│   ├── voice-agent.html       #   WIP — no matching route file
-│   ├── wfh.html
-│   └── ems/
-│       └── index.html         #   EMS single-page app (tab-based, self-contained)
-├── public/                    # Static assets served by Express
-│   ├── css/
-│   │   ├── variables.css      #   CSS variable defaults (overridden by /theme.css)
-│   │   ├── global.css         #   Shared layout & component styles
-│   │   ├── pages.css          #   Page-specific styles
-│   │   └── ems.css            #   EMS-specific styles (split-pane layout, folder tree, etc.)
-│   ├── js/
-│   │   ├── api.js             #   Shared utilities (API, Layout, Heartbeat, UI)
-│   │   ├── landing.js         #   Controller for landing/dashboard
-│   │   ├── analytics.js
-│   │   ├── appraisal.js
-│   │   ├── attendance.js
-│   │   ├── customize.js
-│   │   ├── directory.js
-│   │   ├── doc-chat.js        #   Document chat controller (AI feature)
-│   │   ├── goals.js
-│   │   ├── helpdesk.js
-│   │   ├── leaves.js
-│   │   ├── policy.js
-│   │   ├── proposal-eval.js   #   Proposal evaluation controller (AI feature)
-│   │   ├── quick-services.js
-│   │   ├── resume-eval.js     #   Resume evaluation controller (AI feature)
-│   │   ├── tasks.js
-│   │   ├── travel.js          #   Business travel controller
-│   │   ├── wfh.js
-│   │   └── ems/               #   EMS sub-controllers (loaded by views/ems/index.html)
-│   │       ├── index.js       #     Tab orchestrator + shared EMS state
-│   │       ├── documents.js   #     Document list, upload, download
-│   │       ├── folder-tree.js #     Recursive folder tree rendering
-│   │       ├── doc-viewer.js  #     In-page document preview
-│   │       ├── groups.js
-│   │       ├── users.js
-│   │       ├── audit.js
-│   │       ├── doctypes-mgr.js
-│   │       ├── metadata-mgr.js
-│   │       └── signature-pad.js #   Canvas-based digital signature capture
-│   └── assets/
-│       ├── logo.png
-│       └── login-bg.jpg
-├── data/                      # JSON "database" files
-│   ├── users.json
-│   ├── tasks.json
-│   ├── leaves.json
-│   ├── wfh.json
-│   ├── attendance.json
-│   ├── appraisals.json
-│   ├── goals.json
-│   ├── finance.json
-│   ├── helpdesk.json
-│   ├── news.json
-│   ├── notifications.json
-│   ├── policies.json
-│   ├── settings.json          #   Theme colors, app name, logo path
-│   ├── travel.json            #   Business travel requests
-│   ├── ems-documents.json     #   EMS document records (metadata, not file bytes)
-│   ├── ems-folders.json       #   Folder tree
-│   ├── ems-groups.json        #   Access control groups
-│   ├── ems-users.json         #   EMS user permissions
-│   ├── ems-signatures.json    #   Signature request/completion records
-│   ├── ems-audit.json         #   Audit trail entries
-│   ├── ems-doctypes.json      #   Document type definitions
-│   └── ems-metadata.json      #   Custom metadata field schemas
-├── uploads/
-│   └── ems/                   #   Uploaded document files (served at /uploads/ems/*)
-├── utils/
-│   └── teamsNotify.js         # Teams channel notification helper
-├── teams-app/                 # Teams tab app (main portal)
-│   ├── server.js              #   Standalone Express server (port 3001)
-│   ├── update-url.js          #   Update manifest with tunnel URL + repackage
-│   ├── create-zip.js          #   Zip manifest into uploadable package
-│   ├── manifest/              #   Teams manifest.json + icons
-│   └── public/                #   Teams-specific static files
-│       ├── js/teams-init.js   #     Teams SDK initialization
-│       └── pages/tab.html     #     Tab iframe entry point
-└── teams-app-tasks/           # Teams tab app (tasks-only view)
-    ├── update-url.js
-    └── manifest/
+server.js              # Main Express server (ports 3000 + 3001)
+routes/                # Express route handlers (one per feature); ems/ is a sub-router
+views/                 # HTML pages — structure only, no server-side templating
+public/
+  css/                 # variables.css (defaults), global.css, pages.css, ems.css
+  js/                  # Client-side controllers (1-to-1 with views); ems/ sub-controllers
+  assets/
+data/                  # JSON "database" files (users, tasks, leaves, settings, ems-*, etc.)
+uploads/ems/           # Uploaded document files (served at /uploads/ems/*)
+utils/teamsNotify.js   # Teams activity feed notification helper
+teams-app/             # Teams tab manifest + standalone server (port 3001)
+teams-app-tasks/       # Separate Teams manifest for tasks-only view
+AI Test Files/         # Sample PDFs/docs for testing doc-chat, proposal-eval, resume-eval
 ```
+
+Key non-obvious files:
+- `public/js/api.js` — shared client utilities (API, Layout, Heartbeat, UI namespaces)
+- `public/css/variables.css` — CSS variable defaults (overridden by the dynamic `/theme.css` endpoint)
+- `data/settings.json` — theme colors, app name, logo path, optional Teams Graph config
 
 ## Architecture
 
@@ -161,73 +46,51 @@ Single **Node.js/Express** server (`server.js`) serving both a browser app (port
 
 - **Backend:** Express routes in `routes/` — each route reads/writes JSON files in `data/` directly via `fs.readFileSync`/`fs.writeFileSync`
 - **Frontend:** Vanilla HTML/CSS/JS — no React/Vue/Angular, no bundler. Bootstrap 5.3 + Chart.js 4.4 loaded from CDN
-- **Database:** JSON files in `data/` (users, tasks, leaves, settings, etc.) — no external DB
+- **Database:** JSON files in `data/` — no external DB
 - **Auth:** `express-session` with file-based store in `.sessions/`, 8-hour TTL
 - **Theme engine:** `GET /theme.css` is a **dynamic Express endpoint** (not a static file) that computes CSS variables from `data/settings.json` on every request
+
+**1-to-1 view/controller pairing:** Every `views/X.html` has exactly one `public/js/X.js` controller. HTML has structure only; JS handles all API calls, DOM updates, and events. The only exception is `views/ems/index.html`, which orchestrates multiple sub-controllers from `public/js/ems/`.
 
 ## Deployment to Teams
 
 1. **Local tunnel:** Run `.\start-tunnel.ps1` to launch Cloudflare tunnel and obtain a public URL
-2. **Update Teams manifest:** Run `node teams-app/update-url.js <tunnel-url>` with the active tunnel URL — this updates the manifest and repackages the zip
-3. **Upload to Teams:** The generated zip file is ready to upload to Microsoft Teams Admin Center
-4. **Tasks-only variant:** `teams-app-tasks/` contains a separate manifest for a tasks-focused Teams view — use `teams-app-tasks/update-url.js` for that app
+2. **Update Teams manifest:** Run `node teams-app/update-url.js <tunnel-url>` — updates manifest and repackages zip
+3. **Upload to Teams:** Generated zip is ready to upload to Microsoft Teams Admin Center
+4. **Tasks-only variant:** Use `teams-app-tasks/update-url.js` for that separate manifest
 
 ## Design Patterns
 
 ### MVC-like Separation (without a framework)
 
-The app follows a manual MVC pattern using plain files instead of a framework:
-
 | Layer | Location | Responsibility |
 |---|---|---|
-| **Model** | `data/*.json` + read/write helpers in each route | Data storage and access. Each route file defines its own `readX()` / `writeX()` closures using `fs.readFileSync`/`writeFileSync`. No shared ORM or model layer. |
-| **View** | `views/*.html` | Structure-only HTML templates. No server-side templating — all dynamic content is injected by the client-side controller. |
-| **Controller** | `public/js/*.js` (client) + `routes/*.js` (server) | Split across client and server. Server routes handle data logic and role-based filtering; client controllers handle DOM rendering, events, and API calls. |
-
-### Request → Approval Workflow
-
-Leave and WFH modules follow an identical workflow pattern:
-
-1. **User submits request** → POST route creates a record in `data/leaves.json` (or `wfh.json`) with `status: 'pending'`
-2. **Auto-task creation** → The same POST handler looks up the user's `managerId` from `data/users.json` and creates an approval task in `data/tasks.json` with `type: 'approval'` and `metadata: { leaveId }` (or `wfhId`)
-3. **Manager approves/rejects** → PUT route updates both the original request's `status` and the linked task's `status` to `'completed'`, appending to the task's `history` array
-4. **Cross-file mutation** — A single HTTP request writes to 2 JSON files atomically (request file + tasks file)
-
-To add a new approval workflow, replicate this pattern: create a data file, a route with POST (create + auto-task) and PUT (review + sync task), and wire the `metadata` key so the task links back to the source record.
+| **Model** | `data/*.json` + read/write helpers in each route | Each route file defines its own `readX()` / `writeX()` closures. No shared ORM. |
+| **View** | `views/*.html` | Structure-only HTML. All dynamic content injected by client-side controller. |
+| **Controller** | `public/js/*.js` (client) + `routes/*.js` (server) | Server routes handle data logic and role-based filtering; client controllers handle DOM and API calls. |
 
 ### Route File Template
 
-Every route file follows this structure:
 ```javascript
 const express = require('express');
 const router  = express.Router();
 const fs      = require('fs');
 const path    = require('path');
 
-// File paths
-const dataPath = path.join(__dirname, '../data/feature.json');
-
-// Read/write closures (per-file, not shared)
+const dataPath  = path.join(__dirname, '../data/feature.json');
 const readData  = () => JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 const writeData = d  => fs.writeFileSync(dataPath, JSON.stringify(d, null, 2));
 
-// Auth guard (redeclared in every route file)
 const requireAuth = (req, res, next) => {
   if (req.session && req.session.user) return next();
   res.status(401).json({ success: false, message: 'Unauthorized' });
 };
-
-// GET  — list (with role-based filtering)
-// POST — create
-// PUT  — update
-// DELETE — remove (where applicable)
 
 module.exports = router;
 ```
 
 ### Frontend Controller Template
 
-Every page controller in `public/js/` follows this lifecycle:
 ```javascript
 document.addEventListener('DOMContentLoaded', async () => {
   await Layout.init('pageName');   // Sidebar, user info, heartbeat
@@ -236,12 +99,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 ```
 
-Key conventions:
 - **Module-level arrays** (`let allLeaves = []`) hold fetched data for re-rendering without re-fetching
-- **Render functions** (`renderMyLeaves()`, `renderPendingApprovals()`) rebuild DOM from the module-level array
-- **After mutations**, call the load function again (`await loadLeaves()`) to refresh all views
-- **Bootstrap modals** are used for forms and confirmations via `bootstrap.Modal.getOrCreateInstance()`
+- **Render functions** rebuild DOM from the module-level array
+- **After mutations**, call the load function again to refresh all views
+- **Bootstrap modals** via `bootstrap.Modal.getOrCreateInstance()`
 - **`UI.toast()`** for all user feedback — no `alert()` calls
+- **CSS variables only** — never hard-code hex colors; use `--color-primary`, `--color-secondary`, and their computed shades
+
+### Shared Utility Layer (`public/js/api.js`)
+
+All client-side code depends on this single module:
+- **`API`** — fetch wrappers (`get`, `post`, `put`, `del`) with auto 401 redirect
+- **`Layout`** — sidebar init, user info, notification badge, embed mode detection
+- **`Heartbeat`** — 30s keep-alive ping with auto-reload on failure
+- **`UI`** — toast notifications, date formatting, status/priority badge generators
+
+### Request → Approval Workflow
+
+Leave and WFH modules follow an identical workflow pattern:
+
+1. **User submits** → POST route creates record with `status: 'pending'`
+2. **Auto-task creation** → Same POST handler creates an approval task in `data/tasks.json` with `type: 'approval'` and `metadata: { leaveId }` (or `wfhId`), linked to the user's `managerId`
+3. **Manager approves/rejects** → PUT route updates both the request status and the linked task status to `'completed'`
+
+Tasks also support comments (`/:id/comment`), delegation (`/:id/delegate`), reassignment (`/:id/reassign`), and escalation (`/:id/escalate`) — tracked via `history[]`, `comments[]`, `delegatedFrom`, and `escalated` fields.
+
+The **Appraisal** and **Travel** modules also follow this same approval workflow — submissions create tasks in `data/tasks.json` linked to the manager, and approval/rejection updates both the record and the linked task.
 
 ### Role-Based Data Filtering
 
@@ -253,63 +136,26 @@ if (user.role === 'employee') {
 // admin, hr, manager → see all records
 ```
 
-There is no centralized RBAC middleware. Each route decides its own visibility rules.
-
-### Shared Utility Layer (`public/js/api.js`)
-
-All client-side code depends on a single shared module that provides four namespaces:
-- **`API`** — fetch wrappers (`get`, `post`, `put`, `del`) with auto 401 redirect
-- **`Layout`** — sidebar init, user info, notification badge, embed mode detection
-- **`Heartbeat`** — 30s keep-alive ping with auto-reload on failure
-- **`UI`** — toast notifications, date formatting, status/priority badge generators
-
 ### AI Features
 
-- **HR Chat** (`/api/hr-chat`) — Uses Groq llama-3.3-70b-versatile model; requires `GROQ_API_KEY` environment variable. Integrated via `routes/hr-chat.js`
-- **Document Chat** (`doc-chat.html` / `public/js/doc-chat.js`) — Upload PDFs → POST `/api/general/ingest` to get a `session_id` → POST `/api/general/query` with accumulated `chat_history` for conversational Q&A
-- **Proposal Evaluation** (`proposal-eval.html` / `public/js/proposal-eval.js`) — AI-powered proposal analysis
-- **Resume Evaluation** (`resume-eval.html` / `public/js/resume-eval.js`) — AI-powered resume screening
+- **HR Chat** (`/api/hr-chat`) — Groq llama-3.3-70b-versatile; requires `GROQ_API_KEY`
+- **Document Chat** (`doc-chat.html`) — Upload PDF → POST `/api/general/ingest` (returns `session_id`) → POST `/api/general/query` with accumulated `chat_history`
+- **Proposal Evaluation** and **Resume Evaluation** — AI-powered document analysis
 
-The three document AI features (doc-chat, proposal-eval, resume-eval) all proxy through `routes/doceval.js`, mounted at `/api/doceval-proxy`. This is a transparent server-side proxy to an external Heroku service (`doceval-8362469192e8.herokuapp.com`) — it exists solely to avoid CORS issues. No auth guard on this route.
+The document AI features (doc-chat, proposal-eval, resume-eval) all proxy through `routes/doceval.js` at `/api/doceval-proxy` to avoid CORS with an external Heroku service. No auth guard on this proxy route. Sample test files live in `AI Test Files/`.
 
 ### Dynamic Theming
 
-Theme colors flow through a single pipeline:
 1. Admin updates colors via `/customize` → saved to `data/settings.json`
-2. Every page loads `<link href="/theme.css">` — this is a dynamic Express endpoint, not a static file
-3. `server.js` reads `settings.json` on each request and computes CSS variables (shades, tints, RGB values)
-4. All styles reference CSS variables (`--color-primary`, etc.) — never hard-coded hex values
-
-## Key Conventions
-
-**1-to-1 view/controller pairing:** Every `views/X.html` has exactly one `public/js/X.js` controller. The HTML has structure only; the JS handles all API calls, DOM updates, and events. No page shares a controller.
-
-**Shared utilities in `public/js/api.js`:** All page controllers import this. It provides:
-- `API.get/post/put/del()` — fetch wrapper with credential inclusion, auto-redirect on 401
-- `Layout.init(activePage)` — sidebar, user info, notifications setup
-- `Heartbeat.start()` — 30s ping to `/api/heartbeat` (keeps Teams iframe alive)
-- `UI.toast/formatDate/statusBadge/priorityBadge()` — common UI helpers
-
-**Every controller follows this pattern:**
-```javascript
-document.addEventListener('DOMContentLoaded', async () => {
-  await Layout.init('pageName');
-  await loadData();
-  bindEvents();
-});
-```
-
-**CSS variables only** — never hard-code hex colors. Use `--color-primary`, `--color-secondary`, and their computed shades defined in `/theme.css`. Defaults are in `public/css/variables.css`.
+2. Every page loads `<link href="/theme.css">` — dynamic Express endpoint, not a static file
+3. `server.js` computes CSS variables (shades, tints, RGB values) on each request
+4. `data/settings.json` structure: `colors.primary` (default `#198D87`), `colors.secondary` (default `#2C3E50`), `appName`, `logoPath`, optionally `teamsGraph: { tenantId, clientId, clientSecret }`
 
 ## Cross-Cutting Concerns
 
-**Dynamic cookie security:** Middleware in `server.js` detects HTTPS (tunnel) vs HTTP (localhost) and upgrades session cookies to `SameSite=None; Secure` for Teams iframe compatibility. Both ports serve the same app.
+**Dynamic cookie security:** Middleware in `server.js` detects HTTPS (tunnel) vs HTTP (localhost) and upgrades session cookies to `SameSite=None; Secure` for Teams iframe compatibility.
 
-**Workflow auto-task creation:** When a user submits a leave or WFH request, the route handler automatically creates an approval task assigned to their manager in `data/tasks.json`. Approving/rejecting that task updates the original request. Multiple data files are mutated in a single operation. Tasks also support comments (`/:id/comment`), delegation (`/:id/delegate`), reassignment (`/:id/reassign`), and escalation (`/:id/escalate`) — tracked via `history[]`, `comments[]`, `delegatedFrom`, and `escalated` fields on the task object.
-
-**Teams activity notifications:** `utils/teamsNotify.js` sends Teams activity feed notifications via Microsoft Graph API when leaves are submitted or decided. Requires a `teamsGraph` object in `data/settings.json` with `tenantId`, `clientId`, `clientSecret`, and an Azure AD app registration with `TeamsActivity.Send` permission. If not configured, notifications are silently skipped.
-
-**Role-based data filtering:** Routes filter data by user role — `admin`/`hr` see everything, `manager` sees team data, `employee` sees own data only. The role check happens inside each route handler.
+**Teams activity notifications:** `utils/teamsNotify.js` sends Teams activity feed notifications via Microsoft Graph API when leaves are submitted or decided. Requires `teamsGraph` in `data/settings.json`. If not configured, notifications are silently skipped.
 
 **Teams iframe support:** `Content-Security-Policy` frame-ancestors header allows Teams/Outlook domains. `X-Frame-Options` is removed. `app.set('trust proxy', 1)` is required for ngrok HTTPS detection.
 
@@ -317,35 +163,36 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 The EMS module (`/ems`) is architecturally different from all other modules:
 
-- **Single-page app inside the app:** `views/ems/index.html` is a self-contained SPA with a tab bar. It does not follow the 1-to-1 view/controller pattern — instead it loads multiple sub-controllers from `public/js/ems/` dynamically.
-- **Sub-router:** All API calls go to `/api/ems/*`, handled by `routes/ems/index.js` which mounts eight sub-routers.
-- **File uploads:** Actual document files are stored under `uploads/ems/` and served at `/uploads/ems/*` via a dedicated static route (no auth guard — session middleware runs before static). Document metadata is stored in `data/ems-documents.json`.
-- **Dedicated CSS:** `public/css/ems.css` contains EMS-specific layout (split-pane with resizable folder panel, tab panels, signature pad). Do not put EMS styles in `global.css` or `pages.css`.
-- **No approval workflow integration:** EMS does not create tasks in `data/tasks.json` — it manages its own access control via groups (`ems-groups.json`) and per-document permissions.
+- **SPA inside the app:** `views/ems/index.html` has a tab bar and loads multiple sub-controllers from `public/js/ems/` — does not follow the 1-to-1 view/controller pattern
+- **Sub-router:** All API calls go to `/api/ems/*`, handled by `routes/ems/index.js` which mounts eight sub-routers
+- **File uploads:** Stored under `uploads/ems/`, served at `/uploads/ems/*` without an auth guard (static middleware runs first). Metadata in `data/ems-documents.json`
+- **Dedicated CSS:** `public/css/ems.css` for EMS-specific layout (split-pane, resizable folder panel, signature pad). Do not add EMS styles to `global.css` or `pages.css`
+- **No approval workflow integration:** EMS manages access via groups (`ems-groups.json`) and per-document permissions, not `data/tasks.json`
 
 ## Gotchas
 
-- `/theme.css` is dynamic — changes to `data/settings.json` colors reflect immediately without restart
-- JSON body limit is `50mb` in Express config (supports base64 logo upload)
-- Sidebar collapse state is persisted in `localStorage` key `sidebarCollapsed`
-- The heartbeat system (`/api/heartbeat` pinged every 30s) is critical for Teams — without it the iframe disconnects
-- Demo users all use password `demo123` — passwords are plaintext in `data/users.json` (demo only)
+- `/theme.css` is dynamic — color changes reflect immediately without restart
+- JSON body limit is `50mb` (supports base64 logo upload)
+- Sidebar collapse state persisted in `localStorage` key `sidebarCollapsed`
+- Heartbeat (`/api/heartbeat` every 30s) is critical for Teams — without it the iframe disconnects
+- Demo users all use password `demo123` — plaintext in `data/users.json`
 - `?embed=1` query param triggers auto-login for Teams embedded mode
-- **Data reset:** To reset all data to defaults, delete or truncate files in `data/` — there is no migration system
-- **Session reset:** Delete the `.sessions/` directory to log out all users (sessions stored as files here)
-- `data/settings.json` full structure: `colors.primary` (default `#198D87`), `colors.secondary` (default `#2C3E50`), `appName`, `logoPath`, and optionally `teamsGraph: { tenantId, clientId, clientSecret }`
-- **EMS uploads** are served without an auth guard because `express.static` runs before the session check at that mount point — keep this in mind if adding sensitive document types
-- **EMS is a SPA exception:** the standard 1-to-1 view/controller rule does not apply to `views/ems/` — `index.html` orchestrates multiple `public/js/ems/*.js` sub-controllers via script tags
-- Entity IDs are auto-generated as a type prefix + first 8 chars of uuid (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `W3A4F2G1` for WFH, `HD9B1C3D` for helpdesk). Helpdesk tickets additionally get a human-readable `ticketNo` in `TKT-YYYY-NNN` format
-- **WIP/Incomplete pages:** `erp-dialogue.html`, `leave-assistant.html`, `voice-agent.html` exist with HTML but lack JS controllers — do not rely on these functioning
-- `multer` and `pdf-lib` are available as dependencies (multer used for EMS file uploads; pdf-lib available for PDF manipulation)
+- **Data reset:** Delete/truncate files in `data/` — no migration system
+- **Session reset:** Delete `.sessions/` directory to log out all users
+- Entity IDs: type prefix + first 8 chars of UUID (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `HD9B1C3D` for helpdesk). Helpdesk tickets also get a `ticketNo` in `TKT-YYYY-NNN` format
+- **WIP pages:** `erp-dialogue.html` and `voice-agent.html` have HTML but no JS controllers. `leave-assistant.html` is fully implemented — it has both `public/js/leave-assistant.js` and `routes/leave-assistant.js` (AI-powered leave balance + chat via Groq)
+- `views/landing.html` is the home dashboard (entry point after login); `views/services.html` and `views/quick-services.html` are service catalog views
+- `routes/finance.js` and `routes/news.js` exist but are not surfaced prominently in the UI — standard route pattern, JSON-backed
+- `multer` and `pdf-lib` are available as dependencies (multer used for EMS uploads; pdf-lib available for PDF manipulation)
+- `uuid` (`v4`) is the standard ID generator — used everywhere; import with `const { v4: uuidv4 } = require('uuid')`
+- **Travel module** (`routes/travel.js`) has simulated airline/hotel provider data hardcoded in the route file itself (not in `data/`) — it generates realistic mock search results on the fly
 
 ## Known Demo Limitations
 
 These are intentional gaps — do not "fix" them unless explicitly asked:
 
-- **Policy AI is keyword-based, not AI** — `routes/policy.js` uses word-frequency scoring, not an LLM. The chat UI is cosmetic.
-- **Attendance is read-only** — no punch-in/punch-out endpoints exist; all attendance data is seed data.
-- **Notifications are static** — `data/notifications.json` is pre-seeded demo data; workflows (leave approval, task delegation) do not create new notification records at runtime.
-- **No real external system integration** — `sourceSystem` on tasks (HR, CRM, ERP, etc.) is just a label string. No live data flows from real enterprise systems.
-- **Single-level approval only** — leave/WFH approval goes to the direct manager only; no multi-level chains.
+- **Policy AI is keyword-based, not AI** — `routes/policy.js` uses word-frequency scoring. The chat UI is cosmetic.
+- **Attendance is read-only** — no punch-in/punch-out endpoints; all attendance data is seed data.
+- **Notifications are static** — `data/notifications.json` is pre-seeded; workflows do not create new notification records at runtime.
+- **No real external system integration** — `sourceSystem` on tasks is just a label string.
+- **Single-level approval only** — leave/WFH approval goes to direct manager only; no multi-level chains.

@@ -7,7 +7,7 @@
     "role": "admin",
     "department": "IT",
     "jobTitle": "System Administrator",
-    "managerId": null,
+    "managerId": "u001",
     "phone": "+966 50 111 2233",
     "location": "Riyadh HQ",
     "joinDate": "2019-03-01",

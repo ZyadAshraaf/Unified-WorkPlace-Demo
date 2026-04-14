@@ -75,36 +75,6 @@
     "reviewNote": "Rejected due to critical project deadline at that time."
   },
   {
-    "id": "L6B16E8DE",
-    "userId": "u001",
-    "type": "annual",
-    "startDate": "2026-03-26",
-    "endDate": "2026-03-31",
-    "days": 4,
-    "reason": "",
-    "status": "pending",
-    "taskId": null,
-    "submittedAt": "2026-03-25T09:16:17.538Z",
-    "reviewedBy": null,
-    "reviewedAt": null,
-    "reviewNote": ""
-  },
-  {
-    "id": "LA3AC8855",
-    "userId": "u001",
-    "type": "annual",
-    "startDate": "2026-03-25",
-    "endDate": "2026-03-27",
-    "days": 3,
-    "reason": "fdfdf",
-    "status": "pending",
-    "taskId": null,
-    "submittedAt": "2026-03-25T10:22:19.789Z",
-    "reviewedBy": null,
-    "reviewedAt": null,
-    "reviewNote": ""
-  },
-  {
     "id": "LE88C37A0",
     "userId": "u004",
     "type": "annual",
@@ -132,21 +102,6 @@
     "submittedAt": "2026-03-25T15:26:26.495Z",
     "reviewedBy": "u001",
     "reviewedAt": "2026-03-30T11:24:11.082Z",
-    "reviewNote": ""
-  },
-  {
-    "id": "LBE888D18",
-    "userId": "u001",
-    "type": "annual",
-    "startDate": "2026-03-31",
-    "endDate": "2026-03-31",
-    "days": 1,
-    "reason": "VGHVHGV",
-    "status": "pending",
-    "taskId": null,
-    "submittedAt": "2026-03-30T11:56:58.300Z",
-    "reviewedBy": null,
-    "reviewedAt": null,
     "reviewNote": ""
   },
   {
@@ -222,6 +177,21 @@
     "submittedAt": "2026-04-02T10:56:39.253Z",
     "reviewedBy": "u001",
     "reviewedAt": "2026-04-02T10:57:30.344Z",
+    "reviewNote": ""
+  },
+  {
+    "id": "L61FCA88C",
+    "userId": "u001",
+    "type": "annual",
+    "startDate": "2026-04-15",
+    "endDate": "2026-04-17",
+    "days": 3,
+    "reason": "Family matter",
+    "status": "approved",
+    "taskId": "T6C03E774",
+    "submittedAt": "2026-04-14T03:48:55.447Z",
+    "reviewedBy": "u001",
+    "reviewedAt": "2026-04-14T03:50:01.821Z",
     "reviewNote": ""
   }
 ]

@@ -304,7 +304,7 @@
     "status": "active",
     "createdBy": "u001",
     "createdAt": "2026-04-08T16:21:20.621Z",
-    "updatedAt": "2026-04-08T17:02:46.004Z",
+    "updatedAt": "2026-04-12T10:09:02.187Z",
     "currentVersion": 1,
     "versions": [
       {
@@ -368,12 +368,65 @@
         "x": 37.2,
         "y": 65.1,
         "width": 22
+      },
+      {
+        "signatureId": "SIGEB896CBA",
+        "userId": "u004",
+        "userName": "Sara Hassan",
+        "signedAt": "2026-04-12T10:07:21.122Z",
+        "type": "drawn",
+        "x": 33.1,
+        "y": 17.9,
+        "width": 22
       }
     ],
     "watermark": {
       "enabled": false,
       "text": "CONFIDENTIAL",
       "opacity": 0.5,
+      "angle": 0
+    },
+    "annotations": [],
+    "starred": [],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
+  },
+  {
+    "id": "DOC604A5DD0",
+    "title": "Proposal",
+    "description": "skdjflksdj",
+    "folderId": "FLD1A2B3C08",
+    "docTypeId": "DT007",
+    "metadata": {
+      "proposal_number": "202",
+      "client_name": "wind",
+      "proposal_date": "2026-04-12",
+      "proposal_amount": 100000,
+      "validity_days": 30
+    },
+    "status": "active",
+    "createdBy": "u004",
+    "createdAt": "2026-04-12T10:22:44.317Z",
+    "updatedAt": "2026-04-12T10:22:44.317Z",
+    "currentVersion": 1,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "RFP (1).pdf",
+        "storagePath": "uploads/ems/DOC604A5DD0_v1.pdf",
+        "mimeType": "application/pdf",
+        "size": 223296,
+        "uploadedBy": "u004",
+        "uploadedAt": "2026-04-12T10:22:44.320Z",
+        "notes": "Initial upload"
+      }
+    ],
+    "signatures": [],
+    "watermark": {
+      "enabled": false,
+      "text": "CONFIDENTIAL",
+      "opacity": 0.15,
       "angle": -30
     },
     "annotations": [],

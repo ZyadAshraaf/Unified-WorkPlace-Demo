@@ -328,5 +328,38 @@
     "userName": "Ahmed Al-Rashidi",
     "details": "Applied signature",
     "timestamp": "2026-04-08T17:02:46.007Z"
+  },
+  {
+    "id": "AUD21626F03",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC4041BA18",
+    "entityName": "Proposal",
+    "userId": "u004",
+    "userName": "Sara Hassan",
+    "details": "Applied signature",
+    "timestamp": "2026-04-12T10:07:20.995Z"
+  },
+  {
+    "id": "AUDA203B11B",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC4041BA18",
+    "entityName": "Proposal",
+    "userId": "u004",
+    "userName": "Sara Hassan",
+    "details": "Applied signature",
+    "timestamp": "2026-04-12T10:07:21.124Z"
+  },
+  {
+    "id": "AUD83C2B29A",
+    "action": "document.upload",
+    "entityType": "document",
+    "entityId": "DOC604A5DD0",
+    "entityName": "Proposal",
+    "userId": "u004",
+    "userName": "Sara Hassan",
+    "details": "Created document with file upload",
+    "timestamp": "2026-04-12T10:22:44.324Z"
   }
 ]

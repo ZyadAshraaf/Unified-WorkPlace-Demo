@@ -45,12 +45,12 @@ const template = `{
     "termsOfUseUrl": "{{BASE_URL}}/terms"
   },
   "name": {
-    "short": "Wind-IS Hub",
-    "full": "Wind-IS Hub \\u2014 Unified Workspace"
+    "short": "Wind Workplace",
+    "full": "Wind Workplace \\u2014 Unified Workplace"
   },
   "description": {
-    "short": "Your tasks and analytics at a glance.",
-    "full": "Wind-IS Hub brings your tasks and analytics dashboards from Unified Workspace directly into Microsoft Teams."
+    "short": "Your unified workplace inside Microsoft Teams.",
+    "full": "Wind Workplace brings tasks, services, AI assistance, and analytics from your Unified Workplace solution directly into Microsoft Teams."
   },
   "icons": {
     "color": "color.png",
@@ -65,21 +65,21 @@ const template = `{
       "scopes": ["personal"]
     },
     {
-      "entityId": "analytics-tab",
-      "name": "Analytics",
-      "contentUrl": "{{BASE_URL}}/analytics?embed=1",
-      "scopes": ["personal"]
-    },
-    {
-      "entityId": "policy-tab",
-      "name": "My Assistant",
-      "contentUrl": "{{BASE_URL}}/policy?embed=1",
-      "scopes": ["personal"]
-    },
-    {
       "entityId": "quick-services-tab",
       "name": "Quick Services",
       "contentUrl": "{{BASE_URL}}/quick-services?embed=1",
+      "scopes": ["personal"]
+    },
+    {
+      "entityId": "assistant-tab",
+      "name": "My Assistant",
+      "contentUrl": "{{BASE_URL}}/leave-assistant?embed=1",
+      "scopes": ["personal"]
+    },
+    {
+      "entityId": "analytics-tab",
+      "name": "Analytics",
+      "contentUrl": "{{BASE_URL}}/analytics?embed=1",
       "scopes": ["personal"]
     }
   ],
@@ -123,7 +123,7 @@ console.log(`\n  \u2714 Manifest updated \u2192 ${cleanUrl}`);
 console.log(`    Domain: ${domain}`);
 
 // Repackage zip
-const zipName = 'Wind-IS Hub.zip';
+const zipName = 'Wind Workplace.zip';
 const zipPath = path.join(__dirname, 'manifest', zipName);
 if (fs.existsSync(zipPath)) fs.unlinkSync(zipPath);
 

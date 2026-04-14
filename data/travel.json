@@ -298,5 +298,55 @@
     "reviewedBy": null,
     "reviewedAt": null,
     "reviewNote": ""
+  },
+  {
+    "id": "TR-307635A2",
+    "userId": "u004",
+    "destination": "Abha",
+    "origin": "Riyadh",
+    "purpose": "business",
+    "departureDate": "2026-04-22",
+    "returnDate": "2026-04-25",
+    "days": 4,
+    "travelers": 1,
+    "travelClass": "economy",
+    "flight": {
+      "outbound": {
+        "airline": "flynas",
+        "flightNo": "XY918",
+        "departure": "15:00",
+        "arrival": "16:52",
+        "class": "Economy",
+        "price": 435
+      },
+      "return": {
+        "airline": "Saudia",
+        "flightNo": "SV358",
+        "departure": "20:00",
+        "arrival": "21:40",
+        "class": "Economy",
+        "price": 410
+      }
+    },
+    "hotel": {
+      "name": "InterContinental Abha",
+      "stars": 5,
+      "pricePerNight": 505,
+      "nights": 3,
+      "total": 1515
+    },
+    "costBreakdown": {
+      "flights": 845,
+      "hotel": 1515,
+      "perDiem": 1000,
+      "transport": 400,
+      "total": 3760
+    },
+    "status": "pending",
+    "taskId": "T6734F32C",
+    "submittedAt": "2026-04-12T10:03:51.856Z",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "reviewNote": ""
   }
 ]

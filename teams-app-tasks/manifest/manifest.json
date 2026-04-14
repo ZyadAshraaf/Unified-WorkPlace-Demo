@@ -5,17 +5,17 @@
   "id": "a7e3c1d9-4f82-4b6a-9e15-3d8f0c2b1a47",
   "developer": {
     "name": "WIND-IS",
-    "websiteUrl": "https://caught-journalist-confident-collecting.trycloudflare.com",
-    "privacyUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/privacy",
-    "termsOfUseUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/terms"
+    "websiteUrl": "https://potter-temp-remarks-composed.trycloudflare.com",
+    "privacyUrl": "https://potter-temp-remarks-composed.trycloudflare.com/privacy",
+    "termsOfUseUrl": "https://potter-temp-remarks-composed.trycloudflare.com/terms"
   },
   "name": {
-    "short": "Wind-IS Hub",
-    "full": "Wind-IS Hub \u2014 Unified Workspace"
+    "short": "Wind Workplace",
+    "full": "Wind Workplace \u2014 Unified Workplace"
   },
   "description": {
-    "short": "Your tasks and analytics at a glance.",
-    "full": "Wind-IS Hub brings your tasks and analytics dashboards from Unified Workspace directly into Microsoft Teams."
+    "short": "Your unified workplace inside Microsoft Teams.",
+    "full": "Wind Workplace brings tasks, services, AI assistance, and analytics from your Unified Workplace solution directly into Microsoft Teams."
   },
   "icons": {
     "color": "color.png",
@@ -26,32 +26,32 @@
     {
       "entityId": "tasks-tab",
       "name": "My Tasks",
-      "contentUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/tasks?embed=1",
-      "scopes": ["personal"]
-    },
-    {
-      "entityId": "analytics-tab",
-      "name": "Analytics",
-      "contentUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/analytics?embed=1",
-      "scopes": ["personal"]
-    },
-    {
-      "entityId": "policy-tab",
-      "name": "My Assistant",
-      "contentUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/policy?embed=1",
+      "contentUrl": "https://potter-temp-remarks-composed.trycloudflare.com/tasks?embed=1",
       "scopes": ["personal"]
     },
     {
       "entityId": "quick-services-tab",
       "name": "Quick Services",
-      "contentUrl": "https://caught-journalist-confident-collecting.trycloudflare.com/quick-services?embed=1",
+      "contentUrl": "https://potter-temp-remarks-composed.trycloudflare.com/quick-services?embed=1",
+      "scopes": ["personal"]
+    },
+    {
+      "entityId": "assistant-tab",
+      "name": "My Assistant",
+      "contentUrl": "https://potter-temp-remarks-composed.trycloudflare.com/leave-assistant?embed=1",
+      "scopes": ["personal"]
+    },
+    {
+      "entityId": "analytics-tab",
+      "name": "Analytics",
+      "contentUrl": "https://potter-temp-remarks-composed.trycloudflare.com/analytics?embed=1",
       "scopes": ["personal"]
     }
   ],
   "configurableTabs": [],
   "permissions": ["identity", "messageTeamMembers"],
   "validDomains": [
-    "caught-journalist-confident-collecting.trycloudflare.com"
+    "potter-temp-remarks-composed.trycloudflare.com"
   ],
   "activities": {
     "activityTypes": [

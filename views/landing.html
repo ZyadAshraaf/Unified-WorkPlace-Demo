@@ -114,7 +114,7 @@
     }
     .qa-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .qa-hdr h3 { font-size: 15px; font-weight: 700; color: var(--color-text); margin: 0; }
-    .qa-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+    .qa-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .qa-item {
       display: flex; flex-direction: column; align-items: center; gap: 8px;
       text-decoration: none; color: var(--color-text);
@@ -302,12 +302,12 @@
     @media (max-width: 1100px) { .home-aside { display: none; } .home-body { padding: 20px 24px; } }
     @media (max-width: 900px) {
       .stats-strip { grid-template-columns: repeat(2, 1fr); padding: 0 24px; }
-      .qa-grid { grid-template-columns: repeat(3, 1fr); }
+      .qa-grid { grid-template-columns: repeat(4, 1fr); }
       .hero { padding: 28px 24px 36px; }
     }
     @media (max-width: 600px) {
       .stats-strip { grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px; }
-      .qa-grid { grid-template-columns: repeat(3, 1fr); }
+      .qa-grid { grid-template-columns: repeat(4, 1fr); }
       .hero { padding: 20px 16px 30px; }
       .hero-greeting { font-size: 22px; }
       .home-body { padding: 16px; }
@@ -322,40 +322,35 @@
     <div class="sidebar-brand">
       <img src="/assets/logo.png" alt="WIND-IS" class="sidebar-logo">
     </div>
-    <nav class="sidebar-nav">
+        <nav class="sidebar-nav">
       <div class="nav-section">
-        <a href="/" class="nav-item active" data-page="landing"><i class="bi bi-house-door"></i><span>Home</span></a>
+        <a href="/" class="nav-item" data-page="landing"><i class="bi bi-house-door"></i><span>Home</span></a>
         <a href="/tasks" class="nav-item" data-page="tasks"><i class="bi bi-check2-square"></i><span>My Tasks</span><span class="nav-badge d-none" id="tasksBadge">0</span></a>
       </div>
-      <div class="nav-section">
-        <div class="nav-section-label">Services</div>
+      <div class="nav-section"><div class="nav-section-label">Services</div>
         <a href="/services" class="nav-item" data-page="services"><i class="bi bi-grid-3x3-gap"></i><span>Service Catalog</span></a>
       </div>
-      <div class="nav-section">
-        <div class="nav-section-label">Insights</div>
+      <div class="nav-section"><div class="nav-section-label">Insights</div>
         <a href="/analytics" class="nav-item" data-page="analytics"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
-        <a href="/goals" class="nav-item" data-page="goals"><i class="bi bi-bullseye"></i><span>Goals & OKR</span></a>
-        <a href="/appraisal" class="nav-item" data-page="appraisal"><i class="bi bi-star-half"></i><span>Performance</span></a>
+        <a href="/goals" class="nav-item" data-page="goals"><i class="bi bi-bullseye"></i><span>Goals &amp; OKR</span></a>
+        <a href="/appraisal" class="nav-item" data-page="appraisal"><i class="bi bi-bar-chart-steps"></i><span>Performance</span></a>
         <a href="/attendance" class="nav-item" data-page="attendance"><i class="bi bi-clock-history"></i><span>Attendance</span></a>
       </div>
-      <div class="nav-section">
-        <div class="nav-section-label">Support</div>
+      <div class="nav-section"><div class="nav-section-label">Support</div>
         <a href="/policy" class="nav-item" data-page="policy"><i class="bi bi-robot"></i><span>Policy AI</span></a>
         <a href="/helpdesk" class="nav-item" data-page="helpdesk"><i class="bi bi-headset"></i><span>Help Desk</span></a>
         <a href="/directory" class="nav-item" data-page="directory"><i class="bi bi-people"></i><span>Directory</span></a>
       </div>
-      <div class="nav-section">
-        <div class="nav-section-label">AI Use Cases</div>
+      <div class="nav-section"><div class="nav-section-label">AI Use Cases</div>
         <a href="/erp-dialogue" class="nav-item" data-page="erp-dialogue"><i class="bi bi-database"></i><span>ERP Dialogue</span></a>
-        <a href="/leave-assistant" class="nav-item" data-page="leave-assistant"><i class="bi bi-person-gear"></i><span>Leave Assistant</span></a>
+        <a href="/leave-assistant" class="nav-item" data-page="leave-assistant"><i class="bi bi-person-gear"></i><span>My Assistant</span></a>
         <a href="/voice-agent" class="nav-item" data-page="voice-agent"><i class="bi bi-telephone-outbound"></i><span>Voice Agent</span></a>
         <a href="/proposal-eval" class="nav-item" data-page="proposal-eval"><i class="bi bi-file-earmark-check"></i><span>Proposal Evaluator</span></a>
         <a href="/resume-eval" class="nav-item" data-page="resume-eval"><i class="bi bi-person-lines-fill"></i><span>Talent Assessor</span></a>
         <a href="/doc-chat" class="nav-item" data-page="doc-chat"><i class="bi bi-chat-square-text"></i><span>Knowledge Assistant</span></a>
       </div>
-      <div class="nav-section">
-        <div class="nav-section-label">Enterprise</div>
-        <a href="/ems" class="nav-item" data-page="ems"><i class="bi bi-building-gear"></i><span>Enterprise DMS</span></a>
+      <div class="nav-section"><div class="nav-section-label">Enterprise</div>
+        <a href="/ems" class="nav-item" data-page="ems"><i class="bi bi-building-gear"></i><span>CMS</span></a>
       </div>
     </nav>
     <div class="sidebar-footer">
@@ -474,17 +469,25 @@
                 <div class="qa-item-icon"><i class="bi bi-calendar-plus"></i></div>
                 <span>Leave</span>
               </a>
+              <a href="/wfh" class="qa-item">
+                <div class="qa-item-icon"><i class="bi bi-house-check"></i></div>
+                <span>Work From Home</span>
+              </a>
+              <a href="/travel" class="qa-item">
+                <div class="qa-item-icon"><i class="bi bi-airplane"></i></div>
+                <span>Business Travel</span>
+              </a>
               <a href="/analytics" class="qa-item">
                 <div class="qa-item-icon"><i class="bi bi-bar-chart-line"></i></div>
                 <span>Analytics</span>
               </a>
-              <a href="/goals" class="qa-item">
-                <div class="qa-item-icon"><i class="bi bi-bullseye"></i></div>
-                <span>Goals</span>
+              <a href="/ems" class="qa-item">
+                <div class="qa-item-icon"><i class="bi bi-building-gear"></i></div>
+                <span>CMS</span>
               </a>
-              <a href="/policy" class="qa-item">
-                <div class="qa-item-icon"><i class="bi bi-robot"></i></div>
-                <span>Policy AI</span>
+              <a href="/doc-chat" class="qa-item">
+                <div class="qa-item-icon"><i class="bi bi-chat-square-text"></i></div>
+                <span>Knowledge Assistant</span>
               </a>
               <a href="/services" class="qa-item">
                 <div class="qa-item-icon"><i class="bi bi-grid-3x3-gap"></i></div>

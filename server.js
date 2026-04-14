@@ -71,9 +71,14 @@ app.use('/uploads/ems', express.static(path.join(__dirname, 'uploads', 'ems')));
 // Allow embedding in Microsoft Teams iframe
 app.use((req, res, next) => {
   res.removeHeader('X-Frame-Options');
-  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://teams.microsoft.com https://*.teams.microsoft.com https://*.skype.com");
-  // ngrok: skip browser warning page (uncomment if using ngrok instead of Cloudflare)
-  // res.setHeader('ngrok-skip-browser-warning', 'true');
+  res.setHeader('Content-Security-Policy',
+    "frame-ancestors 'self' " +
+    "https://teams.microsoft.com https://*.teams.microsoft.com " +
+    "https://*.skype.com " +
+    "https://teams.live.com https://*.teams.live.com " +
+    "https://*.office.com https://*.office365.com " +
+    "https://*.microsoft.com https://*.cloud.microsoft"
+  );
   next();
 });
 
@@ -87,7 +92,7 @@ app.use(session({
   secret: 'unified-workspace-secret-2026',
   resave: true,                   // save session on every request (keeps it alive)
   rolling: true,                  // reset cookie maxAge on every response
-  saveUninitialized: false,
+  saveUninitialized: true,        // always send cookie on first load (required for Teams iframe)
   cookie: { maxAge: 8 * 60 * 60 * 1000 }
 }));
 
@@ -147,7 +152,8 @@ app.use('/api/news',      require('./routes/news'));
 app.use('/api/customize', require('./routes/customize'));
 app.use('/api/finance',  require('./routes/finance'));
 app.use('/api/wfh',      require('./routes/wfh'));
-app.use('/api/hr-chat',   require('./routes/hr-chat'));
+app.use('/api/hr-chat',         require('./routes/hr-chat'));
+app.use('/api/leave-assistant', require('./routes/leave-assistant'));
 app.use('/api/doceval-proxy', require('./routes/doceval'));
 app.use('/api/travel',   require('./routes/travel'));
 app.use('/api/ems',      require('./routes/ems/index'));

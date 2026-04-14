@@ -22,9 +22,14 @@ router.get('/summary', requireAuth, (req, res) => {
   const myLeaves   = leaves.filter(l => l.userId === user.id);
   const myAttend   = attendance[user.id] || [];
 
-  const presentDays = myAttend.filter(d => d.status === 'present').length;
-  const lateDays    = myAttend.filter(d => d.status === 'late').length;
-  const leaveDays   = myAttend.filter(d => d.status === 'leave').length;
+  // Only count current month
+  const now          = new Date();
+  const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const thisMonth    = myAttend.filter(d => d.date.startsWith(currentMonth));
+
+  const presentDays = thisMonth.filter(d => d.status === 'present').length;
+  const lateDays    = thisMonth.filter(d => d.status === 'late').length;
+  const leaveDays   = thisMonth.filter(d => d.status === 'leave').length;
 
   const leaveBalance = {
     annual: 21 - myLeaves.filter(l => l.type === 'annual' && l.status === 'approved').reduce((s, l) => s + l.days, 0),
@@ -87,7 +92,9 @@ router.get('/tasks-by-priority', requireAuth, (req, res) => {
 
 // GET /api/analytics/leave-summary
 router.get('/leave-summary', requireAuth, (req, res) => {
-  const leaves = read('leaves.json');
+  const user   = req.session.user;
+  const allLeaves = read('leaves.json');
+  const leaves = allLeaves.filter(l => l.userId === user.id);
 
   const byType   = {};
   const byStatus = {};
