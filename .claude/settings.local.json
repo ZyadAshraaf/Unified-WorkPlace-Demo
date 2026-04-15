@@ -191,7 +191,8 @@
       "Bash(curl -s https://potter-temp-remarks-composed.trycloudflare.com/api/heartbeat --max-time 15 -w \"\\\\nHTTP: %{http_code}\")",
       "Bash(node teams-app-tasks/update-url.js https://potter-temp-remarks-composed.trycloudflare.com)",
       "Bash(curl -s https://vcr-phillips-assisted-southwest.trycloudflare.com/api/heartbeat --max-time 15 -w \"\\\\nHTTP: %{http_code}\")",
-      "Bash(node teams-app-tasks/update-url.js https://vcr-phillips-assisted-southwest.trycloudflare.com)"
+      "Bash(node teams-app-tasks/update-url.js https://vcr-phillips-assisted-southwest.trycloudflare.com)",
+      "Bash(kill 23421)"
     ]
   }
 }

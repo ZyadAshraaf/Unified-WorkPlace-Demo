@@ -133,7 +133,71 @@ const Layout = {
 
     const dot   = document.getElementById('notifDot');
     const count = data.unreadCount || 0;
-    if (dot) dot.style.display = count > 0 ? 'block' : 'none';
+    if (dot) {
+      dot.style.display = count > 0 ? 'flex' : 'none';
+      dot.textContent = count > 9 ? '9+' : count;
+      dot.classList.toggle('d-none', count === 0);
+    }
+
+    const bellBtn = dot?.parentElement;
+    if (!bellBtn) return;
+
+    // Build dropdown panel
+    let panel = document.getElementById('notifPanel');
+    if (!panel) {
+      // Wrap bell button in a positioned container
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'relative';
+      bellBtn.parentNode.insertBefore(wrapper, bellBtn);
+      wrapper.appendChild(bellBtn);
+
+      panel = document.createElement('div');
+      panel.id = 'notifPanel';
+      panel.className = 'notif-panel';
+      wrapper.appendChild(panel);
+
+      // Toggle on bell click
+      bellBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        panel.classList.toggle('show');
+      });
+
+      // Close on outside click
+      document.addEventListener('click', () => panel.classList.remove('show'));
+      panel.addEventListener('click', (e) => e.stopPropagation());
+    }
+
+    const notifs = data.notifications || [];
+    const typeIcons = { task: 'bi-list-task', leave: 'bi-calendar-check', news: 'bi-megaphone', escalation: 'bi-exclamation-triangle', appraisal: 'bi-star' };
+
+    if (notifs.length === 0) {
+      panel.innerHTML = `<div class="notif-header">Notifications</div><div class="notif-empty">No notifications</div>`;
+      return;
+    }
+
+    panel.innerHTML = `
+      <div class="notif-header">Notifications <span class="notif-badge">${count}</span></div>
+      <div class="notif-list">
+        ${notifs.map(n => `
+          <a href="${n.link}" class="notif-item ${n.read ? 'read' : ''}" data-id="${n.id}">
+            <i class="bi ${typeIcons[n.type] || 'bi-bell'} notif-icon"></i>
+            <div class="notif-content">
+              <div class="notif-title">${n.title}</div>
+              <div class="notif-msg">${n.message}</div>
+              <div class="notif-time">${UI.formatDate(n.createdAt)}</div>
+            </div>
+            ${!n.read ? '<span class="notif-unread-dot"></span>' : ''}
+          </a>
+        `).join('')}
+      </div>
+    `;
+
+    // Mark as read on click
+    panel.querySelectorAll('.notif-item:not(.read)').forEach(item => {
+      item.addEventListener('click', () => {
+        API.put(`/api/news/notifications/${item.dataset.id}/read`);
+      });
+    });
   }
 };
 

@@ -372,5 +372,16 @@
     "userName": "Ahmed Al-Rashidi",
     "details": "Applied signature",
     "timestamp": "2026-04-14T12:41:25.893Z"
+  },
+  {
+    "id": "AUD4C5A7442",
+    "action": "document.upload",
+    "entityType": "document",
+    "entityId": "DOCA5391BC0",
+    "entityName": "Saudi Downtown",
+    "userId": "u003",
+    "userName": "Fatima Al-Zahra",
+    "details": "Created document with file upload",
+    "timestamp": "2026-04-14T14:48:27.884Z"
   }
 ]

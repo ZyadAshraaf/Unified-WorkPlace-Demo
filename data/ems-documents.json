@@ -445,5 +445,48 @@
     "trashedAt": null,
     "lockedBy": null,
     "lockedAt": null
+  },
+  {
+    "id": "DOCA5391BC0",
+    "title": "Saudi Downtown",
+    "description": "AI",
+    "folderId": "FLD1A2B3C02",
+    "docTypeId": "DT007",
+    "metadata": {
+      "proposal_number": "12",
+      "client_name": "Downtown",
+      "proposal_date": "2026-04-15",
+      "proposal_amount": 12,
+      "validity_days": 12
+    },
+    "status": "active",
+    "createdBy": "u003",
+    "createdAt": "2026-04-14T14:48:27.883Z",
+    "updatedAt": "2026-04-14T14:48:27.883Z",
+    "currentVersion": 1,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "Generative AI Implementation Proposal RAG & Agentic IT Services- Saudi Downtown.pdf",
+        "storagePath": "uploads/ems/DOCA5391BC0_v1.pdf",
+        "mimeType": "application/pdf",
+        "size": 1849109,
+        "uploadedBy": "u003",
+        "uploadedAt": "2026-04-14T14:48:27.883Z",
+        "notes": "Initial upload"
+      }
+    ],
+    "signatures": [],
+    "watermark": {
+      "enabled": false,
+      "text": "CONFIDENTIAL",
+      "opacity": 0.15,
+      "angle": -30
+    },
+    "annotations": [],
+    "starred": [],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
   }
 ]

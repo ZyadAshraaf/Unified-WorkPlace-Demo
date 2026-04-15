@@ -58,5 +58,65 @@
     "link": "/tasks",
     "read": false,
     "createdAt": "2026-03-24T08:00:00Z"
+  },
+  {
+    "id": "notif007",
+    "userId": "u001",
+    "title": "New Leave Request",
+    "message": "Ahmed Al-Rashid has submitted an annual leave request for April 20–22. Please review.",
+    "type": "leave",
+    "link": "/leaves",
+    "read": false,
+    "createdAt": "2026-04-14T08:30:00Z"
+  },
+  {
+    "id": "notif008",
+    "userId": "u001",
+    "title": "Monthly Report Ready",
+    "message": "The March 2026 analytics summary is now available on the dashboard.",
+    "type": "news",
+    "link": "/analytics",
+    "read": false,
+    "createdAt": "2026-04-01T09:00:00Z"
+  },
+  {
+    "id": "notif009",
+    "userId": "u003",
+    "title": "WFH Request Approved",
+    "message": "Your work-from-home request for April 16 has been approved by your manager.",
+    "type": "leave",
+    "link": "/wfh",
+    "read": true,
+    "createdAt": "2026-04-13T14:00:00Z"
+  },
+  {
+    "id": "notif010",
+    "userId": "u003",
+    "title": "New Task Assigned",
+    "message": "You have been assigned: 'Prepare Q2 Budget Proposal'. Due by April 25.",
+    "type": "task",
+    "link": "/tasks",
+    "read": true,
+    "createdAt": "2026-04-12T10:00:00Z"
+  },
+  {
+    "id": "notif011",
+    "userId": "u006",
+    "title": "Helpdesk Ticket Updated",
+    "message": "Your ticket TKT-2026-005 has been resolved. Please confirm closure.",
+    "type": "task",
+    "link": "/helpdesk",
+    "read": false,
+    "createdAt": "2026-04-10T11:00:00Z"
+  },
+  {
+    "id": "notif012",
+    "userId": "u006",
+    "title": "Company Announcement",
+    "message": "Ramadan working hours are now in effect. Please check the updated schedule.",
+    "type": "news",
+    "link": "/",
+    "read": true,
+    "createdAt": "2026-03-28T07:00:00Z"
   }
 ]
