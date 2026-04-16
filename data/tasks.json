@@ -438,5 +438,79 @@
     "comments": [],
     "escalated": false,
     "delegatedFrom": null
+  },
+  {
+    "id": "TE4F9183E",
+    "title": "Approve new version of \"Proposal\"",
+    "description": "Fatima Al-Zahra uploaded version 3 of \"Proposal\" and it is pending your approval.",
+    "sourceSystem": "EMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "completed",
+    "assignedTo": "u001",
+    "createdBy": "u003",
+    "dueDate": null,
+    "createdAt": "2026-04-15T21:15:19.683Z",
+    "updatedAt": "2026-04-15T21:33:47.760Z",
+    "metadata": {
+      "emsVersionId": "DOC604A5DD0_v3",
+      "docId": "DOC604A5DD0",
+      "version": 3,
+      "docTitle": "Proposal"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u003",
+        "at": "2026-04-15T21:15:19.683Z",
+        "note": "Version 3 submitted for approval"
+      },
+      {
+        "action": "rejected",
+        "by": "u001",
+        "at": "2026-04-15T21:33:47.760Z",
+        "note": "Version 3 rejected — file removed"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TCB107801",
+    "title": "Approve new version of \"Proposal\"",
+    "description": "Fatima Al-Zahra uploaded version 3 of \"Proposal\" and it is pending your approval.",
+    "sourceSystem": "EMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "completed",
+    "assignedTo": "u001",
+    "createdBy": "u003",
+    "dueDate": null,
+    "createdAt": "2026-04-15T21:34:23.137Z",
+    "updatedAt": "2026-04-15T21:34:32.722Z",
+    "metadata": {
+      "emsVersionId": "DOC604A5DD0_v3",
+      "docId": "DOC604A5DD0",
+      "version": 3,
+      "docTitle": "Proposal"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u003",
+        "at": "2026-04-15T21:34:23.137Z",
+        "note": "Version 3 submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-15T21:34:32.722Z",
+        "note": "Version 3 approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
   }
 ]

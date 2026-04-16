@@ -1,33 +1,49 @@
 /* ═══════════════════════════════════════════════════════
-   EMS — Signature Pad Component
+   EMS — Signature Pad Component  (uses signature_pad library)
    ═══════════════════════════════════════════════════════ */
 const EMS_SignaturePad = (() => {
-  let canvas, ctx;
-  let drawing = false;
-  let paths = [];
-  let currentPath = [];
+  let signaturePad    = null;  // SignaturePad instance
+  let _strokeHistory  = [];    // snapshot after each stroke, for undo
   let savedSignatures = [];
   let selectedSavedId = null;
-  let targetDocId = null;
-  let eventsAttached = false; // prevent stacking listeners on repeated opens
+  let targetDocId     = null;
+  let eventsAttached  = false; // prevent stacking listeners on repeated opens
 
   /* ── Canvas sizing ─────────────────────────────────────
      Must run AFTER the modal is visible so getBoundingClientRect()
      returns the real layout width (not 0 from a hidden element).   */
   function resizeCanvas() {
-    canvas = document.getElementById('signatureCanvas');
+    const canvas = document.getElementById('signatureCanvas');
     if (!canvas) return;
-    ctx = canvas.getContext('2d');
 
-    const rect = canvas.getBoundingClientRect();
-    const w = rect.width || 600; // fallback if layout hasn't settled
-    canvas.width  = w * 2;       // 2× for high-DPI
-    canvas.height = 200 * 2;
+    // Destroy previous instance so its internal listeners are removed
+    if (signaturePad) {
+      signaturePad.off();
+      signaturePad = null;
+    }
+    _strokeHistory = [];
+
+    const rect  = canvas.getBoundingClientRect();
+    const w     = rect.width || 600;
+    const ratio = window.devicePixelRatio || 1;
+
+    canvas.width        = w   * ratio;
+    canvas.height       = 200 * ratio;
     canvas.style.height = '200px';
-    ctx.scale(2, 2);
-    ctx.lineCap  = 'round';
-    ctx.lineJoin = 'round';
-    clearCanvas();
+    // Do NOT pre-scale the context — SignaturePad v4 handles HiDPI internally
+    // via (clientX - rect.left) * (canvas.width / rect.width).
+
+    signaturePad = new SignaturePad(canvas, {
+      penColor:        document.getElementById('signColor')?.value || '#000000',
+      minWidth:        getThickness(),
+      maxWidth:        getThickness() + 0.5,
+      backgroundColor: 'rgba(0,0,0,0)' // keep canvas transparent; we add white bg on export
+    });
+
+    // Snapshot after every completed stroke so undo has per-stroke granularity
+    signaturePad.addEventListener('endStroke', () => {
+      _strokeHistory.push(JSON.parse(JSON.stringify(signaturePad.toData())));
+    });
   }
 
   /* ── Event listeners (bound once per page load) ──────── */
@@ -35,22 +51,24 @@ const EMS_SignaturePad = (() => {
     if (eventsAttached) return;
     eventsAttached = true;
 
-    canvas = document.getElementById('signatureCanvas');
-    if (!canvas) return;
-
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup',   endDraw);
-    canvas.addEventListener('mouseleave', endDraw);
-
-    canvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(touchToMouse(e)); }, { passive: false });
-    canvas.addEventListener('touchmove',  e => { e.preventDefault(); draw(touchToMouse(e)); },      { passive: false });
-    canvas.addEventListener('touchend',   e => { e.preventDefault(); endDraw(); },                  { passive: false });
-
     document.getElementById('btnSignClear')?.addEventListener('click', clearCanvas);
     document.getElementById('btnSignUndo')?.addEventListener('click', undo);
     document.getElementById('btnSaveSignature')?.addEventListener('click', saveSignature);
     document.getElementById('btnApplySignature')?.addEventListener('click', applySignature);
+
+    // Live pen color — update the active SignaturePad instance
+    document.getElementById('signColor')?.addEventListener('input', function () {
+      if (signaturePad) signaturePad.penColor = this.value;
+    });
+
+    // Live pen thickness
+    document.getElementById('signThickness')?.addEventListener('change', function () {
+      const t = parseInt(this.value);
+      if (signaturePad) {
+        signaturePad.minWidth = t;
+        signaturePad.maxWidth = t + 0.5;
+      }
+    });
 
     document.querySelectorAll('#signTabs .nav-link').forEach(tab => {
       tab.addEventListener('click', e => {
@@ -63,85 +81,46 @@ const EMS_SignaturePad = (() => {
       });
     });
 
-    // Resize canvas AFTER Bootstrap finishes showing the modal
+    // Resize (and re-create) the SignaturePad after Bootstrap finishes showing the modal
     document.getElementById('signatureModal')?.addEventListener('shown.bs.modal', () => {
       resizeCanvas();
     });
   }
 
-  function touchToMouse(e) {
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    return { offsetX: touch.clientX - rect.left, offsetY: touch.clientY - rect.top };
-  }
-
-  function getColor()     { return document.getElementById('signColor')?.value || '#000000'; }
-  function getThickness() { return parseInt(document.getElementById('signThickness')?.value || '3'); }
-
-  function startDraw(e) {
-    drawing = true;
-    currentPath = [{ x: e.offsetX, y: e.offsetY, color: getColor(), thickness: getThickness() }];
-    ctx.beginPath();
-    ctx.moveTo(e.offsetX, e.offsetY);
-    ctx.strokeStyle = getColor();
-    ctx.lineWidth   = getThickness();
-  }
-
-  function draw(e) {
-    if (!drawing) return;
-    currentPath.push({ x: e.offsetX, y: e.offsetY });
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
-  }
-
-  function endDraw() {
-    if (!drawing) return;
-    drawing = false;
-    if (currentPath.length > 1) paths.push([...currentPath]);
-    currentPath = [];
+  function getThickness() {
+    return parseInt(document.getElementById('signThickness')?.value || '3');
   }
 
   function clearCanvas() {
-    if (!ctx) return;
-    ctx.clearRect(0, 0, canvas.width / 2, canvas.height / 2); // clear in CSS-pixel space
-    paths = [];
-    currentPath = [];
+    signaturePad?.clear();
+    _strokeHistory = [];
   }
 
   function undo() {
-    if (!paths.length) return;
-    paths.pop();
-    redraw();
+    if (!_strokeHistory.length) return;
+    _strokeHistory.pop();                                     // discard last stroke
+    signaturePad?.fromData(_strokeHistory[_strokeHistory.length - 1] || []);
   }
 
-  function redraw() {
-    if (!ctx) return;
-    ctx.clearRect(0, 0, canvas.width / 2, canvas.height / 2);
-    paths.forEach(pathArr => {
-      if (pathArr.length < 2) return;
-      ctx.beginPath();
-      ctx.strokeStyle = pathArr[0].color;
-      ctx.lineWidth   = pathArr[0].thickness;
-      ctx.moveTo(pathArr[0].x, pathArr[0].y);
-      for (let i = 1; i < pathArr.length; i++) ctx.lineTo(pathArr[i].x, pathArr[i].y);
-      ctx.stroke();
-    });
-  }
-
+  /* Export the signature as a PNG data-URI with a white background
+     so it embeds cleanly into PDFs (transparent areas become white).  */
   function getCanvasData() {
-    const tmpCanvas = document.createElement('canvas');
-    tmpCanvas.width  = canvas.width  / 2;
-    tmpCanvas.height = canvas.height / 2;
-    const tmpCtx = tmpCanvas.getContext('2d');
-    // White background so the signature is always visible when embedded in a PDF
+    if (!signaturePad || signaturePad.isEmpty()) return '';
+
+    const src     = document.getElementById('signatureCanvas');
+    const tmp     = document.createElement('canvas');
+    const ratio   = window.devicePixelRatio || 1;
+    tmp.width     = src.width  / ratio;
+    tmp.height    = src.height / ratio;
+    const tmpCtx  = tmp.getContext('2d');
     tmpCtx.fillStyle = '#ffffff';
-    tmpCtx.fillRect(0, 0, tmpCanvas.width, tmpCanvas.height);
-    tmpCtx.drawImage(canvas, 0, 0, tmpCanvas.width, tmpCanvas.height);
-    return tmpCanvas.toDataURL('image/png');
+    tmpCtx.fillRect(0, 0, tmp.width, tmp.height);
+    tmpCtx.drawImage(src, 0, 0, tmp.width, tmp.height);
+    return tmp.toDataURL('image/png');
   }
 
   async function saveSignature() {
-    if (!paths.length) return UI.toast('Please draw a signature first', 'warning');
+    if (!signaturePad || signaturePad.isEmpty()) return UI.toast('Please draw a signature first', 'warning');
     const name = prompt('Name this signature:', 'My Signature');
     if (!name) return;
     const imageData = getCanvasData();
@@ -208,7 +187,7 @@ const EMS_SignaturePad = (() => {
     if (activeTab === 'saved' && selectedSavedId) {
       sigId     = selectedSavedId;
       imageData = savedSignatures.find(s => s.id === selectedSavedId)?.imageData;
-    } else if (activeTab === 'draw' && paths.length) {
+    } else if (activeTab === 'draw' && signaturePad && !signaturePad.isEmpty()) {
       imageData      = getCanvasData();
       const saveData = await API.post('/api/ems/signatures', { name: 'Quick Sign', imageData, type: 'drawn' });
       if (!saveData?.success) return UI.toast('Failed to save signature', 'danger');
@@ -223,18 +202,15 @@ const EMS_SignaturePad = (() => {
   }
 
   function openForDoc(docId) {
-    targetDocId    = docId;
+    targetDocId     = docId;
     selectedSavedId = null;
-    paths          = [];
-    currentPath    = [];
-    drawing        = false;
+    _strokeHistory  = [];
+    signaturePad?.clear(); // reset the pad without destroying it (resizeCanvas does full reset)
 
-    // Attach events once (idempotent after first call)
     attachEvents();
-
     loadSaved();
 
-    // Show modal — canvas will be properly sized in the 'shown.bs.modal' handler
+    // Show modal — SignaturePad is re-created in the 'shown.bs.modal' handler
     bootstrap.Modal.getOrCreateInstance(document.getElementById('signatureModal')).show();
   }
 

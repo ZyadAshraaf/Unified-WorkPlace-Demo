@@ -7,7 +7,13 @@ const { v4: uuidv4 } = require('uuid');
 
 const docsPath   = path.join(__dirname, '../../data/ems-documents.json');
 const auditPath  = path.join(__dirname, '../../data/ems-audit.json');
+const tasksPath  = path.join(__dirname, '../../data/tasks.json');
+const usersPath  = path.join(__dirname, '../../data/users.json');
 const uploadDir  = path.join(__dirname, '../../uploads/ems');
+
+const readTasks  = () => JSON.parse(fs.readFileSync(tasksPath, 'utf8'));
+const writeTasks = d => fs.writeFileSync(tasksPath, JSON.stringify(d, null, 2));
+const readUsers  = () => JSON.parse(fs.readFileSync(usersPath, 'utf8'));
 
 const readDocs   = () => JSON.parse(fs.readFileSync(docsPath, 'utf8'));
 const writeDocs  = d => fs.writeFileSync(docsPath, JSON.stringify(d, null, 2));
@@ -142,7 +148,7 @@ router.post('/', requireAuth, upload.single('file'), (req, res) => {
   res.json({ success: true, document: doc });
 });
 
-// POST — upload new version
+// POST — upload new version (pending approval)
 router.post('/:id/versions', requireAuth, upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: 'File is required' });
 
@@ -157,6 +163,11 @@ router.post('/:id/versions', requireAuth, upload.single('file'), (req, res) => {
     return res.status(423).json({ success: false, message: 'Document is locked by another user' });
   }
 
+  // Block if a version is already pending approval
+  if (doc.versions.some(v => v.status === 'pending')) {
+    return res.status(409).json({ success: false, message: 'A version is already awaiting approval' });
+  }
+
   const newVersion = doc.currentVersion + 1;
   const ext = path.extname(req.file.originalname);
   const storageName = `${doc.id}_v${newVersion}${ext}`;
@@ -164,25 +175,126 @@ router.post('/:id/versions', requireAuth, upload.single('file'), (req, res) => {
   fs.renameSync(req.file.path, storagePath);
 
   doc.versions.push({
-    version: newVersion,
-    filename: req.file.originalname,
+    version:    newVersion,
+    filename:   req.file.originalname,
     storagePath: `uploads/ems/${storageName}`,
-    mimeType: req.file.mimetype,
-    size: req.file.size,
+    mimeType:   req.file.mimetype,
+    size:       req.file.size,
     uploadedBy: req.session.user.id,
     uploadedAt: new Date().toISOString(),
-    notes: req.body.notes || `Version ${newVersion}`
+    notes:      req.body.notes || `Version ${newVersion}`,
+    status:     'pending'   // awaiting admin approval
   });
-  doc.currentVersion = newVersion;
+  // currentVersion stays unchanged until approved
   doc.updatedAt = new Date().toISOString();
-
   writeDocs(docs);
-  logAudit('document.version', 'document', doc.id, doc.title, req.session.user, `Uploaded version ${newVersion}`);
+
+  // Create approval task assigned to admin
+  const admin = readUsers().find(u => u.role === 'admin');
+  if (admin) {
+    const tasks  = readTasks();
+    const taskId = 'T' + uuidv4().split('-')[0].toUpperCase();
+    tasks.push({
+      id:           taskId,
+      title:        `Approve new version of "${doc.title}"`,
+      description:  `${req.session.user.name} uploaded version ${newVersion} of "${doc.title}" and it is pending your approval.`,
+      sourceSystem: 'EMS',
+      type:         'approval',
+      priority:     'medium',
+      status:       'pending',
+      assignedTo:   admin.id,
+      createdBy:    req.session.user.id,
+      dueDate:      null,
+      createdAt:    new Date().toISOString(),
+      updatedAt:    new Date().toISOString(),
+      metadata:     { emsVersionId: `${doc.id}_v${newVersion}`, docId: doc.id, version: newVersion, docTitle: doc.title },
+      history:      [{ action: 'created', by: req.session.user.id, at: new Date().toISOString(), note: `Version ${newVersion} submitted for approval` }],
+      comments:     [],
+      escalated:    false,
+      delegatedFrom: null
+    });
+    writeTasks(tasks);
+  }
+
+  logAudit('document.version', 'document', doc.id, doc.title, req.session.user, `Uploaded version ${newVersion} (pending approval)`);
+  res.json({ success: true, document: doc, message: 'Version uploaded and sent for admin approval' });
+});
+
+// POST — approve a pending version
+router.post('/:id/versions/:version/approve', requireAuth, (req, res) => {
+  const user = req.session.user;
+  if (user.role !== 'admin') return res.status(403).json({ success: false, message: 'Only admin can approve versions' });
+
+  const docs = readDocs();
+  const idx  = docs.findIndex(d => d.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ success: false, message: 'Document not found' });
+
+  const doc    = docs[idx];
+  const verNum = parseInt(req.params.version);
+  const ver    = doc.versions.find(v => v.version === verNum);
+  if (!ver) return res.status(404).json({ success: false, message: 'Version not found' });
+  if (ver.status !== 'pending') return res.status(400).json({ success: false, message: 'Version is not pending' });
+
+  ver.status = 'approved';
+  doc.currentVersion = verNum;
+  doc.updatedAt = new Date().toISOString();
+  writeDocs(docs);
+
+  // Mark approval task as completed
+  const tasks = readTasks();
+  const task  = tasks.find(t => t.metadata?.emsVersionId === `${doc.id}_v${verNum}` && t.status === 'pending');
+  if (task) {
+    task.status = 'completed';
+    task.updatedAt = new Date().toISOString();
+    task.history.push({ action: 'approved', by: user.id, at: new Date().toISOString(), note: `Version ${verNum} approved` });
+    writeTasks(tasks);
+  }
+
+  logAudit('document.version.approved', 'document', doc.id, doc.title, user, `Approved version ${verNum}`);
   res.json({ success: true, document: doc });
 });
 
-// GET — download specific version (attachment)
-router.get('/:id/versions/:version/download', requireAuth, (req, res) => {
+// POST — reject a pending version
+router.post('/:id/versions/:version/reject', requireAuth, (req, res) => {
+  const user = req.session.user;
+  if (user.role !== 'admin') return res.status(403).json({ success: false, message: 'Only admin can reject versions' });
+
+  const docs = readDocs();
+  const idx  = docs.findIndex(d => d.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ success: false, message: 'Document not found' });
+
+  const doc    = docs[idx];
+  const verNum = parseInt(req.params.version);
+  const verIdx = doc.versions.findIndex(v => v.version === verNum);
+  if (verIdx === -1) return res.status(404).json({ success: false, message: 'Version not found' });
+  const ver = doc.versions[verIdx];
+  if (ver.status !== 'pending') return res.status(400).json({ success: false, message: 'Version is not pending' });
+
+  // Delete the uploaded file
+  const filePath = path.join(__dirname, '../../', ver.storagePath);
+  if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+  // Remove version entry
+  doc.versions.splice(verIdx, 1);
+  doc.updatedAt = new Date().toISOString();
+  writeDocs(docs);
+
+  // Mark approval task as completed
+  const tasks = readTasks();
+  const task  = tasks.find(t => t.metadata?.emsVersionId === `${doc.id}_v${verNum}` && t.status === 'pending');
+  if (task) {
+    task.status = 'completed';
+    task.updatedAt = new Date().toISOString();
+    task.history.push({ action: 'rejected', by: user.id, at: new Date().toISOString(), note: `Version ${verNum} rejected — file removed` });
+    writeTasks(tasks);
+  }
+
+  logAudit('document.version.rejected', 'document', doc.id, doc.title, user, `Rejected version ${verNum}`);
+  res.json({ success: true, document: doc });
+});
+
+// GET — download specific version (attachment); applies watermark on-the-fly if enabled
+router.get('/:id/versions/:version/download', requireAuth, async (req, res) => {
   const doc = readDocs().find(d => d.id === req.params.id);
   if (!doc) return res.status(404).json({ success: false, message: 'Document not found' });
 
@@ -191,6 +303,41 @@ router.get('/:id/versions/:version/download', requireAuth, (req, res) => {
 
   const filePath = path.join(__dirname, '../../', ver.storagePath);
   if (!fs.existsSync(filePath)) return res.status(404).json({ success: false, message: 'File not found on disk' });
+
+  // For PDFs with an active watermark, bake it into a temporary copy and stream it
+  if (ver.mimeType === 'application/pdf' && doc.watermark?.enabled) {
+    try {
+      const { PDFDocument, rgb, degrees, StandardFonts } = require('pdf-lib');
+      const pdfDoc  = await PDFDocument.load(fs.readFileSync(filePath));
+      const font    = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const wmText  = doc.watermark.text    || 'CONFIDENTIAL';
+      const wmOpac  = doc.watermark.opacity || 0.15;
+      const wmAngle = doc.watermark.angle   || -30;
+
+      for (const page of pdfDoc.getPages()) {
+        const { width, height } = page.getSize();
+        const fontSize  = Math.floor(width * 0.08);
+        const textWidth = font.widthOfTextAtSize(wmText, fontSize);
+        page.drawText(wmText, {
+          x:       width  / 2 - textWidth / 2,
+          y:       height / 2,
+          size:    fontSize,
+          font,
+          color:   rgb(0, 0, 0),
+          opacity: wmOpac,
+          rotate:  degrees(-wmAngle)  // negate: PDF Y-axis is up (opposite of canvas Y-down)
+        });
+      }
+
+      const watermarkedBytes = await pdfDoc.save();
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${ver.filename}"`);
+      return res.send(Buffer.from(watermarkedBytes));
+    } catch (err) {
+      console.error('[WATERMARK DOWNLOAD]', err);
+      // Fall through to plain download on error
+    }
+  }
 
   res.download(filePath, ver.filename);
 });
@@ -209,6 +356,8 @@ router.get('/:id/versions/:version/view', requireAuth, (req, res) => {
   res.setHeader('Content-Type', ver.mimeType || 'application/pdf');
   res.setHeader('Content-Disposition', 'inline');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.removeHeader('ETag');
+  res.removeHeader('Last-Modified');
   res.sendFile(filePath);
 });
 
@@ -291,6 +440,10 @@ router.post('/:id/sign', requireAuth, async (req, res) => {
     if (idx === -1) return res.status(404).json({ success: false, message: 'Document not found' });
 
     const doc = docs[idx];
+    if (doc.lockedBy && doc.lockedBy !== req.session.user.id)
+      return res.status(423).json({ success: false, message: 'Document is locked by another user' });
+    if (doc.versions?.some(v => v.status === 'pending'))
+      return res.status(423).json({ success: false, message: 'Document is locked pending version approval' });
 
     // Look up the signature imageData (base64 PNG)
     const sigDataPath = path.join(__dirname, '../../data/ems-signatures.json');
@@ -378,6 +531,12 @@ router.put('/:id/watermark', requireAuth, (req, res) => {
   const idx = docs.findIndex(d => d.id === req.params.id);
   if (idx === -1) return res.status(404).json({ success: false, message: 'Document not found' });
 
+  const doc = docs[idx];
+  if (doc.lockedBy && doc.lockedBy !== req.session.user.id)
+    return res.status(423).json({ success: false, message: 'Document is locked by another user' });
+  if (doc.versions?.some(v => v.status === 'pending'))
+    return res.status(423).json({ success: false, message: 'Document is locked pending version approval' });
+
   const { enabled, text, opacity, angle } = req.body;
   if (enabled !== undefined) docs[idx].watermark.enabled = enabled;
   if (text !== undefined) docs[idx].watermark.text = text;
@@ -387,6 +546,73 @@ router.put('/:id/watermark', requireAuth, (req, res) => {
 
   writeDocs(docs);
   res.json({ success: true, document: docs[idx] });
+});
+
+// POST — place text annotation: embed text into PDF using pdf-lib
+router.post('/:id/annotate', requireAuth, async (req, res) => {
+  try {
+    const { text, color, size, x, y, page } = req.body;
+    if (!text?.trim()) return res.status(400).json({ success: false, message: 'text is required' });
+
+    const docs = readDocs();
+    const idx  = docs.findIndex(d => d.id === req.params.id);
+    if (idx === -1) return res.status(404).json({ success: false, message: 'Document not found' });
+
+    const doc       = docs[idx];
+    if (doc.lockedBy && doc.lockedBy !== req.session.user.id)
+      return res.status(423).json({ success: false, message: 'Document is locked by another user' });
+    if (doc.versions?.some(v => v.status === 'pending'))
+      return res.status(423).json({ success: false, message: 'Document is locked pending version approval' });
+
+    const latestVer = doc.versions?.[doc.versions.length - 1];
+    if (!latestVer || latestVer.mimeType !== 'application/pdf')
+      return res.status(400).json({ success: false, message: 'Document must be a PDF' });
+
+    const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
+    const pdfPath = path.join(__dirname, '../../', latestVer.storagePath);
+    const pdfDoc  = await PDFDocument.load(fs.readFileSync(pdfPath));
+    const font    = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    const pages   = pdfDoc.getPages();
+    const pageIdx = Math.max(0, (parseInt(page) || 1) - 1);
+    const pdfPage = pages[Math.min(pageIdx, pages.length - 1)];
+    const { width: pageW, height: pageH } = pdfPage.getSize();
+
+    const fontSize = parseFloat(size) || 13;
+    const xPct     = parseFloat(x) || 5;
+    const yPct     = parseFloat(y) || 10;
+
+    // Convert % to PDF coords (Y-axis inverted)
+    const drawX = (xPct / 100) * pageW;
+    const drawY = pageH - (yPct / 100) * pageH - fontSize;
+
+    // Parse hex color to rgb
+    const hex   = (color || '#e63946').replace('#', '');
+    const r     = parseInt(hex.substring(0, 2), 16) / 255;
+    const g     = parseInt(hex.substring(2, 4), 16) / 255;
+    const b     = parseInt(hex.substring(4, 6), 16) / 255;
+
+    pdfPage.drawText(text.trim(), { x: drawX, y: drawY, size: fontSize, font, color: rgb(r, g, b) });
+
+    const savedPdf = await pdfDoc.save();
+    fs.writeFileSync(pdfPath, Buffer.from(savedPdf));
+
+    // Record annotation in metadata
+    if (!doc.annotations) doc.annotations = [];
+    doc.annotations.push({
+      id: 'ANN' + uuidv4().split('-')[0].toUpperCase(),
+      text: text.trim(), color, size: fontSize, x: xPct, y: yPct, page: pageIdx + 1,
+      userId: req.session.user.id, userName: req.session.user.name,
+      createdAt: new Date().toISOString()
+    });
+    doc.updatedAt = new Date().toISOString();
+    writeDocs(docs);
+    logAudit('document.annotate', 'document', doc.id, doc.title, req.session.user, `Added annotation: "${text.trim().substring(0, 40)}"`);
+    res.json({ success: true, document: doc });
+  } catch (err) {
+    console.error('[ANNOTATE]', err);
+    res.status(500).json({ success: false, message: 'Failed to place annotation: ' + err.message });
+  }
 });
 
 // POST — save annotation

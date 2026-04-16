@@ -5,6 +5,73 @@ let activeTask = null;
 let activeFilter = 'all';
 
 const taskDetailModal   = () => bootstrap.Modal.getOrCreateInstance(document.getElementById('taskDetailModal'));
+
+// Reset review mode when modal closes
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('taskDetailModal')?.addEventListener('hidden.bs.modal', _exitReviewMode);
+});
+
+function _exitReviewMode() {
+  document.getElementById('taskDetailModal')?.classList.remove('review-mode');
+  document.getElementById('taskNormalView')?.classList.remove('d-none');
+  document.getElementById('taskReviewView')?.classList.add('d-none');
+  document.getElementById('reviewPdfScroller').innerHTML =
+    '<div class="task-review-pdf-loading" id="reviewPdfLoading"><div class="spinner-border text-secondary" role="status"></div><div class="mt-2 text-muted" style="font-size:13px;">Loading document…</div></div>';
+}
+
+async function _enterReviewMode(docId, version, docTitle) {
+  // Switch layout
+  document.getElementById('taskNormalView').classList.add('d-none');
+  document.getElementById('taskReviewView').classList.remove('d-none');
+  document.getElementById('taskDetailModal').classList.add('review-mode');
+  document.getElementById('reviewDocTitle').textContent = docTitle || 'Document';
+
+  // Populate sidebar with task info
+  const t = activeTask;
+  document.getElementById('reviewSidebarBody').innerHTML = `
+    <div class="fw-bold mb-3" style="font-size:15px;">${t.title}</div>
+    <div class="d-flex flex-wrap gap-2 mb-3">${UI.statusBadge(t.status)} ${UI.priorityBadge(t.priority)}</div>
+    <div class="mb-2"><span class="text-muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Assigned To</span><div style="font-size:13px;">${t.assignedToName}</div></div>
+    <div class="mb-2"><span class="text-muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Created By</span><div style="font-size:13px;">${t.createdByName}</div></div>
+    <div class="mb-3"><span class="text-muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;">System</span><div class="mt-1">${UI.systemBadge(t.sourceSystem)}</div></div>
+    <hr>
+    <div class="mb-3">
+      <div class="text-muted mb-1" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Description</div>
+      <div style="font-size:13px;line-height:1.6;">${t.description || 'No description.'}</div>
+    </div>
+    ${t.comments.length ? `<hr><div class="text-muted mb-2" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Comments</div>${t.comments.map(c=>`<div class="mb-2 p-2 rounded" style="background:#f8f9fa;font-size:12px;"><strong>${c.name||c.by}</strong><div>${c.text}</div></div>`).join('')}` : ''}
+  `;
+
+  // Load PDF via pdf.js
+  const scroller = document.getElementById('reviewPdfScroller');
+  try {
+    const resp = await fetch(`/api/ems/documents/${docId}/versions/${version}/view`, { credentials: 'include' });
+    const buffer = await resp.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+    const outputScale = window.devicePixelRatio || 1;
+
+    scroller.innerHTML = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const availW = Math.max(400, scroller.parentElement.clientWidth - 40);
+      const vp0 = page.getViewport({ scale: 1 });
+      const fitScale = availW / vp0.width;
+      const viewport = page.getViewport({ scale: fitScale * outputScale });
+      const cssW = Math.floor(vp0.width * fitScale);
+      const cssH = Math.floor(vp0.height * fitScale);
+
+      const canvas = document.createElement('canvas');
+      canvas.width  = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      canvas.style.width  = cssW + 'px';
+      canvas.style.height = cssH + 'px';
+      scroller.appendChild(canvas);
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    }
+  } catch (err) {
+    scroller.innerHTML = `<div class="text-danger p-3">Failed to load document: ${err.message}</div>`;
+  }
+}
 const createTaskModal   = () => bootstrap.Modal.getOrCreateInstance(document.getElementById('createTaskModal'));
 const delegateModal     = () => bootstrap.Modal.getOrCreateInstance(document.getElementById('delegateModal'));
 const reassignModal     = () => bootstrap.Modal.getOrCreateInstance(document.getElementById('reassignModal'));
@@ -205,14 +272,16 @@ async function openDetail(id) {
       <div class="fw-600 mb-2">History</div>${history}
     </div>`;
 
-  const isLeaveApproval = t.type === 'approval' && t.metadata?.leaveId;
-  const isWfhApproval   = t.type === 'approval' && t.metadata?.wfhId;
-  const isApproval      = isLeaveApproval || isWfhApproval;
+  const isLeaveApproval      = t.type === 'approval' && t.metadata?.leaveId;
+  const isWfhApproval        = t.type === 'approval' && t.metadata?.wfhId;
+  const isEmsVersionApproval = t.type === 'approval' && t.metadata?.emsVersionId;
+  const isApproval           = isLeaveApproval || isWfhApproval || isEmsVersionApproval;
   const isDone = t.status === 'completed';
 
   document.getElementById('btnCompleteTask').classList.toggle('d-none', isApproval || isDone);
   document.getElementById('btnApproveLeave').classList.toggle('d-none', !isApproval || isDone);
   document.getElementById('btnRejectLeave').classList.toggle('d-none', !isApproval || isDone);
+  document.getElementById('btnViewEmsDoc').classList.toggle('d-none', !isEmsVersionApproval);
 
   taskDetailModal().show();
 }
@@ -235,7 +304,7 @@ function bindModals() {
     else UI.toast(data?.message || 'Error creating task', 'danger');
   });
 
-  // Approve leave or WFH
+  // Approve leave, WFH, or EMS version
   document.getElementById('btnApproveLeave')?.addEventListener('click', async () => {
     if (!activeTask) return;
     let data;
@@ -243,12 +312,15 @@ function bindModals() {
       data = await API.put(`/api/leaves/${activeTask.metadata.leaveId}`, { status: 'approved' });
     } else if (activeTask.metadata?.wfhId) {
       data = await API.put(`/api/wfh/${activeTask.metadata.wfhId}`, { status: 'approved' });
+    } else if (activeTask.metadata?.emsVersionId) {
+      const { docId, version } = activeTask.metadata;
+      data = await API.post(`/api/ems/documents/${docId}/versions/${version}/approve`);
     } else return;
-    if (data?.success) { UI.toast('Request approved', 'success'); taskDetailModal().hide(); await loadTasks(); }
-    else UI.toast(data?.message || 'Error approving request', 'danger');
+    if (data?.success) { UI.toast('Approved', 'success'); taskDetailModal().hide(); await loadTasks(); }
+    else UI.toast(data?.message || 'Error approving', 'danger');
   });
 
-  // Reject leave or WFH
+  // Reject leave, WFH, or EMS version
   document.getElementById('btnRejectLeave')?.addEventListener('click', async () => {
     if (!activeTask) return;
     let data;
@@ -256,9 +328,12 @@ function bindModals() {
       data = await API.put(`/api/leaves/${activeTask.metadata.leaveId}`, { status: 'rejected' });
     } else if (activeTask.metadata?.wfhId) {
       data = await API.put(`/api/wfh/${activeTask.metadata.wfhId}`, { status: 'rejected' });
+    } else if (activeTask.metadata?.emsVersionId) {
+      const { docId, version } = activeTask.metadata;
+      data = await API.post(`/api/ems/documents/${docId}/versions/${version}/reject`);
     } else return;
-    if (data?.success) { UI.toast('Request rejected', 'warning'); taskDetailModal().hide(); await loadTasks(); }
-    else UI.toast(data?.message || 'Error rejecting request', 'danger');
+    if (data?.success) { UI.toast('Rejected', 'warning'); taskDetailModal().hide(); await loadTasks(); }
+    else UI.toast(data?.message || 'Error rejecting', 'danger');
   });
 
   // Complete task
@@ -266,6 +341,34 @@ function bindModals() {
     if (!activeTask) return;
     const data = await API.put(`/api/tasks/${activeTask.id}`, { status: 'completed', note: 'Marked as complete' });
     if (data?.success) { UI.toast('Task marked complete', 'success'); taskDetailModal().hide(); await loadTasks(); }
+  });
+
+  // Enter document review mode
+  document.getElementById('btnViewEmsDoc')?.addEventListener('click', () => {
+    if (!activeTask?.metadata?.docId || !activeTask?.metadata?.version) return;
+    const { docId, version, docTitle } = activeTask.metadata;
+    _enterReviewMode(docId, version, docTitle);
+  });
+
+  // Back button — exit review mode
+  document.getElementById('btnExitReview')?.addEventListener('click', _exitReviewMode);
+
+  // Approve from review mode
+  document.getElementById('btnApproveReview')?.addEventListener('click', async () => {
+    if (!activeTask?.metadata?.emsVersionId) return;
+    const { docId, version } = activeTask.metadata;
+    const data = await API.post(`/api/ems/documents/${docId}/versions/${version}/approve`);
+    if (data?.success) { UI.toast('Version approved', 'success'); taskDetailModal().hide(); await loadTasks(); }
+    else UI.toast(data?.message || 'Error approving', 'danger');
+  });
+
+  // Reject from review mode
+  document.getElementById('btnRejectReview')?.addEventListener('click', async () => {
+    if (!activeTask?.metadata?.emsVersionId) return;
+    const { docId, version } = activeTask.metadata;
+    const data = await API.post(`/api/ems/documents/${docId}/versions/${version}/reject`);
+    if (data?.success) { UI.toast('Version rejected', 'warning'); taskDetailModal().hide(); await loadTasks(); }
+    else UI.toast(data?.message || 'Error rejecting', 'danger');
   });
 
   // Delegate

@@ -166,6 +166,8 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 
 - **SPA inside the app:** `views/ems/index.html` has a tab bar and loads multiple sub-controllers from `public/js/ems/` — does not follow the 1-to-1 view/controller pattern
 - **Sub-router:** All API calls go to `/api/ems/*`, handled by `routes/ems/index.js` which mounts eight sub-routers: `documents`, `folders`, `groups`, `signatures`, `users`, `audit`, `doctypes`, `metadata`
+- **EMS sub-controllers** (`public/js/ems/`): `index.js` (orchestrator), `documents.js`, `folder-tree.js`, `doc-viewer.js`, `signature-pad.js`, `groups.js`, `users.js`, `audit.js`, `doctypes-mgr.js`, `metadata-mgr.js`, `knowledge-chat.js`
+- **Knowledge Chat** (`public/js/ems/knowledge-chat.js`) — slide-in drawer for conversational Q&A over selected EMS documents; proxies through `/api/doceval-proxy` (same upstream as doc-chat)
 - **File uploads:** Stored under `uploads/ems/`, served at `/uploads/ems/*` without an auth guard (static middleware runs first). Metadata in `data/ems-documents.json`
 - **Dedicated CSS:** `public/css/ems.css` for EMS-specific layout (split-pane, resizable folder panel, signature pad). Do not add EMS styles to `global.css` or `pages.css`
 - **No approval workflow integration:** EMS manages access via groups (`ems-groups.json`) and per-document permissions, not `data/tasks.json`
@@ -176,14 +178,24 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 - JSON body limit is `50mb` (supports base64 logo upload)
 - Sidebar collapse state persisted in `localStorage` key `sidebarCollapsed`
 - Heartbeat (`/api/heartbeat` every 30s) is critical for Teams — without it the iframe disconnects
-- Demo users all use password `demo123` — plaintext in `data/users.json`
+- **Login uses email, not username** — `POST /api/auth/login` body is `{ "email": "...", "password": "..." }`. Demo credentials:
+  | Email | Role | Password |
+  |---|---|---|
+  | `ahmed@company.com` | admin | demo123 |
+  | `khalid@company.com` | manager | demo123 |
+  | `fatima@company.com` | hr | demo123 |
+  | `sara@company.com` | employee | demo123 |
+  | `omar@company.com` | employee | demo123 |
+  | `mariam@company.com` | manager | demo123 |
 - `?embed=1` query param triggers auto-login for Teams embedded mode
 - **Data reset:** Delete/truncate files in `data/` — no migration system
 - **Session reset:** Delete `.sessions/` directory to log out all users
 - Entity IDs: type prefix + first 8 chars of UUID (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `HD9B1C3D` for helpdesk). Helpdesk tickets also get a `ticketNo` in `TKT-YYYY-NNN` format
 - **WIP pages (no JS controller):** `erp-dialogue.html` and `voice-agent.html` only. Every other view has a matching controller — including `leave-assistant`, `wfh`, `travel`, `doc-chat`, `proposal-eval`, `resume-eval`, and `quick-services`
 - `views/landing.html` is the home dashboard (entry point after login); `views/services.html` and `views/quick-services.html` are service catalog views
-- `routes/finance.js`, `routes/news.js`, `routes/analytics.js`, `routes/goals.js`, and `routes/directory.js` follow the standard route pattern (JSON-backed, role-filtered) and are not highlighted in the UI. `analytics.js` aggregates cross-module data (tasks, leaves, helpdesk, attendance) for dashboard widgets at `GET /api/analytics/summary`.
+- `routes/finance.js` and `routes/news.js` are **API-only** — they have no corresponding view pages. All other routes have matching `views/*.html` + `public/js/*.js` pairs.
+- `routes/analytics.js`, `routes/goals.js`, and `routes/directory.js` follow the standard route pattern (JSON-backed, role-filtered). `analytics.js` aggregates cross-module data (tasks, leaves, helpdesk, attendance) for dashboard widgets at `GET /api/analytics/summary`.
+- `GET /api/me` — returns `{ success: true, user: req.session.user }` for the currently authenticated session; used by client controllers to get the logged-in user.
 - `multer` and `pdf-lib` are available as dependencies (multer used for EMS uploads; pdf-lib available for PDF manipulation)
 - `claude-cli` is in `package.json` as a runtime dependency (unused in server code — ignore it)
 - `uuid` (`v4`) is the standard ID generator — used everywhere; import with `const { v4: uuidv4 } = require('uuid')`

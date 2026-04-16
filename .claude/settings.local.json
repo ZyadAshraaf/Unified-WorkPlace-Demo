@@ -192,7 +192,13 @@
       "Bash(node teams-app-tasks/update-url.js https://potter-temp-remarks-composed.trycloudflare.com)",
       "Bash(curl -s https://vcr-phillips-assisted-southwest.trycloudflare.com/api/heartbeat --max-time 15 -w \"\\\\nHTTP: %{http_code}\")",
       "Bash(node teams-app-tasks/update-url.js https://vcr-phillips-assisted-southwest.trycloudflare.com)",
-      "Bash(kill 23421)"
+      "Bash(kill 23421)",
+      "Bash(node -e \"require\\('./server.js'\\)\")",
+      "Bash(curl -s http://localhost:3000/ems)",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"const d=require\\('./data/ems-documents.json'\\); d.filter\\(x=>x.watermark\\).forEach\\(x=>console.log\\(x.id, JSON.stringify\\(x.watermark\\)\\)\\)\")",
+      "Bash(node -e \"const {PDFDocument,rgb,degrees,StandardFonts}=require\\('pdf-lib'\\); console.log\\('pdf-lib ok'\\); const p=require\\('./node_modules/pdf-lib/package.json'\\); console.log\\('version:', p.version\\);\")",
+      "Bash(node -e \"const pdflib=require\\('pdf-lib'\\); console.log\\('degrees:', typeof pdflib.degrees\\); console.log\\('StandardFonts:', typeof pdflib.StandardFonts\\);\")"
     ]
   }
 }

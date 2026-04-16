@@ -15,6 +15,16 @@ body {
   zoom: 0.9
 }
 
+/* Zoom compensation for position:fixed elements (modal backdrop, modals) */
+.modal-backdrop {
+  width:  calc(100vw / 0.9) !important;
+  height: calc(100vh / 0.9) !important;
+}
+.modal {
+  width:  calc(100vw / 0.9) !important;
+  height: calc(100vh / 0.9) !important;
+}
+
 /* ── Layout Shell ────────────────────────────────────────── */
 .app-wrapper {
   display: flex;
@@ -540,6 +550,7 @@ body {
 .badge-sys-Warehouse       { background: #FFF3E0; color: #b45309; }
 .badge-sys-IT              { background: var(--color-primary-faint); color: var(--color-primary-dark); }
 .badge-sys-Manual          { background: #F1F5F9; color: #475569; }
+.badge-sys-EMS             { background: #E0F7FA; color: #00695c; }
 
 .badge-custom {
   display: inline-flex;

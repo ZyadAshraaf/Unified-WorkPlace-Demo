@@ -5,9 +5,12 @@
 document.addEventListener('DOMContentLoaded', async () => {
   await Layout.init('ems');
 
-  // Store current user ID for star checks
+  // Store current user info for permission checks
   const meData = await API.get('/api/me');
-  if (meData?.success) window.EMS_currentUserId = meData.user.id;
+  if (meData?.success) {
+    window.EMS_currentUserId   = meData.user.id;
+    window.EMS_currentUserRole = meData.user.role;
+  }
 
   // Load folders, then init documents tab
   const folderData = await API.get('/api/ems/folders');

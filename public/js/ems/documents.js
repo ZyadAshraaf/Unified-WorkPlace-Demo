@@ -98,6 +98,7 @@ const EMS_Documents = (() => {
       const dt = allDocTypes.find(t => t.id === doc.docTypeId) || { name: 'Unknown', icon: 'bi-file-earmark', color: '#6c757d' };
       const isStarred = doc.starred?.includes(window.EMS_currentUserId) || false;
       const isLocked = !!doc.lockedBy;
+      const hasPending = doc.versions?.some(v => v.status === 'pending');
       const latestVer = doc.versions?.[doc.versions.length - 1];
 
       return `<tr data-doc-id="${doc.id}">
@@ -109,8 +110,9 @@ const EMS_Documents = (() => {
             <i class="doc-title-icon bi ${dt.icon}" style="color:${dt.color};"></i>
             <div class="doc-title-info">
               <div class="doc-title-name">
-                ${isLocked ? '<i class="bi bi-lock-fill doc-lock-badge me-1"></i>' : ''}
+                ${(isLocked || hasPending) ? '<i class="bi bi-lock-fill doc-lock-badge me-1"></i>' : ''}
                 ${doc.title}
+                ${hasPending ? '<span class="badge ms-1" style="background:#fff3cd;color:#856404;font-size:0.65rem;vertical-align:middle;"><i class="bi bi-hourglass-split me-1"></i>Pending Approval</span>' : ''}
               </div>
               <div class="doc-title-desc">${doc.description || ''}</div>
             </div>
@@ -131,7 +133,7 @@ const EMS_Documents = (() => {
               <ul class="dropdown-menu dropdown-menu-end">
                 <li><button class="dropdown-item" onclick="EMS_Documents.viewDoc('${doc.id}')"><i class="bi bi-eye me-2"></i>View</button></li>
                 <li><button class="dropdown-item" onclick="EMS_Documents.showDetail('${doc.id}')"><i class="bi bi-info-circle me-2"></i>Properties</button></li>
-                <li><button class="dropdown-item" onclick="EMS_Documents.showNewVersion('${doc.id}')"><i class="bi bi-arrow-up-circle me-2"></i>New Version</button></li>
+                <li><button class="dropdown-item" ${(doc.lockedBy && doc.lockedBy !== window.EMS_currentUserId) || doc.versions?.some(v => v.status === 'pending') ? `disabled title="${doc.versions?.some(v => v.status === 'pending') ? 'Pending version approval' : 'Document is locked'}"` : `onclick="EMS_Documents.showNewVersion('${doc.id}')"`}><i class="bi bi-arrow-up-circle me-2"></i>New Version</button></li>
                 <li><button class="dropdown-item" onclick="EMS_Documents.showMove('${doc.id}')"><i class="bi bi-folder-symlink me-2"></i>Move</button></li>
                 <li><hr class="dropdown-divider"></li>
                 ${doc.trashedAt
@@ -323,10 +325,9 @@ const EMS_Documents = (() => {
       }
     });
 
-    // Back to list from viewer
+    // Back to list from viewer — close the fullscreen modal
     document.getElementById('btnBackToList')?.addEventListener('click', () => {
-      document.getElementById('docListWrap').classList.remove('d-none');
-      document.getElementById('docViewerWrap').classList.add('d-none');
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('docViewerModal')).hide();
       activeDocId = null;
     });
 
@@ -511,7 +512,7 @@ const EMS_Documents = (() => {
       const res = await fetch(`/api/ems/documents/${activeDocId}/versions`, { method: 'POST', credentials: 'include', body: formData });
       const data = await res.json();
       if (data?.success) {
-        UI.toast('New version uploaded');
+        UI.toast(data.message || 'Version submitted for approval', 'info');
         bootstrap.Modal.getOrCreateInstance(document.getElementById('newVersionModal')).hide();
         selectedFile = null;
         await loadDocs();

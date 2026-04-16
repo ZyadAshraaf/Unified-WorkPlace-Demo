@@ -114,16 +114,16 @@
           <div class="ems-folder-panel" id="folderPanel">
             <div class="folder-panel-header">
               <span class="folder-panel-title">Folders</span>
-              <button class="btn btn-sm btn-link text-white p-0" id="btnNewFolder" title="New Folder"><i class="bi bi-folder-plus"></i></button>
+              <button class="btn btn-sm btn-link p-0" id="btnNewFolder" title="New Folder"><i class="bi bi-folder-plus"></i></button>
             </div>
             <div class="folder-tree-wrap" id="folderTreeWrap">
               <ul class="folder-tree" id="folderTree"></ul>
             </div>
             <div class="folder-virtual-sections">
-              <div class="folder-virtual-label" style="padding:4px 12px 2px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;opacity:.5;color:#fff;">Configuration</div>
+              <div class="folder-virtual-label" style="padding:4px 12px 2px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;opacity:.5;">Configuration</div>
               <div class="folder-virtual-item" data-virtual="doctypes"><i class="bi bi-tags"></i> Document Types</div>
               <div class="folder-virtual-item" data-virtual="metadata"><i class="bi bi-list-columns-reverse"></i> Metadata Templates</div>
-              <div style="margin:6px 10px;border-top:1px solid rgba(255,255,255,0.12);"></div>
+              <div style="margin:6px 10px;border-top:1px solid var(--color-border-light);"></div>
               <div class="folder-virtual-item" data-virtual="starred"><i class="bi bi-star"></i> Starred</div>
               <div class="folder-virtual-item" data-virtual="recent"><i class="bi bi-clock-history"></i> Recent</div>
               <div class="folder-virtual-item" data-virtual="trash"><i class="bi bi-trash3"></i> Trash</div>
@@ -177,42 +177,6 @@
               </table>
             </div>
 
-            <!-- Document Viewer (hidden by default) -->
-            <div class="doc-viewer-wrap d-none" id="docViewerWrap">
-              <div class="doc-viewer-header">
-                <button class="btn btn-sm btn-outline-secondary" id="btnBackToList"><i class="bi bi-arrow-left me-1"></i>Back</button>
-                <span class="doc-viewer-title" id="viewerTitle">Document Title</span>
-                <div class="doc-viewer-actions">
-                  <button class="btn btn-sm btn-outline-primary" id="btnViewerDownload" title="Download"><i class="bi bi-download"></i></button>
-                  <button class="btn btn-sm btn-outline-primary" id="btnViewerSign" title="Sign"><i class="bi bi-pen"></i></button>
-                  <button class="btn btn-sm btn-outline-primary" id="btnViewerWatermark" title="Watermark"><i class="bi bi-droplet"></i></button>
-                  <button class="btn btn-sm btn-outline-primary" id="btnViewerVersions" title="Versions"><i class="bi bi-clock-history"></i></button>
-                  <button class="btn btn-sm btn-outline-primary" id="btnViewerLock" title="Lock"><i class="bi bi-lock"></i></button>
-                </div>
-              </div>
-              <!-- Signature placement banner (hidden until placement mode) -->
-              <div id="signPlacementBanner" class="sig-placement-banner d-none">
-                <i class="bi bi-cursor-fill"></i>
-                <span>Drag the signature to position it on the document</span>
-                <div class="d-flex align-items-center gap-2 ms-3">
-                  <label class="mb-0 fw-600 text-nowrap" style="font-size:12px;">Page:</label>
-                  <input type="number" id="signPlacementPage" class="form-control form-control-sm" min="1" value="1" style="width:68px;">
-                </div>
-                <div class="ms-auto d-flex gap-2">
-                  <button class="btn btn-sm btn-outline-secondary" onclick="EMS_DocViewer.cancelPlacement()">Cancel</button>
-                  <button class="btn btn-sm btn-primary" onclick="EMS_DocViewer.confirmPlacement()"><i class="bi bi-check2 me-1"></i>Place Signature</button>
-                </div>
-              </div>
-
-              <div class="doc-viewer-body" id="docViewerBody">
-                <div class="doc-viewer-placeholder">
-                  <i class="bi bi-file-earmark-text" style="font-size:4rem;opacity:.2;"></i>
-                  <p class="mt-2 text-muted">Select a document to preview</p>
-                </div>
-              </div>
-              <!-- Watermark overlay -->
-              <div class="doc-watermark-overlay d-none" id="watermarkOverlay"></div>
-            </div>
 
             <!-- Document Types Management Panel -->
             <div class="d-none" id="doctypesPanelWrap">
@@ -361,6 +325,65 @@
 </div>
 
 <!-- ═══════════════ MODALS ═══════════════ -->
+
+<!-- Document Viewer Modal (fullscreen popup) -->
+<div class="modal fade" id="docViewerModal" tabindex="-1">
+  <div class="modal-dialog modal-fullscreen m-0">
+    <div class="modal-content doc-viewer-modal-content">
+      <div class="doc-viewer-header">
+        <button class="btn btn-sm btn-outline-secondary" id="btnBackToList"><i class="bi bi-arrow-left me-1"></i>Back</button>
+        <span class="doc-viewer-title" id="viewerTitle">Document Title</span>
+        <div class="doc-viewer-actions">
+          <button class="btn btn-sm btn-outline-primary" id="btnViewerDownload" title="Download"><i class="bi bi-download"></i></button>
+          <button class="btn btn-sm btn-outline-primary" id="btnViewerSign" title="Sign"><i class="bi bi-pen"></i></button>
+          <button class="btn btn-sm btn-outline-primary" id="btnViewerAnnotate" title="Add Annotation"><i class="bi bi-chat-square-text"></i></button>
+          <button class="btn btn-sm btn-outline-primary" id="btnViewerWatermark" title="Watermark"><i class="bi bi-droplet"></i></button>
+          <button class="btn btn-sm btn-outline-primary" id="btnViewerVersions" title="Versions"><i class="bi bi-clock-history"></i></button>
+          <button class="btn btn-sm btn-outline-primary" id="btnViewerLock" title="Lock"><i class="bi bi-lock"></i></button>
+        </div>
+      </div>
+      <!-- Signature placement banner (hidden until placement mode) -->
+      <div id="signPlacementBanner" class="sig-placement-banner d-none">
+        <i class="bi bi-cursor-fill"></i>
+        <span>Drag the signature to position it on the document</span>
+        <div class="d-flex align-items-center gap-2 ms-3">
+          <label class="mb-0 fw-600 text-nowrap" style="font-size:12px;">Page:</label>
+          <input type="number" id="signPlacementPage" class="form-control form-control-sm" min="1" value="1" style="width:68px;">
+        </div>
+        <div class="ms-auto d-flex gap-2">
+          <button class="btn btn-sm btn-outline-secondary" onclick="EMS_DocViewer.cancelPlacement()">Cancel</button>
+          <button class="btn btn-sm btn-primary" onclick="EMS_DocViewer.confirmPlacement()"><i class="bi bi-check2 me-1"></i>Place Signature</button>
+        </div>
+      </div>
+      <!-- Annotation placement banner (hidden until annotation mode) -->
+      <div id="annotationBanner" class="sig-placement-banner d-none" style="gap:10px;">
+        <i class="bi bi-chat-square-text"></i>
+        <input type="text" id="annotationText" class="form-control form-control-sm" placeholder="Type your annotation…" style="max-width:280px;">
+        <input type="color" id="annotationColor" class="form-control form-control-color form-control-sm" value="#e63946" title="Color" style="width:36px;padding:2px;">
+        <select id="annotationSize" class="form-select form-select-sm" style="width:auto;">
+          <option value="10">Small</option>
+          <option value="13" selected>Medium</option>
+          <option value="17">Large</option>
+        </select>
+        <div class="d-flex align-items-center gap-2 ms-1">
+          <label class="mb-0 text-nowrap" style="font-size:12px;">Page:</label>
+          <input type="number" id="annotationPage" class="form-control form-control-sm" min="1" value="1" style="width:68px;">
+        </div>
+        <div class="ms-auto d-flex gap-2">
+          <button class="btn btn-sm btn-outline-secondary" onclick="EMS_DocViewer.cancelAnnotation()">Cancel</button>
+          <button class="btn btn-sm btn-primary" onclick="EMS_DocViewer.confirmAnnotation()"><i class="bi bi-check2 me-1"></i>Place Annotation</button>
+        </div>
+      </div>
+      <div class="doc-viewer-body" id="docViewerBody">
+        <div class="doc-viewer-placeholder">
+          <i class="bi bi-file-earmark-text" style="font-size:4rem;opacity:.2;"></i>
+          <p class="mt-2 text-muted">Select a document to preview</p>
+        </div>
+      </div>
+      <div class="doc-watermark-overlay d-none" id="watermarkOverlay"></div>
+    </div>
+  </div>
+</div>
 
 <!-- Upload Document Modal -->
 <div class="modal fade" id="uploadDocModal" tabindex="-1">
@@ -547,10 +570,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <div class="form-check form-switch mb-3">
-          <input class="form-check-input" type="checkbox" id="watermarkEnabled">
-          <label class="form-check-label" for="watermarkEnabled">Enable Watermark</label>
-        </div>
         <div class="mb-3">
           <label class="form-label">Text</label>
           <input type="text" class="form-control" id="watermarkText" value="CONFIDENTIAL">
@@ -565,8 +584,9 @@
         </div>
       </div>
       <div class="modal-footer">
+        <button class="btn btn-outline-danger btn-sm me-auto" id="btnRemoveWatermark">Remove</button>
         <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-primary btn-sm" id="btnSaveWatermark">Save</button>
+        <button class="btn btn-primary btn-sm" id="btnSaveWatermark">Apply</button>
       </div>
     </div>
   </div>
@@ -888,6 +908,9 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';</script>
 <script src="/js/api.js"></script>
 <script src="/js/ems/folder-tree.js"></script>
 <script src="/js/ems/documents.js"></script>
