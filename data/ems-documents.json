@@ -443,7 +443,7 @@
     "status": "active",
     "createdBy": "u004",
     "createdAt": "2026-04-12T10:22:44.317Z",
-    "updatedAt": "2026-04-15T21:34:32.719Z",
+    "updatedAt": "2026-04-17T10:59:58.228Z",
     "currentVersion": 3,
     "versions": [
       {
@@ -538,15 +538,38 @@
         "x": 25.2,
         "y": 1.7,
         "width": 22
+      },
+      {
+        "signatureId": "SIGEB896CBA",
+        "userId": "u004",
+        "userName": "Sara Hassan",
+        "signedAt": "2026-04-17T10:59:30.681Z",
+        "type": "drawn",
+        "x": 6.8,
+        "y": 1.6,
+        "width": 22
       }
     ],
     "watermark": {
-      "enabled": false,
+      "enabled": true,
       "text": "CONFIDENTIAL",
-      "opacity": 0.4,
-      "angle": -30
+      "opacity": 0.5,
+      "angle": -27
     },
-    "annotations": [],
+    "annotations": [
+      {
+        "id": "ANN9417E6E8",
+        "text": "Hello",
+        "color": "#e63946",
+        "size": 13,
+        "x": 85.1,
+        "y": 17.4,
+        "page": 1,
+        "userId": "u004",
+        "userName": "Sara Hassan",
+        "createdAt": "2026-04-17T10:59:58.228Z"
+      }
+    ],
     "starred": [],
     "trashedAt": null,
     "lockedBy": null,

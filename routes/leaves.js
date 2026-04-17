@@ -20,6 +20,16 @@ const requireAuth = (req, res, next) => {
   res.status(401).json({ success: false, message: 'Unauthorized' });
 };
 
+// GET /api/leaves/:id
+router.get('/:id', requireAuth, (req, res) => {
+  const users  = readUsers();
+  const uMap   = {};
+  users.forEach(u => uMap[u.id] = u.name);
+  const leave  = readLeaves().find(l => l.id === req.params.id);
+  if (!leave) return res.status(404).json({ success: false, message: 'Not found' });
+  res.json({ success: true, leave: { ...leave, userName: uMap[leave.userId] || 'Unknown', reviewerName: uMap[leave.reviewedBy] || null } });
+});
+
 // GET /api/leaves
 router.get('/', requireAuth, (req, res) => {
   const user   = req.session.user;
@@ -63,8 +73,9 @@ router.post('/', requireAuth, (req, res) => {
     startDate:   req.body.startDate,
     endDate:     req.body.endDate,
     days:        req.body.days,
-    reason:      req.body.reason || '',
-    status:      'pending',
+    reason:       req.body.reason || '',
+    customFields: req.body.customFields || {},
+    status:       'pending',
     taskId:      null,
     submittedAt: new Date().toISOString(),
     reviewedBy:  null,
@@ -87,7 +98,7 @@ router.post('/', requireAuth, (req, res) => {
       dueDate:      req.body.startDate,
       createdAt:    new Date().toISOString(),
       updatedAt:    new Date().toISOString(),
-      metadata:     { leaveId },
+      metadata:     { leaveId, requestDetails: { userName: user.name, type: req.body.type, startDate: req.body.startDate, endDate: req.body.endDate, days: req.body.days, reason: req.body.reason || '', customFields: req.body.customFields || {}, submittedAt: new Date().toISOString() } },
       history:      [{ action: 'created', by: user.id, at: new Date().toISOString(), note: 'Leave request submitted' }],
       comments:     [],
       escalated:    false,

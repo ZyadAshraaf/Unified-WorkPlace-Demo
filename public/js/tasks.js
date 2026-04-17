@@ -243,6 +243,38 @@ async function openDetail(id) {
 
   document.getElementById('detailTitle').textContent = t.title;
 
+  const isLeaveApproval      = t.type === 'approval' && t.metadata?.leaveId;
+  const isWfhApproval        = t.type === 'approval' && t.metadata?.wfhId;
+  const isEmsVersionApproval = t.type === 'approval' && t.metadata?.emsVersionId;
+  const isPOApproval         = t.type === 'approval' && t.metadata?.poId;
+  const isMRQApproval        = t.type === 'approval' && t.metadata?.mrqId;
+  const isApproval           = isLeaveApproval || isWfhApproval || isEmsVersionApproval || isPOApproval || isMRQApproval;
+  const isDone = t.status === 'completed';
+
+  // Fetch linked record for approval tasks
+  let requestDetailsHtml = '';
+  if (isLeaveApproval) {
+    if (t.metadata.requestDetails) {
+      requestDetailsHtml = buildLeaveDetails(t.metadata.requestDetails);
+    } else {
+      const r = await API.get(`/api/leaves/${t.metadata.leaveId}`);
+      if (r?.success) requestDetailsHtml = buildLeaveDetails(r.leave);
+    }
+  } else if (isWfhApproval) {
+    if (t.metadata.requestDetails) {
+      requestDetailsHtml = buildWfhDetails(t.metadata.requestDetails);
+    } else {
+      const r = await API.get(`/api/wfh/${t.metadata.wfhId}`);
+      if (r?.success) requestDetailsHtml = buildWfhDetails(r.wfh);
+    }
+  } else if (isPOApproval) {
+    const r = await API.get(`/api/purchase-orders/${t.metadata.poId}`);
+    if (r?.success) requestDetailsHtml = buildPODetails(r.po);
+  } else if (isMRQApproval) {
+    const r = await API.get(`/api/material-requisitions/${t.metadata.mrqId}`);
+    if (r?.success) requestDetailsHtml = buildMRQDetails(r.mrq);
+  }
+
   const comments = t.comments.map(c => `
     <div class="comment-bubble">
       <div class="comment-meta"><strong>${c.name || c.by}</strong> · ${UI.formatDateTime(c.at)}</div>
@@ -264,7 +296,7 @@ async function openDetail(id) {
       <div class="col-sm-6"><strong>Assigned To:</strong> ${t.assignedToName}</div>
       <div class="col-sm-6"><strong>Created By:</strong> ${t.createdByName}</div>
     </div>
-    <div class="mb-3 p-3 rounded" style="background:var(--color-surface);border:1px solid var(--color-border)">${t.description || 'No description.'}</div>
+    ${requestDetailsHtml || `<div class="mb-3 p-3 rounded" style="background:var(--color-surface);border:1px solid var(--color-border)">${t.description || 'No description.'}</div>`}
     <div class="mb-3">
       <div class="fw-600 mb-2">Comments</div>${comments}
     </div>
@@ -272,18 +304,154 @@ async function openDetail(id) {
       <div class="fw-600 mb-2">History</div>${history}
     </div>`;
 
-  const isLeaveApproval      = t.type === 'approval' && t.metadata?.leaveId;
-  const isWfhApproval        = t.type === 'approval' && t.metadata?.wfhId;
-  const isEmsVersionApproval = t.type === 'approval' && t.metadata?.emsVersionId;
-  const isApproval           = isLeaveApproval || isWfhApproval || isEmsVersionApproval;
-  const isDone = t.status === 'completed';
-
   document.getElementById('btnCompleteTask').classList.toggle('d-none', isApproval || isDone);
   document.getElementById('btnApproveLeave').classList.toggle('d-none', !isApproval || isDone);
   document.getElementById('btnRejectLeave').classList.toggle('d-none', !isApproval || isDone);
   document.getElementById('btnViewEmsDoc').classList.toggle('d-none', !isEmsVersionApproval);
 
   taskDetailModal().show();
+}
+
+function detailField(label, value) {
+  return `<div class="col-sm-6 col-md-4">
+    <label class="form-label mb-1" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--color-text-muted)">${label}</label>
+    <input class="form-control form-control-sm" value="${(value || '—').toString().replace(/"/g, '&quot;')}" disabled>
+  </div>`;
+}
+
+function detailSection(title, fieldsHtml, extraHtml = '') {
+  return `<div class="mb-3">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--color-text-muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--color-border)">${title}</div>
+    <div class="row g-2">${fieldsHtml}</div>${extraHtml}
+  </div>`;
+}
+
+function buildLeaveDetails(l) {
+  const fields =
+    detailField('Employee',   l.userName) +
+    detailField('Leave Type', l.type?.charAt(0).toUpperCase() + l.type?.slice(1)) +
+    detailField('Start Date', UI.formatDate(l.startDate)) +
+    detailField('End Date',   UI.formatDate(l.endDate)) +
+    detailField('Duration',   `${l.days} working day(s)`) +
+    detailField('Submitted',  UI.formatDate(l.submittedAt)) +
+    buildLeaveCustomFields(l.customFields, l.type);
+  const reason = `<div class="mt-2"><label class="form-label mb-1" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--color-text-muted)">Reason</label>
+    <textarea class="form-control form-control-sm" rows="2" disabled>${l.reason || '—'}</textarea></div>`;
+  return detailSection('Leave Request Details', fields, reason);
+}
+
+function buildLeaveCustomFields(cf, type) {
+  if (!cf || !type) return '';
+  const f = (label, value) => value ? detailField(label, value) : '';
+  if (type === 'sick')      return f('Medical Certificate', cf.hasCertificate ? 'Yes' : (cf.hasCertificate === false ? 'No' : '')) + f('Doctor / Clinic', cf.doctorName);
+  if (type === 'emergency') return f('Emergency Category', cf.emergencyCategory);
+  if (type === 'maternity') return f('Expected Due Date', UI.formatDate(cf.expectedDueDate));
+  if (type === 'marriage')  return f('Wedding Date', UI.formatDate(cf.weddingDate));
+  if (type === 'hajj')      return f('Departure City', cf.departureCity) + f('Pilgrim Reg. No.', cf.pilgrimRegNo);
+  if (type === 'exam')      return f('Exam Date', UI.formatDate(cf.examDate)) + f('Course', cf.courseName) + f('Institution', cf.institutionName);
+  return '';
+}
+
+function buildWfhDetails(w) {
+  const fields =
+    detailField('Employee',    w.userName) +
+    detailField('WFH Type',    w.type || 'Remote') +
+    detailField('Start Date',  UI.formatDate(w.startDate)) +
+    detailField('End Date',    UI.formatDate(w.endDate)) +
+    detailField('Duration',    `${w.days} day(s)`) +
+    detailField('Submitted',   UI.formatDate(w.submittedAt));
+  const reason = `<div class="mt-2"><label class="form-label mb-1" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--color-text-muted)">Reason</label>
+    <textarea class="form-control form-control-sm" rows="2" disabled>${w.reason || '—'}</textarea></div>`;
+  return detailSection('WFH Request Details', fields, reason);
+}
+
+function buildPODetails(p) {
+  const fields =
+    detailField('PO Number',         p.poNumber) +
+    detailField('Requested By',      p.userName) +
+    detailField('Vendor',            p.vendorName) +
+    detailField('Cost Center',       p.costCenter) +
+    detailField('Delivery Location', p.deliveryLocation) +
+    detailField('Required By',       UI.formatDate(p.requiredBy)) +
+    detailField('Currency',          p.currency) +
+    detailField('Payment Terms',     p.paymentTerms) +
+    detailField('Subtotal',          `${p.currency} ${(p.subtotal||0).toLocaleString('en-AE',{minimumFractionDigits:2})}`) +
+    detailField('Tax',               `${p.taxPct}% — ${p.currency} ${(p.taxAmount||0).toLocaleString('en-AE',{minimumFractionDigits:2})}`) +
+    `<div class="col-sm-6 col-md-4">
+      <label class="form-label mb-1" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--color-text-muted)">Grand Total</label>
+      <input class="form-control form-control-sm fw-700" value="${p.currency} ${(p.grandTotal||0).toLocaleString('en-AE',{minimumFractionDigits:2})}" disabled style="color:var(--color-primary);font-weight:700">
+    </div>`;
+
+  const lineRows = (p.lineItems || []).map(li => `
+    <tr>
+      <td class="fs-sm">${li.item}</td>
+      <td class="fs-sm text-muted">${li.description || '—'}</td>
+      <td class="text-center fs-sm">${li.qty} ${li.unit}</td>
+      <td class="text-end fs-sm">${(li.unitPrice||0).toLocaleString('en-AE',{minimumFractionDigits:2})}</td>
+      <td class="text-end fs-sm fw-700">${(li.lineTotal||0).toLocaleString('en-AE',{minimumFractionDigits:2})}</td>
+    </tr>`).join('');
+
+  const lineTable = `<div class="mt-2" style="border:1px solid var(--color-border);border-radius:8px;overflow:hidden">
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="background:var(--color-surface)">
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted)">Item</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted)">Description</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted);text-align:center">Qty</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted);text-align:right">Unit Price</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted);text-align:right">Total</th>
+      </tr></thead>
+      <tbody>${lineRows}</tbody>
+    </table>
+  </div>`;
+
+  const justif = `<div class="mt-2"><label class="form-label mb-1" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--color-text-muted)">Justification</label>
+    <textarea class="form-control form-control-sm" rows="2" disabled>${p.justification || '—'}</textarea></div>`;
+
+  return detailSection('Purchase Order Details', fields, lineTable + justif);
+}
+
+function buildMRQDetails(m) {
+  const totalQty = (m.lineItems || []).reduce((s, li) => s + (li.qtyRequested || 0), 0);
+  const fields =
+    detailField('MRQ Number',       m.mrqNumber) +
+    detailField('Requested By',     m.userName) +
+    detailField('Department',       m.department) +
+    detailField('Delivery Location',m.deliveryLocation) +
+    detailField('Required By',      UI.formatDate(m.requiredBy)) +
+    detailField('Priority',         m.priority?.charAt(0).toUpperCase() + m.priority?.slice(1)) +
+    detailField('Project Code',     m.projectCode || '—') +
+    detailField('Total Items',      `${(m.lineItems||[]).length} line(s) · ${totalQty} unit(s)`);
+
+  const lineRows = (m.lineItems || []).map(li => {
+    const stockColor = li.stockAvailable === 0 ? '#dc3545' : li.stockAvailable <= 5 ? '#d97706' : '#1a9e6a';
+    return `<tr>
+      <td class="fs-sm text-muted">${li.materialCode}</td>
+      <td class="fs-sm fw-600">${li.materialName}</td>
+      <td class="fs-sm">${li.category}</td>
+      <td class="text-center fs-sm">${li.uom}</td>
+      <td class="text-center fs-sm fw-700">${li.qtyRequested}</td>
+      <td class="text-center fs-sm fw-700" style="color:${stockColor}">${li.stockAvailable}</td>
+    </tr>`;
+  }).join('');
+
+  const lineTable = `<div class="mt-2" style="border:1px solid var(--color-border);border-radius:8px;overflow:hidden">
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="background:var(--color-surface)">
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted)">Code</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted)">Material</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted)">Category</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted);text-align:center">UoM</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted);text-align:center">Qty Req.</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted);text-align:center">In Stock</th>
+      </tr></thead>
+      <tbody>${lineRows}</tbody>
+    </table>
+  </div>`;
+
+  const justif = `<div class="mt-2"><label class="form-label mb-1" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--color-text-muted)">Justification</label>
+    <textarea class="form-control form-control-sm" rows="2" disabled>${m.justification || '—'}</textarea></div>`;
+
+  return detailSection('Material Requisition Details', fields, lineTable + justif);
 }
 
 // ── Bind Modals ────────────────────────────────────────────
@@ -315,6 +483,10 @@ function bindModals() {
     } else if (activeTask.metadata?.emsVersionId) {
       const { docId, version } = activeTask.metadata;
       data = await API.post(`/api/ems/documents/${docId}/versions/${version}/approve`);
+    } else if (activeTask.metadata?.poId) {
+      data = await API.put(`/api/purchase-orders/${activeTask.metadata.poId}/approve`);
+    } else if (activeTask.metadata?.mrqId) {
+      data = await API.put(`/api/material-requisitions/${activeTask.metadata.mrqId}/approve`);
     } else return;
     if (data?.success) { UI.toast('Approved', 'success'); taskDetailModal().hide(); await loadTasks(); }
     else UI.toast(data?.message || 'Error approving', 'danger');
@@ -331,6 +503,10 @@ function bindModals() {
     } else if (activeTask.metadata?.emsVersionId) {
       const { docId, version } = activeTask.metadata;
       data = await API.post(`/api/ems/documents/${docId}/versions/${version}/reject`);
+    } else if (activeTask.metadata?.poId) {
+      data = await API.put(`/api/purchase-orders/${activeTask.metadata.poId}/reject`);
+    } else if (activeTask.metadata?.mrqId) {
+      data = await API.put(`/api/material-requisitions/${activeTask.metadata.mrqId}/reject`);
     } else return;
     if (data?.success) { UI.toast('Rejected', 'warning'); taskDetailModal().hide(); await loadTasks(); }
     else UI.toast(data?.message || 'Error rejecting', 'danger');

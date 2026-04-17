@@ -193,5 +193,20 @@
     "reviewedBy": "u001",
     "reviewedAt": "2026-04-14T03:50:01.821Z",
     "reviewNote": ""
+  },
+  {
+    "id": "LCE81DF00",
+    "userId": "u004",
+    "type": "emergency",
+    "startDate": "2026-04-21",
+    "endDate": "2026-04-24",
+    "days": 4,
+    "reason": "",
+    "status": "pending",
+    "taskId": "T12EBE801",
+    "submittedAt": "2026-04-17T10:02:02.581Z",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "reviewNote": ""
   }
 ]

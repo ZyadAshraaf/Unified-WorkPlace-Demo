@@ -19,6 +19,16 @@ const requireAuth = (req, res, next) => {
   res.status(401).json({ success: false, message: 'Unauthorized' });
 };
 
+// GET /api/wfh/:id
+router.get('/:id', requireAuth, (req, res) => {
+  const users   = readUsers();
+  const uMap    = {};
+  users.forEach(u => uMap[u.id] = u.name);
+  const record  = readWfh().find(w => w.id === req.params.id);
+  if (!record) return res.status(404).json({ success: false, message: 'Not found' });
+  res.json({ success: true, wfh: { ...record, userName: uMap[record.userId] || 'Unknown', reviewerName: uMap[record.reviewedBy] || null } });
+});
+
 // GET /api/wfh
 router.get('/', requireAuth, (req, res) => {
   const user    = req.session.user;
@@ -83,7 +93,7 @@ router.post('/', requireAuth, (req, res) => {
       dueDate:      req.body.startDate,
       createdAt:    new Date().toISOString(),
       updatedAt:    new Date().toISOString(),
-      metadata:     { wfhId },
+      metadata:     { wfhId, requestDetails: { userName: user.name, startDate: req.body.startDate, endDate: req.body.endDate, days: req.body.days, reason: req.body.reason || '', submittedAt: new Date().toISOString() } },
       history:      [{ action: 'created', by: user.id, at: new Date().toISOString(), note: 'WFH request submitted' }],
       comments:     [],
       escalated:    false,

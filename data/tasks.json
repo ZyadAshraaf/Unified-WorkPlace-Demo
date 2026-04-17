@@ -335,7 +335,8 @@
     "createdAt": "2026-04-02T16:00:00.000Z",
     "updatedAt": "2026-04-02T16:00:00.000Z",
     "metadata": {
-      "wfhId": "W008"
+      "wfhId": "W008",
+      "requestDetails": { "userName": "Khalid Al-Mansouri", "startDate": "2026-04-21", "endDate": "2026-04-22", "days": 2, "reason": "Home office setup — awaiting ergonomic chair delivery.", "submittedAt": "2026-04-02T16:00:00.000Z" }
     },
     "history": [
       {
@@ -363,7 +364,8 @@
     "createdAt": "2026-04-14T03:48:55.448Z",
     "updatedAt": "2026-04-14T03:50:01.821Z",
     "metadata": {
-      "leaveId": "L61FCA88C"
+      "leaveId": "L61FCA88C",
+      "requestDetails": { "userName": "Ahmed Al-Rashidi", "type": "annual", "startDate": "2026-04-15", "endDate": "2026-04-17", "days": 3, "reason": "Family matter", "submittedAt": "2026-04-14T03:48:55.447Z" }
     },
     "history": [
       {
@@ -397,7 +399,8 @@
     "createdAt": "2026-04-14T03:50:41.224Z",
     "updatedAt": "2026-04-14T03:50:41.224Z",
     "metadata": {
-      "wfhId": "WD7CDD379"
+      "wfhId": "WD7CDD379",
+      "requestDetails": { "userName": "Ahmed Al-Rashidi", "startDate": "2026-04-22", "endDate": "2026-04-23", "days": 2, "reason": "", "submittedAt": "2026-04-14T03:50:41.224Z" }
     },
     "history": [
       {
@@ -507,6 +510,167 @@
         "by": "u001",
         "at": "2026-04-15T21:34:32.722Z",
         "note": "Version 3 approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T67EA612F",
+    "title": "Approve WFH Request — Sara Hassan",
+    "description": "Sara Hassan has requested to work from home for 1 day(s) (2026-04-17 to 2026-04-18). Reason: Not provided",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "completed",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-04-17",
+    "createdAt": "2026-04-17T09:46:42.638Z",
+    "updatedAt": "2026-04-17T09:46:53.066Z",
+    "metadata": {
+      "wfhId": "W6ABBDB2A",
+      "requestDetails": { "userName": "Sara Hassan", "startDate": "2026-04-17", "endDate": "2026-04-18", "days": 1, "reason": "", "submittedAt": "2026-04-17T09:46:42.638Z" }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-17T09:46:42.638Z",
+        "note": "WFH request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-17T09:46:53.066Z",
+        "note": "WFH request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T7F94A1E2",
+    "title": "Approve Purchase Order — PO-2026-0005",
+    "description": "Sara Hassan submitted PO-2026-0005 to Riyadh Industrial Trading for SAR 115.00. Cost Center: IT.",
+    "sourceSystem": "Procurement",
+    "type": "approval",
+    "priority": "medium",
+    "status": "completed",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-04-30",
+    "createdAt": "2026-04-17T09:50:13.502Z",
+    "updatedAt": "2026-04-17T09:53:20.398Z",
+    "metadata": {
+      "poId": "PO63124EC2"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-17T09:50:13.502Z",
+        "note": "Purchase Order submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-17T09:53:20.398Z",
+        "note": "PO approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T77A38D0C",
+    "title": "Approve Material Requisition — MR-2026-0004",
+    "description": "Sara Hassan (Finance) requested 1 material line(s) (1 total units) for Riyadh HQ. Required by: 2026-04-22.",
+    "sourceSystem": "Warehouse",
+    "type": "approval",
+    "priority": "high",
+    "status": "completed",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-04-22",
+    "createdAt": "2026-04-17T09:54:11.730Z",
+    "updatedAt": "2026-04-17T09:54:24.632Z",
+    "metadata": {
+      "mrqId": "MRF7C1861A"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-17T09:54:11.730Z",
+        "note": "Material Requisition submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-17T09:54:24.632Z",
+        "note": "Requisition approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T12EBE801",
+    "title": "Approve Leave Request — Sara Hassan",
+    "description": "Sara Hassan has requested emergency leave for 4 day(s) (2026-04-21 to 2026-04-24). Reason: ",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-04-21",
+    "createdAt": "2026-04-17T10:02:02.581Z",
+    "updatedAt": "2026-04-17T10:02:02.581Z",
+    "metadata": {
+      "leaveId": "LCE81DF00",
+      "requestDetails": { "userName": "Sara Hassan", "type": "emergency", "startDate": "2026-04-21", "endDate": "2026-04-24", "days": 4, "reason": "", "submittedAt": "2026-04-17T10:02:02.581Z" }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-17T10:02:02.581Z",
+        "note": "Leave request submitted"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TB83CD7E3",
+    "title": "Approve WFH Request — Sara Hassan",
+    "description": "Sara Hassan has requested to work from home for 4 day(s) (2026-04-18 to 2026-04-23). Reason: Not provided",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-04-18",
+    "createdAt": "2026-04-17T10:03:15.245Z",
+    "updatedAt": "2026-04-17T10:03:15.245Z",
+    "metadata": {
+      "wfhId": "W9F5A31A3",
+      "requestDetails": { "userName": "Sara Hassan", "startDate": "2026-04-18", "endDate": "2026-04-23", "days": 4, "reason": "", "submittedAt": "2026-04-17T10:03:15.245Z" }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-17T10:03:15.245Z",
+        "note": "WFH request submitted"
       }
     ],
     "comments": [],

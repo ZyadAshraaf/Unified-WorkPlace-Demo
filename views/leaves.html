@@ -343,7 +343,10 @@
               <option value="annual">Annual Leave</option>
               <option value="sick">Sick Leave</option>
               <option value="emergency">Emergency Leave</option>
-              <option value="unpaid">Unpaid Leave</option>
+              <option value="maternity">Maternity Leave</option>
+              <option value="marriage">Marriage Leave</option>
+              <option value="hajj">Hajj Leave</option>
+              <option value="exam">Exam / Study Leave</option>
             </select>
           </div>
           <div class="row g-3 mb-3">
@@ -361,6 +364,7 @@
               <span class="fw-600" style="color:var(--color-primary)">Duration: <span id="leaveDaysCalc">—</span> working day(s)</span>
             </div>
           </div>
+          <div id="leaveCustomFields"></div>
           <div class="mb-3">
             <label class="form-label">Reason</label>
             <textarea class="form-control" id="leaveReason" rows="3" placeholder="Optional: provide reason for your leave request"></textarea>
@@ -460,6 +464,9 @@
     <!-- Reason -->
     <div class="ld-section-label">Reason</div>
     <div class="ld-reason-box" id="ldReason">—</div>
+
+    <!-- Custom Fields -->
+    <div id="ldCustomFields"></div>
 
     <!-- Reviewer -->
     <div id="ldReviewSection">

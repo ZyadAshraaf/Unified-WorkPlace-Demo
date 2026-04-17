@@ -94,6 +94,9 @@ function openLeaveDrawer(id) {
   // Reason
   document.getElementById('ldReason').textContent = l.reason || 'No reason provided.';
 
+  // Custom fields
+  document.getElementById('ldCustomFields').innerHTML = renderCustomFieldsReadonly(l.customFields, l.type);
+
   // Reviewer
   const reviewSection = document.getElementById('ldReviewSection');
   if (l.reviewerName) {
@@ -198,8 +201,13 @@ function bindActions() {
     document.getElementById('leaveStart').min   = today;
     document.getElementById('leaveEnd').min     = today;
     document.getElementById('leaveDaysCalc').textContent = '—';
+    document.getElementById('leaveType').value = 'annual';
+    renderCustomFields();
     bootstrap.Modal.getOrCreateInstance(document.getElementById('requestLeaveModal')).show();
   });
+
+  // Custom fields on type change
+  document.getElementById('leaveType')?.addEventListener('change', renderCustomFields);
 
   // Auto-calculate days
   ['leaveStart', 'leaveEnd'].forEach(id => {
@@ -208,16 +216,20 @@ function bindActions() {
 
   // Submit
   document.getElementById('btnSubmitLeave')?.addEventListener('click', async () => {
-    const start = document.getElementById('leaveStart').value;
-    const end   = document.getElementById('leaveEnd').value;
-    const type  = document.getElementById('leaveType').value;
+    const start  = document.getElementById('leaveStart').value;
+    const end    = document.getElementById('leaveEnd').value;
+    const type   = document.getElementById('leaveType').value;
     const reason = document.getElementById('leaveReason').value;
 
     if (!start || !end) return UI.toast('Please select start and end dates', 'warning');
     if (end < start)    return UI.toast('End date cannot be before start date', 'warning');
 
+    const cfError = validateCustomFields(type);
+    if (cfError) return UI.toast(cfError, 'warning');
+
+    const customFields = collectCustomFields(type);
     const days = calcWorkingDays(new Date(start), new Date(end));
-    const data = await API.post('/api/leaves', { type, startDate: start, endDate: end, days, reason });
+    const data = await API.post('/api/leaves', { type, startDate: start, endDate: end, days, reason, customFields });
 
     if (data?.success) {
       UI.toast('Leave request submitted successfully', 'success');
@@ -245,6 +257,139 @@ async function submitReview(status) {
   } else {
     UI.toast(data?.message || 'Error updating request', 'danger');
   }
+}
+
+function renderCustomFields() {
+  const type = document.getElementById('leaveType').value;
+  const container = document.getElementById('leaveCustomFields');
+  const templates = {
+    sick: `
+      <div class="mb-2">
+        <label class="form-label fw-600">Medical Certificate Available?</label>
+        <div class="d-flex gap-3">
+          <div class="form-check"><input class="form-check-input" type="radio" name="hasCert" id="certNo" value="no" checked><label class="form-check-label" for="certNo">No</label></div>
+          <div class="form-check"><input class="form-check-input" type="radio" name="hasCert" id="certYes" value="yes"><label class="form-check-label" for="certYes">Yes</label></div>
+        </div>
+      </div>
+      <div class="d-none" id="doctorNameWrap">
+        <label class="form-label">Doctor / Clinic Name</label>
+        <input type="text" class="form-control" id="doctorName" placeholder="e.g. Dr. Ahmed, Al-Noor Clinic">
+      </div>`,
+    emergency: `
+      <label class="form-label fw-600">Emergency Category *</label>
+      <select class="form-select" id="emergencyCategory">
+        <option value="">Select category…</option>
+        <option value="Personal">Personal</option>
+        <option value="Family">Family</option>
+        <option value="Home Incident">Home Incident</option>
+      </select>`,
+    maternity: `
+      <label class="form-label fw-600">Expected Due Date *</label>
+      <input type="date" class="form-control" id="expectedDueDate">`,
+    marriage: `
+      <label class="form-label fw-600">Wedding Date *</label>
+      <input type="date" class="form-control" id="weddingDate">`,
+    hajj: `
+      <div class="row g-2">
+        <div class="col-6">
+          <label class="form-label fw-600">Departure City *</label>
+          <input type="text" class="form-control" id="departureCity" placeholder="e.g. Riyadh">
+        </div>
+        <div class="col-6">
+          <label class="form-label fw-600">Pilgrim Reg. No.</label>
+          <input type="text" class="form-control" id="pilgrimRegNo" placeholder="Optional">
+        </div>
+      </div>`,
+    exam: `
+      <div class="row g-2 mb-2">
+        <div class="col-6">
+          <label class="form-label fw-600">Exam Date *</label>
+          <input type="date" class="form-control" id="examDate">
+        </div>
+        <div class="col-6">
+          <label class="form-label fw-600">Course / Subject *</label>
+          <input type="text" class="form-control" id="courseName" placeholder="e.g. PMP Certification">
+        </div>
+      </div>
+      <label class="form-label fw-600">Institution Name *</label>
+      <input type="text" class="form-control" id="institutionName" placeholder="e.g. King Saud University">`
+  };
+  const html = templates[type] || '';
+  if (html) {
+    container.innerHTML = `<div class="mb-3 p-3 rounded" style="background:var(--color-primary-faint);border:1px solid var(--color-border)">${html}</div>`;
+    if (type === 'sick') {
+      document.querySelectorAll('input[name="hasCert"]').forEach(r =>
+        r.addEventListener('change', () =>
+          document.getElementById('doctorNameWrap').classList.toggle('d-none', r.value !== 'yes')
+        )
+      );
+    }
+  } else {
+    container.innerHTML = '';
+  }
+}
+
+function collectCustomFields(type) {
+  const cf = {};
+  if (type === 'sick') {
+    cf.hasCertificate = document.querySelector('input[name="hasCert"]:checked')?.value === 'yes';
+    if (cf.hasCertificate) cf.doctorName = document.getElementById('doctorName')?.value.trim() || '';
+  } else if (type === 'emergency') {
+    cf.emergencyCategory = document.getElementById('emergencyCategory')?.value || '';
+  } else if (type === 'maternity') {
+    cf.expectedDueDate = document.getElementById('expectedDueDate')?.value || '';
+  } else if (type === 'marriage') {
+    cf.weddingDate = document.getElementById('weddingDate')?.value || '';
+  } else if (type === 'hajj') {
+    cf.departureCity  = document.getElementById('departureCity')?.value.trim()  || '';
+    cf.pilgrimRegNo   = document.getElementById('pilgrimRegNo')?.value.trim()   || '';
+  } else if (type === 'exam') {
+    cf.examDate        = document.getElementById('examDate')?.value        || '';
+    cf.courseName      = document.getElementById('courseName')?.value.trim()      || '';
+    cf.institutionName = document.getElementById('institutionName')?.value.trim() || '';
+  }
+  return cf;
+}
+
+function validateCustomFields(type) {
+  if (type === 'emergency' && !document.getElementById('emergencyCategory')?.value)
+    return 'Please select an emergency category';
+  if (type === 'maternity' && !document.getElementById('expectedDueDate')?.value)
+    return 'Please enter the expected due date';
+  if (type === 'marriage' && !document.getElementById('weddingDate')?.value)
+    return 'Please enter the wedding date';
+  if (type === 'hajj' && !document.getElementById('departureCity')?.value.trim())
+    return 'Please enter departure city';
+  if (type === 'exam') {
+    if (!document.getElementById('examDate')?.value)        return 'Please enter the exam date';
+    if (!document.getElementById('courseName')?.value.trim())      return 'Please enter the course / subject';
+    if (!document.getElementById('institutionName')?.value.trim()) return 'Please enter the institution name';
+  }
+  return null;
+}
+
+function renderCustomFieldsReadonly(customFields, type) {
+  if (!customFields || !Object.keys(customFields).length) return '';
+  const rows = [];
+  if (type === 'sick') {
+    rows.push(`<div class="ld-info-item"><div class="ld-info-lbl">Medical Certificate</div><div class="ld-info-val">${customFields.hasCertificate ? 'Yes' : 'No'}</div></div>`);
+    if (customFields.doctorName) rows.push(`<div class="ld-info-item"><div class="ld-info-lbl">Doctor / Clinic</div><div class="ld-info-val">${customFields.doctorName}</div></div>`);
+  } else if (type === 'emergency') {
+    rows.push(`<div class="ld-info-item"><div class="ld-info-lbl">Category</div><div class="ld-info-val">${customFields.emergencyCategory}</div></div>`);
+  } else if (type === 'maternity') {
+    rows.push(`<div class="ld-info-item"><div class="ld-info-lbl">Expected Due Date</div><div class="ld-info-val">${UI.formatDate(customFields.expectedDueDate)}</div></div>`);
+  } else if (type === 'marriage') {
+    rows.push(`<div class="ld-info-item"><div class="ld-info-lbl">Wedding Date</div><div class="ld-info-val">${UI.formatDate(customFields.weddingDate)}</div></div>`);
+  } else if (type === 'hajj') {
+    rows.push(`<div class="ld-info-item"><div class="ld-info-lbl">Departure City</div><div class="ld-info-val">${customFields.departureCity}</div></div>`);
+    if (customFields.pilgrimRegNo) rows.push(`<div class="ld-info-item"><div class="ld-info-lbl">Pilgrim Reg. No.</div><div class="ld-info-val">${customFields.pilgrimRegNo}</div></div>`);
+  } else if (type === 'exam') {
+    if (customFields.examDate)        rows.push(`<div class="ld-info-item"><div class="ld-info-lbl">Exam Date</div><div class="ld-info-val">${UI.formatDate(customFields.examDate)}</div></div>`);
+    if (customFields.courseName)      rows.push(`<div class="ld-info-item"><div class="ld-info-lbl">Course</div><div class="ld-info-val">${customFields.courseName}</div></div>`);
+    if (customFields.institutionName) rows.push(`<div class="ld-info-item"><div class="ld-info-lbl">Institution</div><div class="ld-info-val">${customFields.institutionName}</div></div>`);
+  }
+  if (!rows.length) return '';
+  return `<div class="ld-section-label mt-3">Additional Details</div><div class="ld-info-grid">${rows.join('')}</div>`;
 }
 
 function calcDays() {

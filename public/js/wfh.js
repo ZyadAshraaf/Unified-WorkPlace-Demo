@@ -14,7 +14,7 @@ async function loadWfh() {
   if (!data?.success) return;
   allWfh = data.wfh;
   renderMyWfh();
-  renderPendingApprovals();
+
   updateBalance();
 }
 
@@ -152,30 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('wfhDrawerOverlay')?.addEventListener('click', closeWfhDrawer);
 });
 
-function renderPendingApprovals() {
-  const user    = Layout.user;
-  if (user.role === 'employee') return;
-
-  const pending = allWfh.filter(w => w.status === 'pending' && w.userId !== user.id);
-  const section = document.getElementById('pendingApprovalsSection');
-  section.classList.toggle('d-none', pending.length === 0);
-  document.getElementById('pendingCount').textContent = pending.length;
-
-  if (!pending.length) return;
-
-  document.getElementById('pendingApprovalsBody').innerHTML = pending.map(w => `
-    <tr>
-      <td class="fw-600 fs-sm">${w.userName}</td>
-      <td class="fs-sm">${UI.formatDate(w.startDate)}</td>
-      <td class="fs-sm">${UI.formatDate(w.endDate)}</td>
-      <td class="text-center fw-600">${w.days}</td>
-      <td class="fs-sm text-muted">${w.reason || '—'}</td>
-      <td>
-        <button class="btn btn-sm btn-outline-success me-1" onclick="openReview('${w.id}','approve')"><i class="bi bi-check-lg"></i></button>
-        <button class="btn btn-sm btn-outline-danger"  onclick="openReview('${w.id}','reject')"><i class="bi bi-x-lg"></i></button>
-      </td>
-    </tr>`).join('');
-}
 
 function openReview(id, action) {
   activeWfh    = allWfh.find(w => w.id === id);

@@ -96,5 +96,33 @@
     "reviewedBy": null,
     "reviewedAt": null,
     "reviewNote": ""
+  },
+  {
+    "id": "W6ABBDB2A",
+    "userId": "u004",
+    "startDate": "2026-04-17",
+    "endDate": "2026-04-18",
+    "days": 1,
+    "reason": "",
+    "status": "approved",
+    "taskId": "T67EA612F",
+    "submittedAt": "2026-04-17T09:46:42.638Z",
+    "reviewedBy": "u001",
+    "reviewedAt": "2026-04-17T09:46:53.066Z",
+    "reviewNote": ""
+  },
+  {
+    "id": "W9F5A31A3",
+    "userId": "u004",
+    "startDate": "2026-04-18",
+    "endDate": "2026-04-23",
+    "days": 4,
+    "reason": "",
+    "status": "pending",
+    "taskId": "TB83CD7E3",
+    "submittedAt": "2026-04-17T10:03:15.245Z",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "reviewNote": ""
   }
 ]
