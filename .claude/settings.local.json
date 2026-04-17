@@ -198,7 +198,9 @@
       "Bash(node -e ' *)",
       "Bash(node -e \"const d=require\\('./data/ems-documents.json'\\); d.filter\\(x=>x.watermark\\).forEach\\(x=>console.log\\(x.id, JSON.stringify\\(x.watermark\\)\\)\\)\")",
       "Bash(node -e \"const {PDFDocument,rgb,degrees,StandardFonts}=require\\('pdf-lib'\\); console.log\\('pdf-lib ok'\\); const p=require\\('./node_modules/pdf-lib/package.json'\\); console.log\\('version:', p.version\\);\")",
-      "Bash(node -e \"const pdflib=require\\('pdf-lib'\\); console.log\\('degrees:', typeof pdflib.degrees\\); console.log\\('StandardFonts:', typeof pdflib.StandardFonts\\);\")"
+      "Bash(node -e \"const pdflib=require\\('pdf-lib'\\); console.log\\('degrees:', typeof pdflib.degrees\\); console.log\\('StandardFonts:', typeof pdflib.StandardFonts\\);\")",
+      "Read(//d/d/Pre Sales/Generic Demos/Unified Workplace Demo/**)",
+      "Read(//d/d/Pre Sales/Generic Demos/Unified Workplace Demo/public/**)"
     ]
   }
 }

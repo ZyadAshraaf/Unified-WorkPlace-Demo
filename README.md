@@ -4,7 +4,7 @@
 
 **Unified Workspace** is a centralized web portal that acts as a single integration layer and unified user interface across all enterprise systems (ERP, CRM, Warehouse, HR, Attendance, Accounting, etc.). Instead of users juggling multiple system logins and interfaces, they interact with one portal that aggregates data, tasks, and services from all underlying systems.
 
-The app runs as a **single Node.js/Express server** and can be accessed from both a **browser** and **Microsoft Teams** simultaneously. There is only one codebase — the Teams app is just a thin manifest that tells Teams to load pages from this server inside an iframe.
+The app runs as a **single Node.js/Express server** and can be accessed from both a **browser** and **Microsoft Teams** simultaneously. There is only one codebase — the Teams app is a thin proxy server and manifest that tell Teams to load pages from this server inside an iframe.
 
 ---
 
@@ -13,7 +13,7 @@ The app runs as a **single Node.js/Express server** and can be accessed from bot
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        Express Server (server.js)               │
-│                     Ports: 3000 (browser) + 3001 (Teams/ngrok)  │
+│                               Port: 3000 (browser)              │
 │                                                                 │
 │  ┌──────────┐  ┌──────────┐  ┌───────────┐  ┌───────────────┐  │
 │  │ Auth     │  │ API      │  │ View      │  │ Theme Engine  │  │
@@ -27,21 +27,20 @@ The app runs as a **single Node.js/Express server** and can be accessed from bot
 └───────────┬─────────────────────────────┬───────────────────────┘
             │                             │
      ┌──────┴──────┐              ┌───────┴────────┐
-     │   Browser   │              │  Microsoft     │
-     │ localhost   │              │  Teams         │
-     │  :3000      │              │  (via ngrok    │
-     │             │              │   → :3001)     │
-     │ Normal      │              │ iframe loads   │
-     │ HTTP cookie │              │ same pages     │
-     └─────────────┘              │ SameSite=None  │
-                                  │ Secure cookie  │
+     │   Browser   │              │  Teams Proxy   │
+     │ localhost   │              │  Server        │
+     │  :3000      │              │  (port 3001)   │
+     │             │              │ Proxies /api/* │
+     │ Normal      │              │ to :3000       │
+     │ HTTP cookie │              │ SameSite=None  │
+     └─────────────┘              │ Secure cookie  │
                                   └────────────────┘
 ```
 
 ### Key Architecture Decisions
 
-- **One codebase, two access points** — The Express server listens on port 3000 (browser) and port 3001 (ngrok tunnel for Teams). Both serve the exact same routes and pages.
-- **No separate Teams code** — The `teams-app/` folder contains only a manifest.json, icons, and a URL-update script. All UI and logic lives in the main Express app.
+- **One codebase, two access points** — The Express server listens on port 3000. A separate lightweight proxy server (`teams-app/server.js`) runs on port 3001 and forwards all requests to port 3000, adding Teams-specific CSP headers.
+- **No separate Teams code** — The `teams-app/` folder contains a manifest, icons, a URL-update script, and the stateless proxy server. All UI and logic lives in the main Express app.
 - **Dynamic cookie security** — A middleware detects HTTPS (ngrok) vs HTTP (localhost) and upgrades cookie attributes accordingly, so login works in both contexts without code changes.
 
 ---
@@ -55,10 +54,11 @@ The app runs as a **single Node.js/Express server** and can be accessed from bot
 | Icons | Bootstrap Icons 1.11 (CDN) |
 | Charts | Chart.js 4.4 (CDN) |
 | Database | JSON files (file-based, no external DB) |
-| Auth | `express-session` (session-based) |
+| Auth | `express-session` (session-based, file store) |
 | Styling | Dynamic CSS Variables via `/theme.css` endpoint |
-| Logo | WIND-IS branding (`public/assets/logo.png`) |
-| Teams Integration | Teams manifest + ngrok tunnel |
+| AI (chat/leave) | Groq llama-3.3-70b-versatile (raw fetch, no SDK) |
+| AI (documents) | External DocEval service (proxied via `/api/doceval-proxy`) |
+| Teams Integration | Teams manifest + ngrok tunnel + proxy server |
 
 ---
 
@@ -100,76 +100,122 @@ All components must use these variables — never hard-code hex values in compon
 
 ```
 unified-workspace/
-├── server.js                   # Express entry point + theme engine + Teams iframe support
-├── package.json                # Dependencies: express, express-session, uuid
-├── .gitignore                  # Ignores node_modules/
+├── server.js                        # Express entry point + theme engine + Teams iframe support
+├── package.json                     # Dependencies: express, express-session, uuid, multer, pdf-lib
 ├── routes/
-│   ├── auth.js                 # Login/logout, session management
-│   ├── tasks.js                # Full CRUD + delegate, reassign, escalate, comment
-│   ├── leaves.js               # Submit leave, approve/reject (creates manager task)
-│   ├── analytics.js            # Summary, tasks-by-system/status/priority, leave-summary
-│   ├── goals.js                # Goals & OKR CRUD
-│   ├── appraisal.js            # Performance appraisal management
-│   ├── attendance.js           # Attendance records
-│   ├── helpdesk.js             # Support ticket CRUD
-│   ├── policy.js               # Keyword search across policies
-│   ├── news.js                 # News/announcements
-│   ├── directory.js            # Organization directory
-│   └── customize.js            # Theme settings, logo upload, reset
-├── data/                       # JSON file-based database
-│   ├── users.json              # 6 demo users (admin, manager, hr, employee)
-│   ├── tasks.json              # 12 tasks from various source systems
-│   ├── leaves.json             # Leave records
-│   ├── notifications.json      # User notifications
-│   ├── news.json               # Company news & announcements
-│   ├── policies.json           # Company policies (searchable)
-│   ├── helpdesk.json           # Support tickets
-│   ├── goals.json              # Goals & OKR records
-│   ├── appraisals.json         # Performance appraisal records
-│   ├── attendance.json         # Attendance punch records
-│   └── settings.json           # Theme config (colors, appName, logoPath)
+│   ├── auth.js                      # Login/logout, session management
+│   ├── tasks.js                     # Full CRUD + delegate, reassign, escalate, comment
+│   ├── leaves.js                    # Submit leave, approve/reject (creates manager task)
+│   ├── wfh.js                       # Work-from-home requests + approval workflow
+│   ├── travel.js                    # Travel requests + booking (simulated airline/hotel data)
+│   ├── leave-assistant.js           # AI leave/WFH/travel submission via conversational chat
+│   ├── hr-chat.js                   # Groq-powered HR Q&A chatbot
+│   ├── appraisal.js                 # Performance appraisal management
+│   ├── goals.js                     # Goals & OKR CRUD
+│   ├── analytics.js                 # Cross-module aggregation (tasks, leaves, helpdesk, attendance)
+│   ├── attendance.js                # Attendance records (read-only)
+│   ├── helpdesk.js                  # Support ticket CRUD
+│   ├── policy.js                    # Keyword search across policies (not real AI)
+│   ├── news.js                      # News/announcements (API-only, no view)
+│   ├── finance.js                   # Finance data (API-only, no view)
+│   ├── directory.js                 # Organization directory
+│   ├── material-requisitions.js     # Material requisition requests + approval workflow
+│   ├── purchase-orders.js           # Purchase order management + approval workflow
+│   ├── doceval.js                   # Proxy to upstream DocEval service (doc-chat, proposal-eval, resume-eval)
+│   ├── customize.js                 # Theme settings, logo upload, reset
+│   └── ems/                         # Enterprise Document Management (sub-router)
+│       └── index.js                 # Mounts: documents, folders, groups, signatures,
+│                                    #   users, audit, doctypes, metadata sub-routers
+├── data/                            # JSON file-based database
+│   ├── users.json                   # 6 demo users (admin, manager, hr, employee×2, manager×2)
+│   ├── tasks.json                   # Tasks from all source systems + approval tasks
+│   ├── leaves.json                  # Leave records
+│   ├── wfh.json                     # WFH records
+│   ├── travel.json                  # Travel booking records
+│   ├── appraisals.json              # Performance appraisal records
+│   ├── goals.json                   # Goals & OKR records
+│   ├── attendance.json              # Attendance punch records (seed data only)
+│   ├── helpdesk.json                # Support tickets
+│   ├── notifications.json           # User notifications (pre-seeded, static)
+│   ├── news.json                    # Company news & announcements
+│   ├── policies.json                # Company policies (searchable)
+│   ├── material-requisitions.json   # Material requisition records
+│   ├── materials.json               # Materials catalog (codes, stock levels, locations)
+│   ├── purchase-orders.json         # Purchase order records
+│   ├── vendors.json                 # Vendor catalog (10 vendors, contact, payment terms)
+│   ├── settings.json                # Theme config (colors, appName, logoPath, teamsGraph)
+│   └── ems-*.json                   # EMS: documents, folders, groups, signatures, doctypes, metadata
 ├── public/
 │   ├── css/
-│   │   ├── variables.css       # CSS variable defaults (overridden by /theme.css)
-│   │   └── global.css          # Full design system (sidebar, topbar, cards, tables, etc.)
+│   │   ├── variables.css            # CSS variable defaults (overridden by /theme.css)
+│   │   ├── global.css               # Full design system (sidebar, topbar, cards, tables)
+│   │   ├── pages.css                # Page-specific styles
+│   │   └── ems.css                  # EMS-only styles (split-pane, signature pad)
 │   ├── js/
-│   │   ├── api.js              # Shared utility: API.get/post/put/del, Layout.init(), UI helpers
-│   │   ├── landing.js          # Controller: landing/home page
-│   │   ├── tasks.js            # Controller: unified task list
-│   │   ├── leaves.js           # Controller: leave requests
-│   │   ├── analytics.js        # Controller: analytics & charts
-│   │   ├── goals.js            # Controller: goals & OKR
-│   │   ├── appraisal.js        # Controller: performance appraisal
-│   │   ├── attendance.js       # Controller: attendance statistics
-│   │   ├── policy.js           # Controller: AI policy assistant
-│   │   ├── helpdesk.js         # Controller: help desk
-│   │   ├── directory.js        # Controller: organization directory
-│   │   └── customize.js        # Controller: theme customization
+│   │   ├── api.js                   # Shared: API.get/post/put/del, Layout.init(), UI helpers
+│   │   ├── landing.js               # Portal home
+│   │   ├── tasks.js                 # Unified task list
+│   │   ├── leaves.js                # Leave request self-service
+│   │   ├── wfh.js                   # WFH request self-service
+│   │   ├── travel.js                # Travel booking
+│   │   ├── leave-assistant.js       # AI leave assistant chat UI
+│   │   ├── analytics.js             # Charts & KPIs
+│   │   ├── goals.js                 # Goals & OKR
+│   │   ├── appraisal.js             # Performance appraisal
+│   │   ├── attendance.js            # Attendance statistics
+│   │   ├── policy.js                # Policy search chat UI
+│   │   ├── helpdesk.js              # Help desk & tickets
+│   │   ├── directory.js             # Organization directory
+│   │   ├── doc-chat.js              # Document upload + AI chat
+│   │   ├── proposal-eval.js         # AI proposal evaluation
+│   │   ├── resume-eval.js           # AI resume evaluation
+│   │   ├── material-requisitions.js # Material requisition management
+│   │   ├── purchase-orders.js       # Purchase order management
+│   │   ├── quick-services.js        # Quick service catalog
+│   │   ├── customize.js             # Theme customization
+│   │   └── ems/                     # EMS sub-controllers (index, documents, folder-tree,
+│   │                                #   doc-viewer, signature-pad, groups, users, audit,
+│   │                                #   doctypes-mgr, metadata-mgr, knowledge-chat)
 │   └── assets/
-│       ├── logo.png            # WIND-IS logo (used in sidebar + topbar)
-│       └── login-bg.jpg        # Login page cityscape background photo
+│       ├── logo.png                 # Brand logo (used in sidebar + topbar)
+│       └── login-bg.jpg             # Login page background photo
 ├── views/
-│   ├── login.html              # Login form (no sidebar)
-│   ├── landing.html            # Portal home — analytics cards, quick access, announcements
-│   ├── tasks.html              # Unified task list
-│   ├── leaves.html             # Leave request self-service
-│   ├── analytics.html          # Charts & KPIs
-│   ├── goals.html              # Goals & OKR
-│   ├── appraisal.html          # Performance appraisal
-│   ├── attendance.html         # Attendance statistics
-│   ├── policy.html             # AI policy assistant
-│   ├── helpdesk.html           # Help desk & tickets
-│   ├── directory.html          # Organization directory
-│   ├── customize.html          # Theme customization (colors, logo)
-│   └── services.html           # AI Use Cases catalog (14 GenAI demos)
-└── teams-app/                  # Microsoft Teams integration (manifest only)
+│   ├── login.html                   # Login form
+│   ├── landing.html                 # Portal home — metrics, charts, quick access
+│   ├── tasks.html                   # Unified task list
+│   ├── leaves.html                  # Leave request self-service
+│   ├── wfh.html                     # WFH request self-service
+│   ├── travel.html                  # Travel booking
+│   ├── leave-assistant.html         # AI leave/WFH/travel assistant
+│   ├── analytics.html               # Charts & KPIs
+│   ├── goals.html                   # Goals & OKR
+│   ├── appraisal.html               # Performance appraisal
+│   ├── attendance.html              # Attendance statistics
+│   ├── policy.html                  # Policy assistant (keyword-based)
+│   ├── helpdesk.html                # Help desk & tickets
+│   ├── directory.html               # Organization directory
+│   ├── doc-chat.html                # PDF upload + AI chat
+│   ├── proposal-eval.html           # AI proposal evaluation
+│   ├── resume-eval.html             # AI resume evaluation
+│   ├── material-requisitions.html   # Material requisition management
+│   ├── purchase-orders.html         # Purchase order management
+│   ├── services.html                # AI Use Cases catalog
+│   ├── quick-services.html          # Quick service catalog
+│   ├── customize.html               # Theme customization
+│   ├── ems/index.html               # Enterprise Document Management (SPA)
+│   ├── erp-dialogue.html            # WIP — no JS controller
+│   └── voice-agent.html             # WIP — no JS controller
+├── uploads/ems/                     # EMS uploaded files (served without auth guard)
+├── utils/
+│   └── teamsNotify.js               # Teams activity feed notifications via Microsoft Graph
+└── teams-app/                       # Microsoft Teams integration
+    ├── server.js                    # Stateless proxy server (port 3001) → main app :3000
+    ├── public/pages/                # Teams-specific HTML (tab.html, config.html, remove.html)
     ├── manifest/
-    │   ├── manifest.json       # Teams app manifest (URLs point to Express app)
-    │   ├── color.png           # Teams app icon (192x192)
-    │   ├── outline.png         # Teams app icon (32x32, transparent)
-    │   └── Unified Workplace.zip  # Ready-to-upload Teams package
-    ├── update-url.js           # Script to update ngrok URL + repackage zip
-    └── create-zip.js           # Legacy zip creation script
+    │   ├── manifest.json            # Teams app manifest
+    │   ├── color.png / outline.png  # Teams app icons
+    │   └── Unified Workplace.zip    # Ready-to-upload Teams package
+    └── update-url.js                # Updates ngrok URL in manifest + repackages zip
 ```
 
 ---
@@ -178,51 +224,46 @@ unified-workspace/
 
 ### How It Works
 
-The Teams app is **not a separate application** — it's a manifest file that tells Microsoft Teams to load the Express app's pages inside an iframe. There is zero duplicated code.
+The Teams app is **not a separate application** — `teams-app/server.js` is a stateless Express proxy that forwards all requests to the main app on port 3000, then serves the response with Teams-compatible CSP headers.
 
 ```
 User clicks "Unified Workspace" in Teams
     → Teams reads manifest.json
     → manifest says: load https://<ngrok-url>/
     → ngrok forwards to localhost:3001
-    → Express serves the same landing.html as localhost:3000
+    → teams-app/server.js proxies request to localhost:3000
+    → Main Express app responds with the same landing.html
     → User sees the exact same app inside Teams
 ```
 
-### Why This Matters
-
-- **One change, both updated** — Edit any HTML/JS/CSS file and both browser and Teams reflect it immediately on refresh
-- **No Teams-specific code** — The sidebar, topbar, charts, forms — everything is shared
-- **Normal login flow** — Users log in normally inside Teams (same login page)
-
 ### Technical Details
 
-1. **Iframe headers** — `server.js` sets `Content-Security-Policy: frame-ancestors 'self' https://teams.microsoft.com https://*.teams.microsoft.com https://*.skype.com` to allow Teams to embed the app
-2. **Proxy trust** — `app.set('trust proxy', 1)` so Express correctly reads `X-Forwarded-Proto: https` from ngrok
-3. **Dynamic cookie upgrade** — A middleware detects HTTPS requests (ngrok/Teams) and sets `SameSite=None; Secure` on the session cookie at runtime. HTTP requests (localhost) use normal cookies. This is critical — without it, the browser blocks cookies in the Teams iframe and login fails in a redirect loop
-4. **Dual port listening** — The server listens on port 3000 (browser) and port 3001 (ngrok). This avoids conflicts with any other local services and keeps the ngrok tunnel stable
+1. **Proxy server** — `teams-app/server.js` uses `http-proxy` to forward `/api/*` and all pages to `MAIN_APP_ORIGIN` (default `http://localhost:3000`). Exposes `/health` for diagnostics.
+2. **Iframe headers** — Teams proxy sets `Content-Security-Policy: frame-ancestors` for `teams.microsoft.com`, `*.teams.microsoft.com`, `*.skype.com`, and `*.office.com`
+3. **Proxy trust** — Main `server.js` sets `app.set('trust proxy', 1)` so Express correctly reads `X-Forwarded-Proto: https` from ngrok
+4. **Dynamic cookie upgrade** — Middleware detects HTTPS requests (ngrok/Teams) and sets `SameSite=None; Secure` on the session cookie. HTTP requests (localhost) use normal cookies. Without this, the browser blocks cookies in the Teams iframe and login fails.
+5. **Teams activity notifications** — `utils/teamsNotify.js` sends activity feed notifications via Microsoft Graph API when leaves are submitted or decided. Requires `teamsGraph: { tenantId, clientId, clientSecret }` in `data/settings.json`. Silently skipped if not configured.
 
 ### Setting Up Teams Integration
 
 ```bash
-# 1. Start ngrok pointing to port 3001
+# 1. Start the tunnel (Cloudflare tunnel preferred)
+.\start-tunnel.ps1
+
+# Or use ngrok
 ngrok http 3001
 
-# 2. Copy the ngrok HTTPS URL (e.g. https://xxxx.ngrok-free.app)
-
-# 3. Update the manifest and repackage the zip
+# 2. Copy the HTTPS URL and update the manifest
 node teams-app/update-url.js https://xxxx.ngrok-free.app
 
-# 4. Upload the zip to Teams
+# 3. Upload the zip to Teams
 #    → Teams → Apps → Manage your apps → Upload an app
 #    → Select: teams-app/manifest/Unified Workplace.zip
-
-# 5. Open the app in Teams — it loads the login page, log in normally
 ```
 
-### When ngrok URL Changes
+### When the Tunnel URL Changes
 
-Every time you start a new ngrok session, the URL changes. Just re-run:
+Every time you start a new tunnel session, the URL changes. Just re-run:
 
 ```bash
 node teams-app/update-url.js https://NEW-URL.ngrok-free.app
@@ -230,185 +271,203 @@ node teams-app/update-url.js https://NEW-URL.ngrok-free.app
 
 Then re-upload the zip to Teams. No code changes needed.
 
-### Teams Manifest Structure
-
-The manifest (`teams-app/manifest/manifest.json`) defines:
-- **One static tab** ("Home") pointing to the Express app root `/`
-- Once logged in, the user navigates to all other pages (Tasks, Leaves, Analytics, etc.) via the sidebar — just like in the browser
-- `validDomains` is set to the ngrok domain so Teams allows the connection
-
 ---
 
 ## Pages & Features
 
 ### 1. Login Page
-- Username + password authentication
-- Role-based access (Employee, Manager, HR, Admin)
-- Session stored via `express-session`
-- Demo credentials: any user with password `demo123`
-- **Redesigned UI** — full-screen cityscape background (`login-bg.jpg`) with two-layer blur/sharp photo system and film-grain texture overlay
-- **Light-themed login panel** — white card on right with brand `#198D87` teal accents
-- **Top info bar** — displays company logo, city, next prayer time, weather, live clock and date
-- **Prayer times widget** — shows all 5 daily prayer times with the next prayer highlighted
-- **Stats bar** — employee count, active modules, and departments displayed over the background
+- Email + password authentication (uses email, not username)
+- Role-based access: Employee, Manager, HR, Admin
+- Session stored via `express-session` (8-hour TTL, file-based store in `.sessions/`)
+- `?embed=1` query param triggers auto-login for Teams embedded mode
+- **Full-screen background** — cityscape photo with two-layer blur/sharp system and film-grain texture overlay
+- **Top info bar** — company logo, city, next prayer time, weather, live clock
+- **Prayer times widget** — all 5 daily prayers with current/next highlighted
 
 ---
 
 ### 2. Landing Page (Portal Home)
-
-The main hub after login. Features a futuristic, glassy UI with color-tinted cards and floating background orbs.
+Main hub after login. Glassmorphism cards, floating background orbs, gradient welcome banner.
 
 | Section | Description |
 |---|---|
-| **Welcome Banner** | Gradient greeting with user name, subtitle, and current date badge |
-| **Metric Cards** | Glassy stat cards with color gradients — Pending Tasks, Leave Balance, Days Present, Open Tickets. Each has a trend indicator and accent top-bar |
-| **Analytics Row** | Three chart cards: Task Overview (donut), Tasks by System (horizontal bar), Quick Access (shortcut tiles). Each card has its own color tint (teal, blue, violet) |
-| **Recent Tasks** | Latest non-completed tasks with status dots, system badges, priority, and due dates |
-| **Announcements** | Company news feed at the bottom |
-
-**UI Design:** Corporate tech / B2B sales style with glassmorphism effects (backdrop-filter blur, translucent backgrounds), colored gradient orbs floating in the background, and subtle hover animations.
-
-The landing page has a **collapsible sidebar** with burger menu toggle in the topbar. The WIND-IS logo appears in both the sidebar header and the topbar.
+| **Metric Cards** | Pending Tasks, Leave Balance, Days Present, Open Tickets — with trend indicators |
+| **Analytics Row** | Task Overview (donut chart), Tasks by System (bar chart), Quick Access shortcuts |
+| **Recent Tasks** | Latest non-completed tasks with status, system badge, priority, due date |
+| **Announcements** | Company news feed |
 
 ---
 
-### 3. Unified Task List (Core Page)
+### 3. Unified Task List
+Aggregates tasks from all systems (HR, Accounting, CRM, Warehouse, IT) into one list, grouped by department/system.
 
-Aggregates tasks from **all systems** (HR, Accounting, CRM, Warehouse, IT) into one unified list.
-
-#### Task Table Contains:
-- Priority badge, task title + description, source system badge, due date, status
-- Tasks are **grouped by department/system** with a clearly styled section heading (e.g. HR, Accounting, IT) and task count
-- A modern horizontal divider separates each task row
-- "Assigned To" column is intentionally omitted — tasks shown are always the logged-in user's own tasks
-
-#### Task Actions:
 | Action | Description |
 |---|---|
-| **View Details** | Full task info, history, attachments |
 | **Complete / Approve / Reject** | Context-aware action per task type |
 | **Delegate** | Transfer task to another user temporarily |
 | **Reassign** | Permanently move task to different user |
-| **Create New Task** | Manual task creation with assignment |
 | **Escalate** | Escalate with reason, auto-notify manager |
-| **Search & Filter** | By system, status, priority, keyword |
+| **Comment** | Internal notes on the task |
 | **View History** | Full audit trail of all actions |
-| **Add Comment** | Internal notes on the task |
 
-#### Task Status Flow:
-```
-New → In Progress → Pending Approval → Completed / Rejected / Escalated
-```
+Task status flow: `New → In Progress → Pending Approval → Completed / Rejected / Escalated`
 
 ---
 
-### 4. Self-Service — Leave Requests
-- Submit leave request (type, dates, reason)
-- Manager receives approval task in their Task List
-- Employee sees live status update
+### 4. Leave Requests
+- Submit leave (type, dates, reason)
+- Auto-creates approval task assigned to manager
+- Employee sees live status; manager approves/rejects from task list
 - Leave balance tracked in JSON
 
 ---
 
-### 5. Analytics Page
-- Charts and KPIs pulled from JSON data
-- Sections: Tasks by system, tasks by status, tasks by priority, leave summary
-- Library: Chart.js 4.4
+### 5. Work From Home (WFH)
+- Submit WFH request (dates, reason)
+- Same approval workflow as leave requests
+- Manager approval/rejection updates both WFH record and linked task
 
 ---
 
-### 6. Goals & OKR Page
-- Set personal / team goals
-- Progress tracking (%)
+### 6. Travel Requests
+- Submit travel booking (destination, dates, flight/hotel preferences)
+- Simulated airline and hotel search results generated on the fly (data hardcoded in `routes/travel.js`)
+- Approval workflow: creates manager task on submission
+
+---
+
+### 7. AI Leave Assistant
+Conversational AI that handles leave, WFH, and travel requests through chat.
+- Checks leave balances, collects required fields, shows a summary
+- Emits a structured JSON block that the route intercepts to actually submit the request
+- Also creates the approval task in `data/tasks.json`
+- Powered by Groq llama-3.3-70b-versatile; requires `GROQ_API_KEY`
+
+---
+
+### 8. HR Chat
+- Groq-powered conversational HR Q&A
+- Requires `GROQ_API_KEY`
+- Endpoint: `/api/hr-chat`
+
+---
+
+### 9. Document Chat
+- Upload a PDF → AI chat over its contents
+- Flow: `POST /api/general/ingest` (returns `session_id`) → `POST /api/general/query` with accumulated `chat_history`
+- Proxied through `/api/doceval-proxy` to upstream service
+
+---
+
+### 10. Proposal Evaluation & Resume Evaluation
+- AI-powered document analysis for proposals and CVs
+- Same upstream proxy as Document Chat (`/api/doceval-proxy`)
+- Sample test files in `AI Test Files/`
+
+---
+
+### 11. Material Requisitions
+- Submit material requisition requests with line items (`qtyRequested`, `unit`, `projectCode`, `deliveryLocation`)
+- Materials catalog from `data/materials.json` (codes, stock levels, warehouse locations)
+- IDs: `MR` + 8 hex chars; sequential `mrqNumber` in `MR-YYYY-NNNN` format
+- Approval workflow: creates manager task on submission
+
+---
+
+### 12. Purchase Orders
+- Create purchase orders against vendors with line items (`qty`, `unitPrice`, `lineTotal`)
+- Vendor catalog from `data/vendors.json` (10 vendors with contact, payment terms, category, country)
+- IDs: `PO` + 8 hex chars; sequential `poNumber` in `PO-YYYY-NNNN` format
+- Currency defaults to AED; supports `paymentTerms`, `taxPct`, `costCenter`
+- Approval workflow: creates manager task on submission
+
+---
+
+### 13. Analytics
+- Charts and KPIs aggregated across tasks, leaves, helpdesk, attendance
+- Sections: tasks by system, tasks by status, tasks by priority, leave summary
+- `GET /api/analytics/summary` aggregates cross-module data
+
+---
+
+### 14. Goals & OKR
+- Set personal / team goals with progress tracking (%)
 - Manager review and sign-off
 
 ---
 
-### 7. Employee Performance Appraisal
+### 15. Performance Appraisal
 - Appraisal cycles (quarterly, annual)
-- Self-assessment + Manager assessment
-- Rating scale + comments
-- Historical records per employee
+- Self-assessment + manager assessment with rating scale
+- Approval workflow: creates manager task on submission
 
 ---
 
-### 8. Attendance Statistics
-- Daily punch in/out log
-- Monthly attendance overview
-- Late arrivals, absences, overtime
+### 16. Attendance Statistics
+- Monthly attendance overview, late arrivals, absences, overtime
+- **Read-only** — all data is seed data; no punch-in/punch-out
 
 ---
 
-### 9. Internal Policy AI Assistant
-- Chat-style interface
-- User asks questions in natural language
-- Keyword search across `policies.json`
-- Returns relevant policy excerpts with bold highlights
+### 17. Internal Policy Assistant
+- Chat-style interface with keyword search across `policies.json`
+- **Not real AI** — uses word-frequency scoring (keywords weighted 3×). The chat UI is cosmetic.
 
 ---
 
-### 10. Help Desk
+### 18. Help Desk
 - Submit support ticket (category, priority, description)
-- Ticket status tracking (Open, In Progress, Resolved, Closed)
+- Ticket IDs: `HD` + 8 hex chars; human-readable `ticketNo` in `TKT-YYYY-NNN` format
+- Status tracking: Open, In Progress, Resolved, Closed
 - Internal comments
 
 ---
 
-### 11. Organization Directory
-- Employee search (name, department, role)
-- Employee profile cards
-- Department listing
+### 19. Organization Directory
+- Employee search by name, department, role
+- Employee profile cards with department listing
 
 ---
 
-### 12. AI Use Cases
+### 20. Enterprise Document Management System (EMS)
+Architecturally different from all other modules — a full SPA inside the app.
 
-A curated catalog of **14 live GenAI demos** built on the WIND-IS platform, accessible directly from the portal.
+- **Tab-based SPA:** `views/ems/index.html` with multiple sub-controllers in `public/js/ems/`
+- **Sub-routers:** `documents`, `folders`, `groups`, `signatures`, `users`, `audit`, `doctypes`, `metadata`
+- **File uploads:** Stored under `uploads/ems/`, served without auth guard
+- **Knowledge Chat:** Slide-in drawer for Q&A over selected EMS documents (same DocEval proxy)
+- **Access control:** Via groups (`ems-groups.json`) and per-document permissions — not via `tasks.json`
+- **Dedicated CSS:** `public/css/ems.css` — do not add EMS styles to `global.css` or `pages.css`
+
+---
+
+### 21. AI Use Cases Catalog (`services.html`)
+Curated catalog of GenAI demos built on the WIND-IS platform. Each card links to its live demo URL.
 
 | Demo | Description |
 |---|---|
-| Smart Document Chat | AI chat with document upload for tailored responses |
-| Health Assistant | Appointment companion and condition awareness chat |
-| Intelligent ERP Dialogue | Chat with ERP data (invoices, POs, stock) via AI-generated SQL |
-| HR Policy Advisor | Employee inquiries on company policies |
-| HR Self-Service Assistant | Submit self-service requests through conversation |
-| Banking Assistant | Customer support for banking products via uploaded documents |
-| Insurance Assistant | Gathers location/images and submits insurance reports |
-| Global Quality Process | Identifies sensitive ingredients in medical or medicine packages |
-| Sales Portal | Sales insights, promotion planning, and risk assessment |
+| Smart Document Chat | AI chat with uploaded documents |
+| Health Assistant | Appointment companion and condition awareness |
+| Intelligent ERP Dialogue | Chat with ERP data via AI-generated SQL |
+| HR Policy Advisor | Employee policy Q&A |
+| HR Self-Service Assistant | Submit requests through conversation |
+| Banking Assistant | Customer support via uploaded documents |
+| Insurance Assistant | Gathers location/images, submits reports |
+| Global Quality Process | Identifies sensitive ingredients in packages |
+| Sales Portal | Sales insights, promotion planning, risk assessment |
 | Customer Portal | Customer enquiries and refund requests |
-| Document Evaluator | Evaluates proposals against provided criteria |
-| Speech to Text | Speech to text and summarization |
-| Leave Request Voice Agent | Real-time voice agent for processing leave requests |
+| Document Evaluator | Evaluates proposals against criteria |
+| Speech to Text | Speech-to-text and summarization |
+| Leave Request Voice Agent | Real-time voice agent for leave requests |
 | Loan Calculator | EMI by DTI calculator with loan tips |
 
-Each card links directly to its live demo URL and opens in a new tab.
-
 ---
 
-### 13. Customize Page
-- Change primary and secondary colors via color pickers or hex input
-- Auto-generated shade palette preview
-- Upload new logo (base64 — no multer dependency)
-- Live preview panel showing mini sidebar, stat cards, buttons, badges
-- Reset to Defaults button
-- Changes apply immediately on save (no server restart needed)
-
----
-
-## UI Layout
-
-### Sidebar
-- Collapsible via burger menu icon in the topbar — works on both desktop (slides out with CSS class toggle, state persisted in localStorage) and mobile (overlay mode)
-- Navigation links to all modules
-- Colored with `--sidebar-bg` (matches primary color)
-
-### Topbar
-- Burger menu toggle (shows/hides sidebar on all screen sizes)
-- WIND-IS logo (compact, next to toggle)
-- Page title
-- Search bar, notification bell, user dropdown
-- User dropdown includes: **Customize** link + **Sign Out**
+### 22. Customize Page
+- Primary/secondary color pickers with shade palette preview
+- Logo upload (base64, 50 MB JSON body limit)
+- Live preview panel: mini sidebar, stat cards, buttons, badges
+- Changes apply immediately — no restart needed
 
 ---
 
@@ -418,15 +477,24 @@ Each card links directly to its live demo URL and opens in a new tab.
 Sidebar:
 ├── Home (Landing Page)
 ├── My Tasks
-├── Service Catalog (AI Use Cases)
 ├── Leave Requests
+├── Work From Home
+├── Travel
+├── Leave Assistant (AI)
+├── Material Requisitions
+├── Purchase Orders
 ├── Analytics
 ├── Goals & OKR
 ├── Performance Appraisal
 ├── Attendance
 ├── Policy Assistant
 ├── Help Desk
-└── Directory
+├── Directory
+├── Document Chat
+├── Proposal Evaluation
+├── Resume Evaluation
+├── Document Management (EMS)
+└── Service Catalog (AI Use Cases)
 
 User Dropdown:
 ├── Customize
@@ -439,33 +507,35 @@ User Dropdown:
 
 | Role | Access |
 |---|---|
-| **Employee** | Landing, My Tasks, Self-Service, Attendance, Goals, Help Desk, Directory, Policy AI |
-| **Manager** | All Employee access + team tasks, approve/reject, team analytics, appraisals |
-| **HR Admin** | All Manager access + all employees data, appraisal cycles, attendance admin |
-| **System Admin** | Full access + user management, system config, customize |
+| **Employee** | Landing, My Tasks, Self-Service (leave/WFH/travel/MRQ), Goals, Help Desk, Directory, AI features |
+| **Manager** | All Employee access + team tasks, approve/reject, team analytics, appraisals, PO management |
+| **HR** | All Manager access + all employee data, appraisal cycles, attendance admin |
+| **Admin** | Full access + user management, system config, customize |
 
-### Demo Users
+### Demo Credentials
 
-| Username | Role | Password |
+> **Important:** Login uses **email address**, not username.
+
+| Email | Role | Password |
 |---|---|---|
-| ahmed | admin | demo123 |
-| khalid | manager | demo123 |
-| fatima | hr | demo123 |
-| sara | employee | demo123 |
-| omar | employee | demo123 |
-| mariam | manager | demo123 |
+| `ahmed@company.com` | admin | demo123 |
+| `khalid@company.com` | manager | demo123 |
+| `fatima@company.com` | hr | demo123 |
+| `sara@company.com` | employee | demo123 |
+| `omar@company.com` | employee | demo123 |
+| `mariam@company.com` | manager | demo123 |
 
 ---
 
-## Data Model (JSON Files)
+## Data Model (Key JSON Files)
 
 ### users.json
 ```json
 {
   "id": "u001",
   "name": "Ahmed Al-Rashidi",
-  "username": "ahmed",
   "email": "ahmed@company.com",
+  "password": "demo123",
   "role": "admin",
   "department": "IT",
   "managerId": null
@@ -475,20 +545,54 @@ User Dropdown:
 ### tasks.json
 ```json
 {
-  "id": "t001",
+  "id": "T2B5D6E1",
   "title": "Approve Leave Request - Sara",
   "sourceSystem": "HR",
   "type": "approval",
   "priority": "high",
   "status": "pending",
-  "assignedTo": "u001",
-  "createdBy": "u005",
+  "assignedTo": "u002",
+  "createdBy": "u004",
   "createdAt": "2026-03-20T09:00:00Z",
   "dueDate": "2026-03-25T00:00:00Z",
-  "description": "Sara has requested annual leave for 5 days.",
+  "metadata": { "leaveId": "L4A7F8C9" },
   "history": [],
   "comments": [],
   "escalated": false
+}
+```
+
+### material-requisitions.json
+```json
+{
+  "id": "MR1A2B3C4D",
+  "mrqNumber": "MR-2026-0001",
+  "status": "pending",
+  "priority": "high",
+  "projectCode": "PRJ-001",
+  "deliveryLocation": "Warehouse A",
+  "lineItems": [
+    { "materialId": "MAT-001", "qtyRequested": 10, "uom": "PCS" }
+  ],
+  "taskId": "T..."
+}
+```
+
+### purchase-orders.json
+```json
+{
+  "id": "PO1A2B3C4D",
+  "poNumber": "PO-2026-0001",
+  "vendorId": "v001",
+  "vendorName": "ACME Supplies",
+  "currency": "AED",
+  "paymentTerms": "Net 30",
+  "taxPct": 5,
+  "costCenter": "CC-IT",
+  "lineItems": [
+    { "item": "Laptop", "qty": 2, "unitPrice": 4500, "lineTotal": 9000 }
+  ],
+  "taskId": "T..."
 }
 ```
 
@@ -500,84 +604,14 @@ User Dropdown:
     "secondary": "#2C3E50"
   },
   "appName": "Unified Workspace",
-  "logoPath": "/assets/logo.png"
+  "logoPath": "/assets/logo.png",
+  "teamsGraph": {
+    "tenantId": "...",
+    "clientId": "...",
+    "clientSecret": "..."
+  }
 }
 ```
-
----
-
-## Key Design Principles
-
-1. **Unified Experience** — One login, one interface, all systems.
-2. **Task-Centric** — Everything actionable surfaces as a task in the unified task list.
-3. **Role-Aware** — UI and data adapt to user role without separate portals.
-4. **Lightweight** — No database engine; JSON files for simplicity and portability.
-5. **Dynamic Theming** — Colors and logo changeable at runtime via Customize page, no restart needed.
-6. **Mobile Responsive** — Bootstrap grid, collapsible sidebar, all pages work on tablet and phone.
-7. **Extensible** — New systems connect by pushing tasks into `tasks.json` via API route.
-8. **1-to-1 Convention** — Every `views/x.html` has exactly one `public/js/x.js` controller.
-9. **Single Codebase for Teams** — Teams loads the same Express pages via iframe; no duplicate code.
-
----
-
-## Development Notes
-
-- Express serves static files from `/public` and HTML views from `/views`
-- All data read/write goes through route handlers — frontend never reads JSON directly
-- Bootstrap 5.3 via CDN for layout, components, and utilities
-- Chart.js 4.4 via CDN for all charts
-- No frontend framework (React/Vue) — plain JS with fetch API calls
-- Session management via `express-session`
-- JSON body limit set to `10mb` (to support base64 logo upload)
-- `/theme.css` is a dynamic Express endpoint, not a static file
-- Logo upload uses base64 encoding (FileReader → JSON POST → Buffer.from → fs.writeFileSync)
-- `app.set('trust proxy', 1)` is required for ngrok/HTTPS cookie handling
-- Sidebar collapse state is persisted in `localStorage` key `sidebarCollapsed`
-
-### Server Ports
-
-| Port | Purpose | Cookie Mode |
-|---|---|---|
-| 3000 | Browser access (default) | Normal HTTP cookies |
-| 3001 | Teams/ngrok tunnel | `SameSite=None; Secure` (auto-detected) |
-
-The dual-port setup is defined at the bottom of `server.js`. Both ports serve the same Express app instance.
-
-### Teams-Specific Server Behavior
-
-These are handled by middleware in `server.js` and apply to **all requests** (they don't break browser access):
-
-1. **`Content-Security-Policy` header** — allows `frame-ancestors` for `teams.microsoft.com` and `*.skype.com`
-2. **`X-Frame-Options` removal** — Express/Helmet sometimes sets this; we explicitly remove it so Teams iframe works
-3. **Cookie upgrade middleware** — checks `req.secure` (or `X-Forwarded-Proto: https`) and upgrades the session cookie to `SameSite=None; Secure` for that request only. HTTP requests are unaffected.
-
----
-
-## Page & Controller Convention
-
-Every page follows a strict 1-to-1 pairing:
-
-| View (HTML) | Controller (JS) | Purpose |
-|---|---|---|
-| `views/login.html` | inline script | Auth form, login logic |
-| `views/landing.html` | `public/js/landing.js` | Portal home, analytics, quick access |
-| `views/tasks.html` | `public/js/tasks.js` | Unified task list |
-| `views/leaves.html` | `public/js/leaves.js` | Leave request self-service |
-| `views/analytics.html` | `public/js/analytics.js` | Charts & KPIs |
-| `views/goals.html` | `public/js/goals.js` | Goals & OKR |
-| `views/appraisal.html` | `public/js/appraisal.js` | Performance appraisal |
-| `views/attendance.html` | `public/js/attendance.js` | Attendance statistics |
-| `views/policy.html` | `public/js/policy.js` | AI policy assistant |
-| `views/helpdesk.html` | `public/js/helpdesk.js` | Help desk & tickets |
-| `views/directory.html` | `public/js/directory.js` | Organization directory |
-| `views/customize.html` | `public/js/customize.js` | Theme customization |
-| `views/services.html` | inline script | AI Use Cases catalog |
-
-**Rules:**
-- The HTML file contains only structure and markup — no inline logic
-- The JS controller handles all API calls, DOM updates, and event listeners
-- Every controller imports `api.js` as the shared fetch utility
-- No page shares a controller; no controller handles more than one page
 
 ---
 
@@ -587,7 +621,8 @@ Every page follows a strict 1-to-1 pairing:
 
 - **Node.js** v16 or higher — [download here](https://nodejs.org)
 - **npm** (comes bundled with Node.js)
-- **ngrok** (only if you need Teams integration) — [download here](https://ngrok.com)
+- **GROQ_API_KEY** — required for HR Chat and Leave Assistant AI features
+- **ngrok or Cloudflare tunnel** — only if you need Teams integration
 
 ### Step-by-Step Setup
 
@@ -599,201 +634,162 @@ cd unified-workspace
 # 2. Install all dependencies
 npm install
 
-# 3. Start the application
+# 3. Set required environment variable (for AI features)
+export GROQ_API_KEY=your_key_here   # Linux/Mac
+set GROQ_API_KEY=your_key_here      # Windows CMD
+
+# 4. Start the application
 npm start
 ```
 
-The server will start on **http://localhost:3000** (browser) and **http://localhost:3001** (Teams/ngrok).
+The server starts on **http://localhost:3000** (browser). Teams proxy runs on **http://localhost:3001**.
 
 ### Login
 
-Open **http://localhost:3000** in your browser. Use any demo account:
+Open **http://localhost:3000** in your browser. Login with email + password:
 
-| Username | Password | Role |
+| Email | Password | Role |
 |---|---|---|
-| ahmed | demo123 | Admin |
-| khalid | demo123 | Manager |
-| fatima | demo123 | HR |
-| sara | demo123 | Employee |
-| omar | demo123 | Employee |
-| mariam | demo123 | Manager |
+| ahmed@company.com | demo123 | Admin |
+| khalid@company.com | demo123 | Manager |
+| fatima@company.com | demo123 | HR |
+| sara@company.com | demo123 | Employee |
 
 ### Development Mode (Auto-Restart)
-
-For development with automatic restart on file changes:
 
 ```bash
 npm run dev
 ```
 
-This uses `nodemon` to watch for changes and restart the server automatically.
+### Environment Variables
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `GROQ_API_KEY` | *(required)* | HR Chat + Leave Assistant AI |
+| `PORT` | `3000` | Main app port |
+| `TEAMS_PORT` | `3001` | Teams proxy server port |
+| `MAIN_APP_ORIGIN` | `http://localhost:3000` | Teams proxy target |
 
 ### Quick Reference
 
 | Command | What it does |
 |---|---|
-| `npm install` | Installs express, express-session, uuid, nodemon |
-| `npm start` | Starts the server (`node server.js`) on ports 3000 + 3001 |
-| `npm run dev` | Starts with nodemon (auto-restart on file changes) |
-| `node teams-app/update-url.js <URL>` | Updates Teams manifest with ngrok URL + repackages zip |
-
-### Teams Setup (Optional)
-
-```bash
-# 1. Start ngrok
-ngrok http 3001
-
-# 2. Update manifest with ngrok URL
-node teams-app/update-url.js https://xxxx.ngrok-free.app
-
-# 3. Upload teams-app/manifest/Unified Workplace.zip to Teams
-#    Teams → Apps → Manage your apps → Upload an app
-```
-
-### Automated Setup (for AI agents / CI)
-
-```bash
-# Full automated setup — copy and run as a single block
-cd "<project-directory>"
-npm install
-node server.js
-# Server is now running at http://localhost:3000 (browser) and :3001 (Teams)
-# POST /api/auth/login with {"email":"ahmed@company.com","password":"demo123"} to authenticate
-# All API endpoints are under /api/* and require an active session
-```
+| `npm install` | Installs all dependencies |
+| `npm start` | Starts server on ports 3000 + 3001 |
+| `npm run dev` | Starts with nodemon (auto-restart) |
+| `node teams-app/update-url.js <URL>` | Updates Teams manifest + repackages zip |
 
 ### Notes
 
-- No external database needed — all data is stored in JSON files under `data/`
-- No build step required — frontend uses vanilla JS and CDN-hosted libraries
-- No environment variables or `.env` file needed
-- The app runs entirely locally with no external service dependencies
-- Port 3000 is the default browser port; port 3001 is the Teams tunnel port
-- Both ports are configurable in `server.js`
+- All data stored in JSON files under `data/` — no external database needed
+- No build step — vanilla JS with CDN-hosted libraries
+- JSON body limit is `50mb` (supports base64 logo upload)
+- **Data reset:** Delete/truncate files in `data/`
+- **Session reset:** Delete `.sessions/` directory to log out all users
+
+---
+
+## Key Design Principles
+
+1. **Unified Experience** — One login, one interface, all systems.
+2. **Task-Centric** — Everything actionable surfaces as a task in the unified task list.
+3. **Role-Aware** — UI and data adapt to user role without separate portals.
+4. **Lightweight** — No database engine; JSON files for simplicity and portability.
+5. **Dynamic Theming** — Colors and logo changeable at runtime via Customize page.
+6. **Mobile Responsive** — Bootstrap grid, collapsible sidebar.
+7. **1-to-1 Convention** — Every `views/x.html` has exactly one `public/js/x.js` controller (except EMS SPA and two WIP pages).
+8. **Single Codebase for Teams** — Teams proxy forwards to the same Express pages via iframe.
 
 ---
 
 ## Changelog
 
-### v1.3.0 — Teams Integration & Futuristic Home UI (Mar-Apr 2026)
+### v2.0.0 — Procurement, AI Expansion & EMS (2026)
+
+**New Modules**
+- **Material Requisitions** — line-item MRQ workflow with materials catalog, approval integration, `MR-YYYY-NNNN` numbering
+- **Purchase Orders** — PO workflow with vendor catalog, line items, currency/tax/payment terms, `PO-YYYY-NNNN` numbering
+- **Work From Home (WFH)** — WFH request submission and manager approval workflow
+- **Travel** — Travel booking with simulated airline/hotel search results; approval workflow
+- **AI Leave Assistant** — Conversational Groq-powered agent that collects fields via chat and submits leave/WFH/travel requests, including creating approval tasks
+- **HR Chat** — Groq-powered HR Q&A chatbot
+- **Document Chat** — PDF upload + AI chat via DocEval upstream proxy
+- **Proposal Evaluation & Resume Evaluation** — AI-powered document analysis
+- **Quick Services** — Service catalog with quick-action tiles
+- **Enterprise Document Management (EMS)** — Full SPA with folder tree, document viewer, e-signatures, group-based permissions, audit log, knowledge chat
+
+**Architecture Changes**
+- `teams-app/server.js` is now a stateless proxy server (not just a manifest folder)
+- Added `TEAMS_PORT` and `MAIN_APP_ORIGIN` environment variables
+- JSON body limit raised from 10 MB to 50 MB
+- `multer` added for EMS file uploads; `pdf-lib` available for PDF manipulation
+- `utils/teamsNotify.js` — Teams activity feed notifications via Microsoft Graph (leave workflows)
+
+---
+
+### v1.3.0 — Teams Integration & Futuristic Home UI (Mar–Apr 2026)
 
 **Microsoft Teams Integration**
-- Teams app now loads pages directly from the Express server via iframe — no separate Teams codebase
-- Added iframe-allow headers (`Content-Security-Policy: frame-ancestors`) for Teams domains
-- Added `trust proxy` setting and dynamic cookie upgrade middleware so sessions work inside Teams iframe (HTTPS requires `SameSite=None; Secure`)
-- Server now listens on port 3001 in addition to 3000 for the ngrok tunnel
-- Created `teams-app/update-url.js` script to update manifest URLs and repackage the zip in one command
-- Teams manifest has a single "Home" tab — all navigation happens via the sidebar inside the app
+- Teams app loads pages directly from Express via iframe — no separate Teams codebase
+- Added `Content-Security-Policy: frame-ancestors` headers for Teams domains
+- Dynamic cookie upgrade middleware (`SameSite=None; Secure` for HTTPS/Teams)
+- Server listens on port 3001 for ngrok tunnel
+- `teams-app/update-url.js` updates manifest URLs and repackages zip in one command
 
 **Landing Page — Futuristic Redesign**
-- Redesigned with corporate tech / B2B sales aesthetic
-- **Glassmorphism metric cards** — translucent backgrounds with colored gradients, accent top-bars, trend indicators, and sub-stats
-- **Color-tinted chart cards** — each analytics card (Task Overview, Tasks by System, Quick Access, Recent Activity, Announcements) has its own distinct color theme (teal, blue, violet, emerald, amber)
-- **Floating color orbs** — animated radial gradients in the background for depth
-- **Welcome banner** — gradient banner with greeting, subtitle, and date badge
-- Charts use the dynamic primary color from theme settings
-
-**Sidebar & Topbar Improvements**
-- Burger menu toggle works on **all screen sizes** (desktop + mobile) — desktop uses CSS class toggle with localStorage persistence, mobile uses overlay
-- WIND-IS logo added to the topbar (next to burger icon)
-- Sidebar brand section hidden (logo in topbar instead)
-- Card shadows deepened for stronger depth perception
+- Glassmorphism metric cards with colored gradients and trend indicators
+- Color-tinted chart cards (teal, blue, violet, emerald, amber)
+- Floating animated color orbs in background
+- Welcome banner with gradient, greeting, and date badge
 
 **Customize Page**
-- Full theme customization: primary/secondary color pickers, hex input, shade palette preview
-- Logo upload via base64 (drag & drop or file picker)
-- Live preview panel with mini sidebar, stat cards, buttons, badges
+- Full theme customization: primary/secondary color pickers, shade palette preview
+- Logo upload via base64, live preview panel
 - Changes apply on save without server restart
 
 ---
 
 ### v1.2.0 — AI Use Cases & Polish (Mar 2026)
 
-**AI Use Cases Page (services.html)**
-- Added a new **AI Use Cases** page showcasing 14 live GenAI demos from the WIND-IS platform
-- Each demo is presented as a card with title, description, and a direct link to its live Heroku/Oracle URL
-- Accessible from the sidebar navigation under "Service Catalog"
+**AI Use Cases Page**
+- 14 live GenAI demo cards with direct links to live services
+- Accessible from sidebar under "Service Catalog"
 
-**Task Badge Fix**
-- Fixed "In Progress" badge rendering as a thin blue bar — caused by a CSS class name collision with Bootstrap's `.progress` component
-- Renamed badge class from `.progress` to `.in-prog` to eliminate the conflict; badge now displays correctly
-
-**Login Page — Stats Bar Update**
-- Replaced "Uptime 99.9%" stat pill with "Departments" — a more relevant and meaningful metric for an enterprise portal
+**Bug Fixes**
+- Fixed "In Progress" badge rendering as a thin bar (CSS collision with Bootstrap `.progress` — renamed to `.in-prog`)
+- Login stats bar: replaced "Uptime 99.9%" with "Departments"
 
 ---
 
 ### v1.1.0 — UI Overhaul (Mar 2026)
 
-**Login Page — Full Redesign**
-- Replaced plain login form with a split-panel layout: full-screen cityscape background (left) + white login card (right)
-- Background uses a two-layer system: blurred `cover` layer fills edges, sharp `100% auto` layer shows the full panorama without side-cropping
-- Film-grain CSS texture overlay masks image compression artifacts and adds depth
-- Top info bar added with logo, location, next prayer time, weather conditions, and a live clock
-- Prayer times card shows all 5 daily prayers with the current/next prayer highlighted
-- Logo tinted to brand teal (`#198D87`) via CSS filter — no separate asset needed
-- All colours aligned to `#198D87` primary brand with light theme throughout
+**Login Page Redesign**
+- Full-screen cityscape background with two-layer blur/sharp system and film-grain overlay
+- Top info bar: logo, location, next prayer time, weather, live clock
+- Prayer times card with current/next prayer highlighted
 
-**Tasks Page — Improvements**
-- Tasks now grouped by source system/department with bold section headings and task count badges
-- Horizontal dividers added between each task row for a clean modern look
-- Action buttons reorganised — primary action (View) is prominent, secondary actions in a `...` overflow menu
-- Removed the "Assigned To" column — redundant since the page always shows the logged-in user's own tasks
-- Fixed table header and row text visibility (white text on light background issue resolved)
+**Tasks Page Improvements**
+- Tasks grouped by source system with section headings and task count badges
+- Horizontal dividers between rows; action buttons in overflow `...` menu
+- Removed redundant "Assigned To" column
 
 ---
 
-## Known Gaps & Future Improvements
+## Known Gaps & Demo Limitations
 
-> **Note:** This section documents known limitations and gaps identified during system analysis (March 2026). These items are logged here for awareness and should be addressed in future development iterations.
+These are intentional gaps — do not fix unless explicitly asked:
 
-### GAP-01: No Real External System Integration
-- **Area:** Task aggregation / System connectors
-- **Current State:** Source systems (CRM, ERP, HR, Warehouse, Accounting) are simulated as label strings in `tasks.json` (e.g. `"sourceSystem": "HR"`). No actual API connections to external systems exist.
-- **Impact:** The "unified integration layer" promise is architectural only — no live data flows from real enterprise systems.
-- **Future Fix:** Build connector modules (adapters) per external system that push/pull tasks via the `/api/tasks` route. Consider a `connectors/` directory with a standard interface per system.
-
-### GAP-02: Policy AI Assistant Is Keyword-Based, Not AI
-- **Area:** Policy Assistant (`routes/policy.js`)
-- **Current State:** The "AI Policy Assistant" uses basic word-frequency scoring — splits the user's question into words, counts matches against policy content and a `keywords[]` array (keywords weighted 3x). Returns top 2 results. No LLM or NLP is involved.
-- **Impact:** Responses are brittle; synonyms, rephrasing, or contextual questions will fail. The chat-style UI suggests intelligence that doesn't exist.
-- **Future Fix:** Integrate a real LLM (e.g. Claude API) with RAG over `policies.json` content to provide genuine natural-language answers with citations.
-
-### GAP-03: Plaintext Passwords
-- **Area:** Authentication (`data/users.json`)
-- **Current State:** All user passwords are stored as plaintext (`"password": "demo123"`). No hashing, salting, or encryption.
-- **Impact:** Acceptable for demo/pre-sales purposes only. Must never go to production in this state.
-- **Future Fix:** Use `bcrypt` or `argon2` for password hashing. Add password validation on login via hash comparison.
-
-### GAP-04: Notifications Are Static (Not Triggered Dynamically)
-- **Area:** Notifications (`data/notifications.json`, `routes/news.js`)
-- **Current State:** Notifications are pre-seeded demo data. Key workflows (leave approval, task delegation, escalation) do **not** create new notification records at runtime. The notification bell only displays the static seed data.
-- **Impact:** Users won't see real-time feedback when actions happen. The notification system appears functional but is effectively read-only.
-- **Future Fix:** Add notification creation logic inside `routes/tasks.js` (on delegate, reassign, escalate, complete) and `routes/leaves.js` (on approve/reject). Write new entries to `notifications.json` with correct userId targeting.
-
-### GAP-05: Attendance Module Is Read-Only
-- **Area:** Attendance (`routes/attendance.js`, `data/attendance.json`)
-- **Current State:** The API provides `GET /`, `GET /today`, and `GET /team` endpoints — all read-only. There is no punch-in/punch-out endpoint. All attendance records are static seed data.
-- **Impact:** Employees cannot clock in or out through the portal. The attendance page displays historical data only.
-- **Future Fix:** Add `POST /api/attendance/punch-in` and `POST /api/attendance/punch-out` endpoints that write to `attendance.json` with current timestamp. Add UI buttons on the attendance page.
-
-### GAP-06: No Real-Time Updates (No WebSocket)
-- **Area:** All modules / Frontend
-- **Current State:** The application uses standard HTTP request-response only. If User A approves a task, User B must manually refresh their page to see the change.
-- **Impact:** In a multi-user demo, changes don't propagate in real-time. Stale data may be displayed.
-- **Future Fix:** Implement WebSocket (e.g. `socket.io`) for push-based updates on task status changes, new notifications, and leave approvals. Alternatively, add short-polling on critical pages.
-
-### GAP-07: Flat Manager Hierarchy (No Multi-Level Approvals)
-- **Area:** Leave workflow / Task delegation (`routes/leaves.js`)
-- **Current State:** `managerId` exists on user records, but the leave approval workflow only supports a single level — the employee's direct manager. There is no concept of multi-level approval chains, skip-level escalation, or approval delegation rules.
-- **Impact:** Cannot model complex enterprise approval workflows (e.g. leave > 5 days requires VP approval).
-- **Future Fix:** Implement an approval chain engine that walks the `managerId` hierarchy based on configurable rules (e.g. leave days threshold, amount threshold for financial approvals).
-
-### GAP-08: No Data Validation or Error Handling on Input
-- **Area:** All POST/PUT routes
-- **Current State:** Route handlers accept request body data with minimal validation. Missing fields, invalid dates, or malformed data could corrupt the JSON files.
-- **Impact:** Demo stability risk — a bad API call could break the data store.
-- **Future Fix:** Add input validation middleware (e.g. `joi` or `express-validator`) to all write endpoints. Validate required fields, date formats, enum values, and string lengths.
+| Gap | Area | Detail |
+|---|---|---|
+| **Policy AI is keyword-based** | `routes/policy.js` | Word-frequency scoring; no LLM. The chat UI is cosmetic. |
+| **Attendance is read-only** | `routes/attendance.js` | No punch-in/punch-out; all data is seed data. |
+| **Notifications are static** | `data/notifications.json` | Pre-seeded only; workflows do not create new notification records at runtime. |
+| **No real external system integration** | Task aggregation | `sourceSystem` is a label string; no live ERP/CRM connectors. |
+| **Single-level approval only** | Leave/WFH/travel | Goes to direct manager only; no multi-level chains. |
+| **Leave balances are hardcoded** | `routes/leave-assistant.js` | 21 annual days + 30 sick days; not configurable from settings. |
+| **Helpdesk year is hardcoded** | `routes/helpdesk.js` | Generates `TKT-2026-NNN` with literal `'2026'` string. |
+| **Passwords are plaintext** | `data/users.json` | Demo only — never deploy to production. |
+| **No real-time updates** | All modules | No WebSocket; changes require manual page refresh. |
 
 ---
 

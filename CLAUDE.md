@@ -16,6 +16,8 @@ No build step, no test runner, no TypeScript. The server runs directly with `nod
 **Environment variables:**
 - `GROQ_API_KEY` — required for `/api/hr-chat` and `/api/leave-assistant/chat` (both use Groq llama-3.3-70b-versatile via raw `fetch` to `api.groq.com` — no groq npm package)
 - `PORT` — overrides default port 3000
+- `TEAMS_PORT` — overrides Teams proxy server port (default 3001); used by `teams-app/server.js`
+- `MAIN_APP_ORIGIN` — overrides proxy target in `teams-app/server.js` (default `http://localhost:3000`)
 
 ## Project Structure
 
@@ -124,7 +126,10 @@ Leave and WFH modules follow an identical workflow pattern:
 
 Tasks also support comments (`/:id/comment`), delegation (`/:id/delegate`), reassignment (`/:id/reassign`), and escalation (`/:id/escalate`) — tracked via `history[]`, `comments[]`, `delegatedFrom`, and `escalated` fields.
 
-The **Appraisal** and **Travel** modules also follow this same approval workflow — submissions create tasks in `data/tasks.json` linked to the manager, and approval/rejection updates both the record and the linked task.
+The **Appraisal**, **Travel**, **Material Requisitions**, and **Purchase Orders** modules also follow this same approval workflow — submissions create tasks in `data/tasks.json` linked to the manager, and approval/rejection updates both the record and the linked task.
+
+- **Material Requisitions** (`routes/material-requisitions.js`) — `data/material-requisitions.json` + `data/materials.json` (catalog). MRQ IDs: `MR` + 8 hex chars from UUID; human-readable `mrqNumber` in `MR-YYYY-NNNN` format. Supports `lineItems[]`, `priority`, `projectCode`, `deliveryLocation`.
+- **Purchase Orders** (`routes/purchase-orders.js`) — `data/purchase-orders.json` + `data/vendors.json` (10 vendors). PO IDs: `PO` + 8 hex chars; `poNumber` in `PO-YYYY-NNNN` format. Supports `lineItems[]`, `currency` (default AED), `paymentTerms`, `taxPct`, `costCenter`.
 
 ### Role-Based Data Filtering
 
@@ -156,7 +161,9 @@ The document AI features (doc-chat, proposal-eval, resume-eval) all proxy throug
 
 **Dynamic cookie security:** Middleware in `server.js` detects HTTPS (tunnel) vs HTTP (localhost) and upgrades session cookies to `SameSite=None; Secure` for Teams iframe compatibility.
 
-**Teams activity notifications:** `utils/teamsNotify.js` sends Teams activity feed notifications via Microsoft Graph API when leaves are submitted or decided. Requires `teamsGraph` in `data/settings.json`. If not configured, notifications are silently skipped.
+**Teams activity notifications:** `utils/teamsNotify.js` sends Teams activity feed notifications via Microsoft Graph API when leaves are submitted or decided. Requires `teamsGraph` in `data/settings.json`. If not configured, notifications are silently skipped. Exposes two functions: `notifyLeaveRequest()` and `notifyLeaveDecision()`. Caches the Graph API access token in memory. Uses a hardcoded `TEAMS_APP_ID` (`a7e3c1d9-4f82-4b6a-9e15-3d8f0c2b1a47`) for activity feed deep links.
+
+**Teams proxy server:** `teams-app/server.js` is a stateless Express proxy (port 3001) — it proxies `/api/*` and `/theme.css` to `MAIN_APP_ORIGIN` (default `http://localhost:3000`) and serves Teams-specific static pages (`pages/tab.html`, `pages/config.html`, `pages/remove.html`) with their own CSP headers. Exposes `/health` for diagnostics.
 
 **Teams iframe support:** `Content-Security-Policy` frame-ancestors header allows Teams/Outlook domains. `X-Frame-Options` is removed. `app.set('trust proxy', 1)` is required for ngrok HTTPS detection.
 
@@ -193,7 +200,7 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 - Entity IDs: type prefix + first 8 chars of UUID (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `HD9B1C3D` for helpdesk). Helpdesk tickets also get a `ticketNo` in `TKT-YYYY-NNN` format
 - **WIP pages (no JS controller):** `erp-dialogue.html` and `voice-agent.html` only. Every other view has a matching controller — including `leave-assistant`, `wfh`, `travel`, `doc-chat`, `proposal-eval`, `resume-eval`, and `quick-services`
 - `views/landing.html` is the home dashboard (entry point after login); `views/services.html` and `views/quick-services.html` are service catalog views
-- `routes/finance.js` and `routes/news.js` are **API-only** — they have no corresponding view pages. All other routes have matching `views/*.html` + `public/js/*.js` pairs.
+- `routes/finance.js` and `routes/news.js` are **API-only** — they have no corresponding view pages. All other routes have matching `views/*.html` + `public/js/*.js` pairs, including `material-requisitions` and `purchase-orders`.
 - `routes/analytics.js`, `routes/goals.js`, and `routes/directory.js` follow the standard route pattern (JSON-backed, role-filtered). `analytics.js` aggregates cross-module data (tasks, leaves, helpdesk, attendance) for dashboard widgets at `GET /api/analytics/summary`.
 - `GET /api/me` — returns `{ success: true, user: req.session.user }` for the currently authenticated session; used by client controllers to get the logged-in user.
 - `multer` and `pdf-lib` are available as dependencies (multer used for EMS uploads; pdf-lib available for PDF manipulation)
