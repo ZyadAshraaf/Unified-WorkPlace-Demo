@@ -388,7 +388,7 @@ router.put('/:id', requireAuth, (req, res) => {
   if (record.taskId) {
     const tIdx = tasks.findIndex(t => t.id === record.taskId);
     if (tIdx !== -1) {
-      tasks[tIdx].status    = 'completed';
+      tasks[tIdx].status    = record.status; // 'approved' or 'rejected'
       tasks[tIdx].updatedAt = new Date().toISOString();
       tasks[tIdx].history.push({
         action: record.status === 'approved' ? 'approved' : 'rejected',

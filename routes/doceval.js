@@ -2,7 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const https   = require('https');
 
-const UPSTREAM_HOST = 'doceval-8362469192e8.herokuapp.com';
+const UPSTREAM_HOST = process.env.DOCEVAL_URL || 'doceval-8362469192e8.herokuapp.com';
 
 // Proxy all DocEval API calls server-side to avoid CORS issues.
 // Mounted at /api/doceval-proxy — req.url will be the path after the mount point.

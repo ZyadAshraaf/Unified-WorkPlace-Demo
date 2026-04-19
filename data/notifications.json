@@ -66,7 +66,7 @@
     "message": "Ahmed Al-Rashid has submitted an annual leave request for April 20–22. Please review.",
     "type": "leave",
     "link": "/leaves",
-    "read": false,
+    "read": true,
     "createdAt": "2026-04-14T08:30:00Z"
   },
   {
@@ -76,7 +76,7 @@
     "message": "The March 2026 analytics summary is now available on the dashboard.",
     "type": "news",
     "link": "/analytics",
-    "read": false,
+    "read": true,
     "createdAt": "2026-04-01T09:00:00Z"
   },
   {

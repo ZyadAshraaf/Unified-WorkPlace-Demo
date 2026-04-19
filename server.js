@@ -1,11 +1,14 @@
+require('dotenv').config();
+
 const express    = require('express');
 const session    = require('express-session');
 const FileStore  = require('session-file-store')(session);
 const path       = require('path');
 const fs         = require('fs');
 
-const app  = express();
-const PORT = process.env.PORT || 3000;
+const app        = express();
+const PORT       = process.env.PORT       || 3000;
+const TEAMS_PORT = process.env.TEAMS_PORT || 3001;
 
 // ─── Color Utilities (for dynamic theme.css) ───────────────────────────────
 function hexToRgb(hex) {
@@ -89,7 +92,7 @@ app.use(session({
     retries: 0,
     logFn: () => {}               // silence logs
   }),
-  secret: 'unified-workspace-secret-2026',
+  secret: process.env.SESSION_SECRET || 'unified-workspace-secret-2026',
   resave: true,                   // save session on every request (keeps it alive)
   rolling: true,                  // reset cookie maxAge on every response
   saveUninitialized: true,        // always send cookie on first load (required for Teams iframe)
@@ -204,10 +207,10 @@ const server1 = app.listen(PORT, () => {
 server1.keepAliveTimeout  = 120000;   // 2 min — prevents tunnel from dropping idle connections
 server1.headersTimeout    = 125000;   // slightly above keepAlive
 
-// Also listen on 3001 for tunnel (Cloudflare / ngrok) → Teams integration
-if (PORT !== 3001) {
-  const server2 = app.listen(3001, () => {
-    console.log(`  Teams tunnel port:      http://localhost:3001\n`);
+// Also listen on TEAMS_PORT for tunnel (Cloudflare / ngrok) → Teams integration
+if (PORT !== TEAMS_PORT) {
+  const server2 = app.listen(TEAMS_PORT, () => {
+    console.log(`  Teams tunnel port:      http://localhost:${TEAMS_PORT}\n`);
   });
   server2.keepAliveTimeout = 120000;
   server2.headersTimeout   = 125000;

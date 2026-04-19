@@ -240,11 +240,11 @@ router.post('/:id/versions/:version/approve', requireAuth, (req, res) => {
   doc.updatedAt = new Date().toISOString();
   writeDocs(docs);
 
-  // Mark approval task as completed
+  // Mark approval task as approved
   const tasks = readTasks();
   const task  = tasks.find(t => t.metadata?.emsVersionId === `${doc.id}_v${verNum}` && t.status === 'pending');
   if (task) {
-    task.status = 'completed';
+    task.status = 'approved';
     task.updatedAt = new Date().toISOString();
     task.history.push({ action: 'approved', by: user.id, at: new Date().toISOString(), note: `Version ${verNum} approved` });
     writeTasks(tasks);
@@ -279,11 +279,11 @@ router.post('/:id/versions/:version/reject', requireAuth, (req, res) => {
   doc.updatedAt = new Date().toISOString();
   writeDocs(docs);
 
-  // Mark approval task as completed
+  // Mark approval task as rejected
   const tasks = readTasks();
   const task  = tasks.find(t => t.metadata?.emsVersionId === `${doc.id}_v${verNum}` && t.status === 'pending');
   if (task) {
-    task.status = 'completed';
+    task.status = 'rejected';
     task.updatedAt = new Date().toISOString();
     task.history.push({ action: 'rejected', by: user.id, at: new Date().toISOString(), note: `Version ${verNum} rejected — file removed` });
     writeTasks(tasks);

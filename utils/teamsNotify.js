@@ -49,7 +49,7 @@ const path = require('path');
 const settingsPath = path.join(__dirname, '../data/settings.json');
 
 // Teams app ID from the Tasks & Analytics manifest
-const TEAMS_APP_ID = 'a7e3c1d9-4f82-4b6a-9e15-3d8f0c2b1a47';
+const TEAMS_APP_ID = process.env.TEAMS_APP_ID || 'a7e3c1d9-4f82-4b6a-9e15-3d8f0c2b1a47';
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
 

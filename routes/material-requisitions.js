@@ -155,7 +155,7 @@ router.put('/:id/approve', requireAuth, (req, res) => {
   if (mrqs[idx].taskId) {
     const tIdx = tasks.findIndex(t => t.id === mrqs[idx].taskId);
     if (tIdx !== -1) {
-      tasks[tIdx].status    = 'completed';
+      tasks[tIdx].status    = 'approved';
       tasks[tIdx].updatedAt = new Date().toISOString();
       tasks[tIdx].history.push({ action: 'approved', by: user.id, at: new Date().toISOString(), note: req.body.note || 'Requisition approved' });
       writeTasks(tasks);
@@ -183,7 +183,7 @@ router.put('/:id/reject', requireAuth, (req, res) => {
   if (mrqs[idx].taskId) {
     const tIdx = tasks.findIndex(t => t.id === mrqs[idx].taskId);
     if (tIdx !== -1) {
-      tasks[tIdx].status    = 'completed';
+      tasks[tIdx].status    = 'rejected';
       tasks[tIdx].updatedAt = new Date().toISOString();
       tasks[tIdx].history.push({ action: 'rejected', by: user.id, at: new Date().toISOString(), note: req.body.note || 'Requisition rejected' });
       writeTasks(tasks);

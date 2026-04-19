@@ -790,5 +790,60 @@
     "userName": "Sara Hassan",
     "details": "Added annotation: \"Hello\"",
     "timestamp": "2026-04-17T10:59:58.230Z"
+  },
+  {
+    "id": "AUDD0A54A9A",
+    "action": "document.version.approved",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C01",
+    "entityName": "Q1 2026 Vendor Invoice - Acme Corp",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Approved version 2",
+    "timestamp": "2026-04-19T15:06:43.436Z"
+  },
+  {
+    "id": "AUDEC8D2346",
+    "action": "document.version.rejected",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C01",
+    "entityName": "Q1 2026 Vendor Invoice - Acme Corp",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Rejected version 3",
+    "timestamp": "2026-04-19T15:06:43.608Z"
+  },
+  {
+    "id": "AUD75F8B54C",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC604A5DD0",
+    "entityName": "Proposal",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-19T15:27:42.892Z"
+  },
+  {
+    "id": "AUD0F0EE84F",
+    "action": "document.annotate",
+    "entityType": "document",
+    "entityId": "DOC604A5DD0",
+    "entityName": "Proposal",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Added annotation: \"7655u7uyu\"",
+    "timestamp": "2026-04-19T15:27:52.968Z"
+  },
+  {
+    "id": "AUDCCDDD5CB",
+    "action": "document.sign",
+    "entityType": "document",
+    "entityId": "DOC604A5DD0",
+    "entityName": "Proposal",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Applied signature",
+    "timestamp": "2026-04-19T15:28:26.592Z"
   }
 ]

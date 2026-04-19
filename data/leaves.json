@@ -202,11 +202,11 @@
     "endDate": "2026-04-24",
     "days": 4,
     "reason": "",
-    "status": "pending",
+    "status": "rejected",
     "taskId": "T12EBE801",
     "submittedAt": "2026-04-17T10:02:02.581Z",
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "u001",
+    "reviewedAt": "2026-04-19T15:27:26.846Z",
     "reviewNote": ""
   }
 ]

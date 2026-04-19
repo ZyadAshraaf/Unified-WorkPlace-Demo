@@ -110,9 +110,10 @@ async function loadTasks() {
 
 function updateCounts() {
   const f = s => allTasks.filter(t => t.status === s).length;
+  const closedStatuses = ['completed', 'approved', 'rejected'];
   document.getElementById('countAll').textContent        = allTasks.length;
   document.getElementById('countPending').textContent    = f('pending');
-  document.getElementById('countCompleted').textContent  = f('completed');
+  document.getElementById('countCompleted').textContent  = allTasks.filter(t => closedStatuses.includes(t.status)).length;
   document.getElementById('countEscalated').textContent  = allTasks.filter(t => t.escalated).length;
 
   const pending = f('pending');
@@ -129,8 +130,10 @@ function getFilteredTasks() {
 
   const filtered = allTasks.filter(t => {
     if (activeFilter !== 'all') {
+      const closedStatuses = ['completed', 'approved', 'rejected'];
       if (activeFilter === 'escalated' && !t.escalated) return false;
-      else if (activeFilter !== 'escalated' && t.status !== activeFilter) return false;
+      else if (activeFilter === 'closed' && !closedStatuses.includes(t.status)) return false;
+      else if (activeFilter !== 'escalated' && activeFilter !== 'closed' && t.status !== activeFilter) return false;
     }
     if (search   && !t.title.toLowerCase().includes(search) && !t.description.toLowerCase().includes(search)) return false;
     if (system   && t.sourceSystem !== system) return false;
@@ -166,7 +169,7 @@ function renderTasks() {
 
   let html = '';
   tasks.forEach(t => {
-      const overdue = t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'completed';
+      const overdue = t.dueDate && new Date(t.dueDate) < new Date() && !['completed','approved','rejected'].includes(t.status);
       const dueLabel = t.dueDate
         ? `<div>${UI.formatDate(t.dueDate)}</div>${overdue ? '<div class="overdue-indicator"><i class="bi bi-exclamation-circle me-1"></i>Overdue</div>' : ''}`
         : '—';
@@ -249,7 +252,7 @@ async function openDetail(id) {
   const isPOApproval         = t.type === 'approval' && t.metadata?.poId;
   const isMRQApproval        = t.type === 'approval' && t.metadata?.mrqId;
   const isApproval           = isLeaveApproval || isWfhApproval || isEmsVersionApproval || isPOApproval || isMRQApproval;
-  const isDone = t.status === 'completed';
+  const isDone = ['completed', 'approved', 'rejected'].includes(t.status);
 
   // Fetch linked record for approval tasks
   let requestDetailsHtml = '';

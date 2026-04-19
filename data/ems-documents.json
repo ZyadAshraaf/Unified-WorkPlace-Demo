@@ -38,9 +38,7 @@
       "angle": -30
     },
     "annotations": [],
-    "starred": [
-      "u001"
-    ],
+    "starred": [],
     "trashedAt": null,
     "lockedBy": null,
     "lockedAt": null
@@ -443,7 +441,7 @@
     "status": "active",
     "createdBy": "u004",
     "createdAt": "2026-04-12T10:22:44.317Z",
-    "updatedAt": "2026-04-17T10:59:58.228Z",
+    "updatedAt": "2026-04-19T15:28:26.591Z",
     "currentVersion": 3,
     "versions": [
       {
@@ -548,13 +546,33 @@
         "x": 6.8,
         "y": 1.6,
         "width": 22
+      },
+      {
+        "signatureId": "SIGCB0EC6EC",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-04-19T15:27:42.892Z",
+        "type": "drawn",
+        "x": 72.7,
+        "y": 1.2,
+        "width": 22
+      },
+      {
+        "signatureId": "SIGBC3D8BEE",
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "signedAt": "2026-04-19T15:28:26.591Z",
+        "type": "drawn",
+        "x": 73.3,
+        "y": 87.7,
+        "width": 22
       }
     ],
     "watermark": {
       "enabled": true,
       "text": "CONFIDENTIAL",
       "opacity": 0.5,
-      "angle": -27
+      "angle": 0
     },
     "annotations": [
       {
@@ -568,6 +586,18 @@
         "userId": "u004",
         "userName": "Sara Hassan",
         "createdAt": "2026-04-17T10:59:58.228Z"
+      },
+      {
+        "id": "ANN42872334",
+        "text": "7655u7uyu",
+        "color": "#a0e637",
+        "size": 13,
+        "x": 44,
+        "y": 3,
+        "page": 1,
+        "userId": "u001",
+        "userName": "Ahmed Al-Rashidi",
+        "createdAt": "2026-04-19T15:27:52.968Z"
       }
     ],
     "starred": [],
