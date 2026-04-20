@@ -5,8 +5,8 @@
     "email": "ahmed@company.com",
     "password": "demo123",
     "role": "admin",
-    "department": "IT",
-    "jobTitle": "System Administrator",
+    "department": "Executive",
+    "jobTitle": "Chief Executive Officer",
     "managerId": "u001",
     "phone": "+966 50 111 2233",
     "location": "Riyadh HQ",
@@ -28,20 +28,6 @@
     "avatar": "K"
   },
   {
-    "id": "u003",
-    "name": "Fatima Al-Zahra",
-    "email": "fatima@company.com",
-    "password": "demo123",
-    "role": "hr",
-    "department": "Human Resources",
-    "jobTitle": "HR Manager",
-    "managerId": "u002",
-    "phone": "+966 50 333 4455",
-    "location": "Riyadh HQ",
-    "joinDate": "2018-01-10",
-    "avatar": "F"
-  },
-  {
     "id": "u004",
     "name": "Sara Hassan",
     "email": "sara@company.com",
@@ -54,33 +40,5 @@
     "location": "Riyadh HQ",
     "joinDate": "2022-09-01",
     "avatar": "S"
-  },
-  {
-    "id": "u005",
-    "name": "Omar Al-Farsi",
-    "email": "omar@company.com",
-    "password": "demo123",
-    "role": "employee",
-    "department": "IT",
-    "jobTitle": "IT Support Specialist",
-    "managerId": "u001",
-    "phone": "+966 50 555 6677",
-    "location": "Riyadh HQ",
-    "joinDate": "2023-02-15",
-    "avatar": "O"
-  },
-  {
-    "id": "u006",
-    "name": "Mariam Al-Nouri",
-    "email": "mariam@company.com",
-    "password": "demo123",
-    "role": "manager",
-    "department": "Operations",
-    "jobTitle": "Operations Manager",
-    "managerId": "u001",
-    "phone": "+966 50 666 7788",
-    "location": "Jeddah Branch",
-    "joinDate": "2021-04-20",
-    "avatar": "M"
   }
 ]

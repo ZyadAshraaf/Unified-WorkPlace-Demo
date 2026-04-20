@@ -174,6 +174,14 @@ app.get('/api/heartbeat', (req, res) => {
   res.json({ ok: true });
 });
 
+// ─── AI warm-up (wakes the Heroku dyno before the user needs it) ─────────
+app.get('/api/ai-warmup', (req, res) => {
+  const host = process.env.DOCEVAL_URL || 'doceval-8362469192e8.herokuapp.com';
+  // Fire-and-forget: kick the dyno awake without blocking the response
+  require('https').get({ hostname: host, path: '/', timeout: 30000 }, () => {}).on('error', () => {});
+  res.json({ ok: true });
+});
+
 // ─── View Routes ──────────────────────────────────────────────────────────────
 app.get('/login', (req, res) => {
   if (req.session && req.session.user) return res.redirect('/');

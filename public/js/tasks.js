@@ -25,6 +25,11 @@ async function _enterReviewMode(docId, version, docTitle) {
   document.getElementById('taskReviewView').classList.remove('d-none');
   document.getElementById('taskDetailModal').classList.add('review-mode');
   document.getElementById('reviewDocTitle').textContent = docTitle || 'Document';
+  const reviewBadge = document.getElementById('reviewStatusBadge');
+  if (reviewBadge) {
+    reviewBadge.className = `badge-custom badge-status-${activeTask.status}`;
+    reviewBadge.textContent = activeTask.status.charAt(0).toUpperCase() + activeTask.status.slice(1);
+  }
 
   // Populate sidebar with task info
   const t = activeTask;
@@ -310,7 +315,9 @@ async function openDetail(id) {
   document.getElementById('btnCompleteTask').classList.toggle('d-none', isApproval || isDone);
   document.getElementById('btnApproveLeave').classList.toggle('d-none', !isApproval || isDone);
   document.getElementById('btnRejectLeave').classList.toggle('d-none', !isApproval || isDone);
-  document.getElementById('btnViewEmsDoc').classList.toggle('d-none', !isEmsVersionApproval);
+  document.getElementById('btnViewEmsDoc').classList.toggle('d-none', !isEmsVersionApproval || t.status === 'rejected');
+  document.getElementById('btnApproveReview').classList.toggle('d-none', isDone);
+  document.getElementById('btnRejectReview').classList.toggle('d-none', isDone);
 
   taskDetailModal().show();
 }

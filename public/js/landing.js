@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   await Layout.init('landing');
   setWelcome();
   await Promise.all([loadSummary(), loadRecentTasks(), loadNews(), loadCharts()]);
+  // Wake the AI service dyno in the background so it's ready when the user navigates to it
+  fetch('/api/ai-warmup').catch(() => {});
 });
 
 function setWelcome() {

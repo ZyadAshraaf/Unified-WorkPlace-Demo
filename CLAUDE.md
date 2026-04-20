@@ -188,12 +188,9 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 - **Login uses email, not username** — `POST /api/auth/login` body is `{ "email": "...", "password": "..." }`. Demo credentials:
   | Email | Role | Password |
   |---|---|---|
-  | `ahmed@company.com` | admin | demo123 |
+  | `ahmed@company.com` | admin (CEO) | demo123 |
   | `khalid@company.com` | manager | demo123 |
-  | `fatima@company.com` | hr | demo123 |
   | `sara@company.com` | employee | demo123 |
-  | `omar@company.com` | employee | demo123 |
-  | `mariam@company.com` | manager | demo123 |
 - `?embed=1` query param triggers auto-login for Teams embedded mode
 - **Data reset:** Delete/truncate files in `data/` — no migration system
 - **Session reset:** Delete `.sessions/` directory to log out all users

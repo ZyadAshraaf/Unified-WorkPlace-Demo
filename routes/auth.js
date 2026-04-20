@@ -19,7 +19,10 @@ router.post('/login', (req, res) => {
   const { password: _, ...safeUser } = user;
   req.session.user = safeUser;
 
-  res.json({ success: true, user: safeUser });
+  req.session.save(err => {
+    if (err) return res.status(500).json({ success: false, message: 'Session error' });
+    res.json({ success: true, user: safeUser });
+  });
 });
 
 // POST /api/auth/logout

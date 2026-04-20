@@ -189,9 +189,11 @@ router.post('/:id/versions', requireAuth, upload.single('file'), (req, res) => {
   doc.updatedAt = new Date().toISOString();
   writeDocs(docs);
 
-  // Create approval task assigned to admin
-  const admin = readUsers().find(u => u.role === 'admin');
-  if (admin) {
+  // Create approval task assigned to uploader's manager (or self if CEO)
+  const allUsers  = readUsers();
+  const uploader  = allUsers.find(u => u.id === req.session.user.id);
+  const approver  = uploader?.managerId ? allUsers.find(u => u.id === uploader.managerId) : null;
+  if (approver) {
     const tasks  = readTasks();
     const taskId = 'T' + uuidv4().split('-')[0].toUpperCase();
     tasks.push({
@@ -202,7 +204,7 @@ router.post('/:id/versions', requireAuth, upload.single('file'), (req, res) => {
       type:         'approval',
       priority:     'medium',
       status:       'pending',
-      assignedTo:   admin.id,
+      assignedTo:   approver.id,
       createdBy:    req.session.user.id,
       dueDate:      null,
       createdAt:    new Date().toISOString(),
@@ -223,7 +225,7 @@ router.post('/:id/versions', requireAuth, upload.single('file'), (req, res) => {
 // POST — approve a pending version
 router.post('/:id/versions/:version/approve', requireAuth, (req, res) => {
   const user = req.session.user;
-  if (user.role !== 'admin') return res.status(403).json({ success: false, message: 'Only admin can approve versions' });
+  if (user.role !== 'admin' && user.role !== 'manager') return res.status(403).json({ success: false, message: 'Only admin or manager can approve versions' });
 
   const docs = readDocs();
   const idx  = docs.findIndex(d => d.id === req.params.id);
@@ -257,7 +259,7 @@ router.post('/:id/versions/:version/approve', requireAuth, (req, res) => {
 // POST — reject a pending version
 router.post('/:id/versions/:version/reject', requireAuth, (req, res) => {
   const user = req.session.user;
-  if (user.role !== 'admin') return res.status(403).json({ success: false, message: 'Only admin can reject versions' });
+  if (user.role !== 'admin' && user.role !== 'manager') return res.status(403).json({ success: false, message: 'Only admin or manager can reject versions' });
 
   const docs = readDocs();
   const idx  = docs.findIndex(d => d.id === req.params.id);

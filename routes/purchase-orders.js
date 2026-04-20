@@ -104,7 +104,7 @@ router.post('/', requireAuth, (req, res) => {
     reviewNote:       ''
   };
 
-  if (managerId && managerId !== user.id) {
+  if (managerId) {
     const task = {
       id:           'T' + uuidv4().split('-')[0].toUpperCase(),
       title:        `Approve Purchase Order — ${poNumber}`,

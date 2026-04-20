@@ -208,5 +208,37 @@
     "reviewedBy": "u001",
     "reviewedAt": "2026-04-19T15:27:26.846Z",
     "reviewNote": ""
+  },
+  {
+    "id": "LB9261143",
+    "userId": "u001",
+    "type": "annual",
+    "startDate": "2026-04-23",
+    "endDate": "2026-04-25",
+    "days": 2,
+    "reason": "",
+    "customFields": {},
+    "status": "approved",
+    "taskId": "T88DD678A",
+    "submittedAt": "2026-04-20T09:13:23.250Z",
+    "reviewedBy": "u001",
+    "reviewedAt": "2026-04-20T09:13:34.610Z",
+    "reviewNote": ""
+  },
+  {
+    "id": "L322B903E",
+    "userId": "u004",
+    "type": "annual",
+    "startDate": "2026-06-01",
+    "endDate": "2026-06-03",
+    "days": 3,
+    "reason": "test",
+    "customFields": {},
+    "status": "pending",
+    "taskId": "T233D8B7B",
+    "submittedAt": "2026-04-20T09:36:40.977Z",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "reviewNote": ""
   }
 ]

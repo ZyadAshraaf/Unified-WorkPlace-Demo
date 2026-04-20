@@ -187,5 +187,46 @@
     "reviewedBy": "u001",
     "reviewedAt": "2026-04-17T09:53:20.398Z",
     "reviewNote": ""
+  },
+  {
+    "id": "PO059BB881",
+    "poNumber": "PO-2026-0006",
+    "userId": "u001",
+    "vendorId": "V002",
+    "vendorName": "Arabian IT Systems",
+    "deliveryLocation": "Riyadh HQ",
+    "requiredBy": "2026-04-28",
+    "costCenter": "IT",
+    "currency": "SAR",
+    "paymentTerms": "Net 45",
+    "lineItems": [
+      {
+        "item": "x",
+        "description": "",
+        "qty": 1,
+        "unit": "pcs",
+        "unitPrice": 100,
+        "lineTotal": 100
+      },
+      {
+        "item": "y",
+        "description": "",
+        "qty": 1,
+        "unit": "pcs",
+        "unitPrice": 50,
+        "lineTotal": 50
+      }
+    ],
+    "subtotal": 150,
+    "taxPct": 15,
+    "taxAmount": 22.5,
+    "grandTotal": 172.5,
+    "justification": "dfidgjhdf",
+    "status": "pending",
+    "taskId": null,
+    "submittedAt": "2026-04-19T16:16:34.034Z",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "reviewNote": ""
   }
 ]

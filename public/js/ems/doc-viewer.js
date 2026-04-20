@@ -12,6 +12,12 @@ const EMS_DocViewer = (() => {
   /* ── Annotation state ───────────────────────────────── */
   let _annotation = null; // { docId, text, color, size, x, y, page }
 
+  /* ── Unsaved-edits state ────────────────────────────── */
+  let _pendingEdits   = []; // staged edits not yet sent to server
+  let _stagedOverlays = []; // visual-only previews of staged edits
+  let _isDirty        = false;
+  let _allowClose     = false; // bypasses dirty check when we intentionally close
+
   /* ════════════════════════════════════════════════════
      Open / render
      ════════════════════════════════════════════════════ */
@@ -22,11 +28,46 @@ const EMS_DocViewer = (() => {
     if (!data?.success) return;
     currentDoc = data.document;
 
+    _markClean();
+    _allowClose = false;
+
     const viewerModal = document.getElementById('docViewerModal');
-    // Wire cleanup once — so closing via Escape/backdrop resets placement state
     if (!viewerModal._viewerCleanupAttached) {
       viewerModal._viewerCleanupAttached = true;
-      viewerModal.addEventListener('hidden.bs.modal', () => cancelPlacement());
+
+      // Intercept close — show confirmation if there are unsaved edits
+      viewerModal.addEventListener('hide.bs.modal', e => {
+        if (_isDirty && !_allowClose) {
+          e.preventDefault();
+          _showUnsavedConfirmation();
+        }
+      });
+
+      // Final cleanup when modal fully hides
+      viewerModal.addEventListener('hidden.bs.modal', () => {
+        cancelPlacement();
+        cancelAnnotation();
+        _markClean();
+        _allowClose = false;
+        currentDoc  = null;
+      });
+
+      // Wire Save & Close / Discard & Close buttons once
+      document.getElementById('btnSaveAndClose')?.addEventListener('click', async () => {
+        _hideUnsavedOverlay();
+        await saveAll();
+        if (!_isDirty) { // save succeeded
+          _allowClose = true;
+          bootstrap.Modal.getOrCreateInstance(viewerModal).hide();
+        }
+      });
+
+      document.getElementById('btnDiscardAndClose')?.addEventListener('click', () => {
+        _hideUnsavedOverlay();
+        _markClean();
+        _allowClose = true;
+        bootstrap.Modal.getOrCreateInstance(viewerModal).hide();
+      });
     }
     bootstrap.Modal.getOrCreateInstance(viewerModal).show();
 
@@ -127,6 +168,7 @@ const EMS_DocViewer = (() => {
       _renderPdfPreview(viewUrl); // pdf.js canvas rendering — no browser PDF chrome
     } else if (latest.mimeType?.startsWith('image/')) {
       body.innerHTML = `<img src="${url}" alt="${currentDoc.title}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+      _reapplyStagedOverlays();
     } else {
       body.innerHTML = `<div class="doc-viewer-placeholder">
         <i class="bi bi-file-earmark" style="font-size:4rem;opacity:.2;"></i>
@@ -206,6 +248,10 @@ const EMS_DocViewer = (() => {
           ctx.restore();
         }
       }
+
+      // Re-apply any staged (unsaved) signature/annotation overlays on top of the pages
+      _reapplyStagedOverlays();
+
     } catch (err) {
       console.error('[DocViewer] pdf.js preview failed:', err);
       const url = typeof source === 'string' ? source
@@ -475,54 +521,28 @@ const EMS_DocViewer = (() => {
     _dragState = null;
   }
 
-  /* Send the positioned signature to the server */
+  /* Stage the positioned signature — does NOT call the server yet */
   async function confirmPlacement() {
     if (!placement) return;
 
     const docId = placement.docId;
     const page  = Math.max(1, parseInt(document.getElementById('signPlacementPage')?.value || '1'));
+    const x     = Math.round(placement.x     * 10) / 10;
+    const y     = Math.round(placement.y     * 10) / 10;
+    const width = Math.round(placement.width * 10) / 10;
 
-    const data = await API.post(`/api/ems/documents/${docId}/sign`, {
-      signatureId: placement.sigId,
-      x:           Math.round(placement.x     * 10) / 10,
-      y:           Math.round(placement.y     * 10) / 10,
-      width:       Math.round(placement.width * 10) / 10,
-      page
+    _pendingEdits.push({
+      type:    'signature',
+      apiPath: `/api/ems/documents/${docId}/sign`,
+      method:  'post',
+      body:    { signatureId: placement.sigId, x, y, width, page }
     });
 
-    if (data?.success) {
-      UI.toast(`Signature placed on page ${page}`, 'success');
-      currentDoc = data.document;
+    // Keep the visual preview in the re-rendered multi-page view
+    _stagedOverlays.push({ type: 'signature', page, x, y, width, imageData: placement.imageData });
 
-      // Clean up placement state first
-      document.getElementById('signPlacementPage')?.removeEventListener('change', _onPlacementPageChange);
-      _removePlacementGhost();
-      _pdfJsState = null;
-      placement   = null;
-      document.getElementById('signPlacementBanner')?.classList.add('d-none');
-      _setViewerActionsVisible(true);
-
-      // For PDFs: fetch fresh bytes then render via pdf.js — bypasses all browser
-      // PDF-viewer caching and shows the newly-signed content immediately.
-      const latestVer = currentDoc.versions?.[currentDoc.versions.length - 1];
-      if (latestVer?.mimeType === 'application/pdf') {
-        try {
-          const resp        = await fetch(
-            `/api/ems/documents/${docId}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`,
-            { cache: 'no-store', credentials: 'include' }
-          );
-          const arrayBuffer = await resp.arrayBuffer();
-          await _renderPdfPreview({ data: arrayBuffer });
-        } catch (err) {
-          console.error('[DocViewer] post-sign render failed:', err);
-          renderPreview();
-        }
-      } else {
-        renderPreview();
-      }
-    } else {
-      UI.toast(data?.message || 'Failed to place signature', 'danger');
-    }
+    cancelPlacement(); // hides banner + re-renders preview (which calls _reapplyStagedOverlays)
+    _markDirty();
   }
 
   function cancelPlacement() {
@@ -540,6 +560,10 @@ const EMS_DocViewer = (() => {
       const el = document.getElementById(id);
       if (el) el.classList.toggle('d-none', !visible);
     });
+    // Keep Save button visible whenever there are staged edits, regardless of mode
+    if (visible && _isDirty) {
+      document.getElementById('btnViewerSave')?.classList.remove('d-none');
+    }
   }
 
   /* ════════════════════════════════════════════════════
@@ -583,21 +607,31 @@ const EMS_DocViewer = (() => {
       document.getElementById('watermarkAngleVal').textContent = this.value;
     };
 
-    document.getElementById('btnSaveWatermark').onclick = async () => {
+    document.getElementById('btnSaveWatermark').onclick = () => {
       const wm = {
         enabled: true,
         text:    document.getElementById('watermarkText').value || 'CONFIDENTIAL',
         opacity: parseInt(document.getElementById('watermarkOpacity').value) / 100,
         angle:   parseInt(document.getElementById('watermarkAngle').value)
       };
-      const data = await API.put(`/api/ems/documents/${docId}/watermark`, wm);
-      if (data?.success) { currentDoc = data.document; renderWatermark(); UI.toast('Watermark applied'); }
+      // Replace any previous watermark edit (only one watermark state possible)
+      _pendingEdits = _pendingEdits.filter(e => e.type !== 'watermark');
+      _pendingEdits.push({ type: 'watermark', apiPath: `/api/ems/documents/${docId}/watermark`, method: 'put', body: wm });
+      currentDoc.watermark = wm; // local preview
+      renderWatermark();
+      _markDirty();
+      UI.toast('Watermark staged — click Save to apply', 'info');
       modal.hide();
     };
 
-    document.getElementById('btnRemoveWatermark').onclick = async () => {
-      const data = await API.put(`/api/ems/documents/${docId}/watermark`, { enabled: false });
-      if (data?.success) { currentDoc = data.document; renderWatermark(); UI.toast('Watermark removed'); }
+    document.getElementById('btnRemoveWatermark').onclick = () => {
+      const wm = { enabled: false };
+      _pendingEdits = _pendingEdits.filter(e => e.type !== 'watermark');
+      _pendingEdits.push({ type: 'watermark', apiPath: `/api/ems/documents/${docId}/watermark`, method: 'put', body: wm });
+      currentDoc.watermark = wm; // local preview
+      renderWatermark();
+      _markDirty();
+      UI.toast('Watermark removal staged — click Save to apply', 'info');
       modal.hide();
     };
 
@@ -751,37 +785,27 @@ const EMS_DocViewer = (() => {
     document.addEventListener('mouseup', onUp);
   }
 
+  /* Stage the annotation — does NOT call the server yet */
   async function confirmAnnotation() {
     if (!_annotation) return;
     if (!_annotation.text?.trim()) return UI.toast('Please type an annotation first', 'warning');
 
-    const data = await API.post(`/api/ems/documents/${_annotation.docId}/annotate`, {
-      text:  _annotation.text.trim(),
-      color: _annotation.color,
-      size:  _annotation.size,
-      x:     Math.round(_annotation.x  * 10) / 10,
-      y:     Math.round(_annotation.y  * 10) / 10,
-      page:  _annotation.page
+    const x    = Math.round(_annotation.x * 10) / 10;
+    const y    = Math.round(_annotation.y * 10) / 10;
+    const text = _annotation.text.trim();
+
+    _pendingEdits.push({
+      type:    'annotation',
+      apiPath: `/api/ems/documents/${_annotation.docId}/annotate`,
+      method:  'post',
+      body:    { text, color: _annotation.color, size: _annotation.size, x, y, page: _annotation.page }
     });
 
-    if (data?.success) {
-      UI.toast('Annotation placed', 'success');
-      currentDoc = data.document;
-      cancelAnnotation();
-      // Re-render to show the baked annotation
-      const resp = await fetch(
-        `/api/ems/documents/${_annotation?.docId || currentDoc.id}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`,
-        { cache: 'no-store', credentials: 'include' }
-      ).catch(() => null);
-      if (resp?.ok) {
-        const ab = await resp.arrayBuffer();
-        await _renderPdfPreview({ data: ab });
-      } else {
-        renderPreview();
-      }
-    } else {
-      UI.toast(data?.message || 'Failed to place annotation', 'danger');
-    }
+    // Keep the visual preview in the re-rendered multi-page view
+    _stagedOverlays.push({ type: 'annotation', page: _annotation.page, x, y, text, color: _annotation.color, size: _annotation.size });
+
+    cancelAnnotation(); // hides banner + re-renders preview (which calls _reapplyStagedOverlays)
+    _markDirty();
   }
 
   function cancelAnnotation() {
@@ -793,5 +817,125 @@ const EMS_DocViewer = (() => {
     renderPreview();
   }
 
-  return { open, renderPreview, renderWatermark, enterSignaturePlacementMode, confirmPlacement, cancelPlacement, confirmAnnotation, cancelAnnotation };
+  /* ════════════════════════════════════════════════════
+     Staged overlays — show pending edits on top of the
+     PDF page wrappers (for signatures) or docViewerBody
+     (for image files) without touching the server.
+     ════════════════════════════════════════════════════ */
+  function _reapplyStagedOverlays() {
+    if (!_stagedOverlays.length) return;
+
+    const scroller = document.getElementById('pdfPreviewScroller');
+    const body     = document.getElementById('docViewerBody');
+
+    _stagedOverlays.forEach(ov => {
+      if (scroller) {
+        const pages   = Array.from(scroller.children);
+        const wrapper = pages[(ov.page || 1) - 1];
+        if (!wrapper) return;
+        wrapper.style.position = 'relative';
+        wrapper.appendChild(_buildOverlayEl(ov));
+      } else if (body && ov.type === 'signature') {
+        body.appendChild(_buildOverlayEl(ov));
+      }
+    });
+  }
+
+  function _buildOverlayEl(ov) {
+    const el = document.createElement('div');
+    el.className = 'staged-edit-preview';
+    el.style.cssText = 'position:absolute;pointer-events:none;z-index:10;';
+
+    if (ov.type === 'signature') {
+      el.style.left  = ov.x + '%';
+      el.style.top   = ov.y + '%';
+      el.style.width = ov.width + '%';
+      el.innerHTML = `
+        <img src="${ov.imageData}" alt="Signature" style="width:100%;display:block;opacity:0.9;">
+        <div style="font-size:9px;color:#92400e;background:rgba(254,243,199,0.9);text-align:center;padding:1px 4px;border-radius:0 0 3px 3px;">
+          <i class="bi bi-clock-history me-1"></i>Pending save
+        </div>`;
+    } else if (ov.type === 'annotation') {
+      el.style.left       = ov.x + '%';
+      el.style.top        = ov.y + '%';
+      el.style.color      = ov.color;
+      el.style.fontSize   = ov.size + 'px';
+      el.style.background = 'rgba(255,255,255,0.75)';
+      el.style.padding    = '2px 6px';
+      el.style.border     = `1px dashed ${ov.color}`;
+      el.style.borderRadius = '3px';
+      el.style.lineHeight = '1.3';
+      el.innerHTML = `${ov.text}<div style="font-size:9px;color:#92400e;margin-top:2px;"><i class="bi bi-clock-history me-1"></i>Pending save</div>`;
+    }
+
+    return el;
+  }
+
+  /* ════════════════════════════════════════════════════
+     Dirty-state helpers
+     ════════════════════════════════════════════════════ */
+  function _markDirty() {
+    _isDirty = true;
+    document.getElementById('btnViewerSave')?.classList.remove('d-none');
+  }
+
+  function _markClean() {
+    _isDirty        = false;
+    _pendingEdits   = [];
+    _stagedOverlays = [];
+    document.getElementById('btnViewerSave')?.classList.add('d-none');
+  }
+
+  function _showUnsavedConfirmation() {
+    document.getElementById('unsavedChangesOverlay')?.classList.remove('d-none');
+  }
+
+  function _hideUnsavedOverlay() {
+    document.getElementById('unsavedChangesOverlay')?.classList.add('d-none');
+  }
+
+  /* ════════════════════════════════════════════════════
+     Save all staged edits to the server
+     ════════════════════════════════════════════════════ */
+  async function saveAll() {
+    if (!_pendingEdits.length) { _markClean(); return; }
+
+    const toProcess = [..._pendingEdits];
+    for (const edit of toProcess) {
+      let data;
+      if (edit.method === 'post') data = await API.post(edit.apiPath, edit.body);
+      else                        data = await API.put(edit.apiPath, edit.body);
+
+      if (!data?.success) {
+        UI.toast(data?.message || `Failed to save ${edit.type}`, 'danger');
+        return; // leave remaining edits staged
+      }
+      if (data.document) currentDoc = data.document;
+    }
+
+    UI.toast('All changes saved', 'success');
+    _markClean();
+
+    // Re-render from fresh server data
+    const latestVer = currentDoc?.versions?.[currentDoc.versions.length - 1];
+    if (latestVer?.mimeType === 'application/pdf') {
+      try {
+        const resp = await fetch(
+          `/api/ems/documents/${currentDoc.id}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`,
+          { cache: 'no-store', credentials: 'include' }
+        );
+        const ab = await resp.arrayBuffer();
+        await _renderPdfPreview({ data: ab });
+      } catch (err) {
+        console.error('[DocViewer] post-save render failed:', err);
+        renderPreview();
+      }
+    } else {
+      renderPreview();
+      renderWatermark();
+      renderSignatures();
+    }
+  }
+
+  return { open, renderPreview, renderWatermark, enterSignaturePlacementMode, confirmPlacement, cancelPlacement, confirmAnnotation, cancelAnnotation, saveAll };
 })();

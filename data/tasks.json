@@ -732,5 +732,266 @@
     "comments": [],
     "escalated": false,
     "delegatedFrom": null
+  },
+  {
+    "id": "T2E8CAED7",
+    "title": "Approve new version of \"test\"",
+    "description": "Ahmed Al-Rashidi uploaded version 2 of \"test\" and it is pending your approval.",
+    "sourceSystem": "EMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-04-19T16:20:55.246Z",
+    "updatedAt": "2026-04-19T16:21:15.527Z",
+    "metadata": {
+      "emsVersionId": "DOC9CF41F87_v2",
+      "docId": "DOC9CF41F87",
+      "version": 2,
+      "docTitle": "test"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-19T16:20:55.246Z",
+        "note": "Version 2 submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-19T16:21:15.527Z",
+        "note": "Version 2 approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T88DD678A",
+    "title": "Approve Leave Request — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested annual leave for 2 day(s) (2026-04-23 to 2026-04-25). Reason: ",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-04-23",
+    "createdAt": "2026-04-20T09:13:23.250Z",
+    "updatedAt": "2026-04-20T09:13:34.610Z",
+    "metadata": {
+      "leaveId": "LB9261143",
+      "requestDetails": {
+        "userName": "Ahmed Al-Rashidi",
+        "type": "annual",
+        "startDate": "2026-04-23",
+        "endDate": "2026-04-25",
+        "days": 2,
+        "reason": "",
+        "customFields": {},
+        "submittedAt": "2026-04-20T09:13:23.250Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-20T09:13:23.250Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-20T09:13:34.610Z",
+        "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T23B503D2",
+    "title": "Approve new version of \"test\"",
+    "description": "Ahmed Al-Rashidi uploaded version 3 of \"test\" and it is pending your approval.",
+    "sourceSystem": "EMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-04-20T09:13:53.658Z",
+    "updatedAt": "2026-04-20T09:13:59.438Z",
+    "metadata": {
+      "emsVersionId": "DOC9CF41F87_v3",
+      "docId": "DOC9CF41F87",
+      "version": 3,
+      "docTitle": "test"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-20T09:13:53.658Z",
+        "note": "Version 3 submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-20T09:13:59.438Z",
+        "note": "Version 3 approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T2FF2811E",
+    "title": "Approve new version of \"test\"",
+    "description": "Ahmed Al-Rashidi uploaded version 4 of \"test\" and it is pending your approval.",
+    "sourceSystem": "EMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-04-20T09:16:20.175Z",
+    "updatedAt": "2026-04-20T09:16:25.266Z",
+    "metadata": {
+      "emsVersionId": "DOC9CF41F87_v4",
+      "docId": "DOC9CF41F87",
+      "version": 4,
+      "docTitle": "test"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-20T09:16:20.175Z",
+        "note": "Version 4 submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-20T09:16:25.266Z",
+        "note": "Version 4 approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T6D4EABBB",
+    "title": "Approve new version of \"test\"",
+    "description": "Ahmed Al-Rashidi uploaded version 5 of \"test\" and it is pending your approval.",
+    "sourceSystem": "EMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "rejected",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-04-20T09:19:04.294Z",
+    "updatedAt": "2026-04-20T09:19:14.518Z",
+    "metadata": {
+      "emsVersionId": "DOC9CF41F87_v5",
+      "docId": "DOC9CF41F87",
+      "version": 5,
+      "docTitle": "test"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-20T09:19:04.294Z",
+        "note": "Version 5 submitted for approval"
+      },
+      {
+        "action": "rejected",
+        "by": "u001",
+        "at": "2026-04-20T09:19:14.518Z",
+        "note": "Version 5 rejected — file removed"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T233D8B7B",
+    "title": "Approve Leave Request — Sara Hassan",
+    "description": "Sara Hassan has requested annual leave for 3 day(s) (2026-06-01 to 2026-06-03). Reason: test",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": "2026-06-01",
+    "createdAt": "2026-04-20T09:36:40.977Z",
+    "updatedAt": "2026-04-20T09:36:40.977Z",
+    "metadata": {
+      "leaveId": "L322B903E",
+      "requestDetails": {
+        "userName": "Sara Hassan",
+        "type": "annual",
+        "startDate": "2026-06-01",
+        "endDate": "2026-06-03",
+        "days": 3,
+        "reason": "test",
+        "customFields": {},
+        "submittedAt": "2026-04-20T09:36:40.977Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-20T09:36:40.977Z",
+        "note": "Leave request submitted"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T213B3F7C",
+    "title": "Approve new version of \"Q1 2026 Vendor Invoice - Acme Corp\"",
+    "description": "Sara Hassan uploaded version 2 of \"Q1 2026 Vendor Invoice - Acme Corp\" and it is pending your approval.",
+    "sourceSystem": "EMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u002",
+    "createdBy": "u004",
+    "dueDate": null,
+    "createdAt": "2026-04-20T09:42:01.947Z",
+    "updatedAt": "2026-04-20T09:42:01.947Z",
+    "metadata": {
+      "emsVersionId": "DOC1A2B3C01_v2",
+      "docId": "DOC1A2B3C01",
+      "version": 2,
+      "docTitle": "Q1 2026 Vendor Invoice - Acme Corp"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u004",
+        "at": "2026-04-20T09:42:01.947Z",
+        "note": "Version 2 submitted for approval"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
   }
 ]

@@ -236,7 +236,14 @@
       "Bash(curl -s -b /tmp/khalid.jar -X PUT http://localhost:3000/api/travel/TR-4A90791B -H 'Content-Type: application/json' -d '{\"status\":\"approved\",\"note\":\"Approved\"}')",
       "Bash(curl -s -b /tmp/khalid.jar -X PUT http://localhost:3000/api/purchase-orders/PO049BFCD0/reject -H 'Content-Type: application/json' -d '{\"note\":\"Budget freeze\"}')",
       "Bash(curl -s -b /tmp/khalid.jar -X PUT http://localhost:3000/api/material-requisitions/MR54D5F971/approve -H 'Content-Type: application/json' -d '{\"note\":\"Approved\"}')",
-      "Bash(node -e \"require\\('dotenv'\\)\")"
+      "Bash(node -e \"require\\('dotenv'\\)\")",
+      "Bash(node tests/run.js)",
+      "Bash(Get-Process -Name node -ErrorAction SilentlyContinue)",
+      "Bash(Stop-Process -Force)",
+      "Bash(Start-Sleep -Milliseconds 500)",
+      "Bash(Start-Process -NoNewWindow -FilePath \"node\" -ArgumentList \"server.js\" -RedirectStandardOutput \"test-server.log\" -RedirectStandardError \"test-server-err.log\")",
+      "Bash(Start-Sleep -Seconds 2)",
+      "Bash(node *)"
     ]
   }
 }
