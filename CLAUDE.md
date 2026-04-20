@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `npm install` | Install dependencies |
 | `npm start` | Start server on ports 3000 (browser) + 3001 (Teams) |
 | `npm run dev` | Start with nodemon (auto-restart on file changes) |
-| `npm test` | Run integration test suites (server must be running first) |
+| `npm test` | Run all workflow integration suites via `tests/run.js` (server must be running first) |
 | `node teams-app/update-url.js <URL>` | Update Teams manifest with tunnel URL + repackage zip |
 
 No build step, no TypeScript. The server runs directly with `node server.js`.
@@ -203,6 +203,7 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 - **Session reset:** Delete `.sessions/` directory to log out all users
 - Entity IDs: type prefix + first 8 chars of UUID (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `HD9B1C3D` for helpdesk). Helpdesk tickets also get a `ticketNo` in `TKT-YYYY-NNN` format
 - **Pages with no JS controller:** `erp-dialogue.html`, `voice-agent.html`, and `services.html`. Every other view has a matching controller — including `leave-assistant`, `wfh`, `travel`, `doc-chat`, `proposal-eval`, `resume-eval`, and `quick-services`
+- **Pages with no backing route file:** `erp-dialogue`, `voice-agent`, `quick-services`, `services`, `proposal-eval`, `resume-eval`, `doc-chat` — these are served by a generic static-page loop in `server.js` (see the `pages` array). They either have no server state or rely exclusively on proxied/external APIs (e.g. `/api/doceval-proxy`)
 - `views/landing.html` is the home dashboard (entry point after login); `views/services.html` and `views/quick-services.html` are service catalog views
 - `routes/finance.js` and `routes/news.js` are **API-only** — they have no corresponding view pages. All other routes have matching `views/*.html` + `public/js/*.js` pairs, including `material-requisitions` and `purchase-orders`.
 - `routes/analytics.js`, `routes/goals.js`, and `routes/directory.js` follow the standard route pattern (JSON-backed, role-filtered). `analytics.js` aggregates cross-module data (tasks, leaves, helpdesk, attendance) for dashboard widgets at `GET /api/analytics/summary`.
