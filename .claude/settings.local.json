@@ -243,7 +243,8 @@
       "Bash(Start-Sleep -Milliseconds 500)",
       "Bash(Start-Process -NoNewWindow -FilePath \"node\" -ArgumentList \"server.js\" -RedirectStandardOutput \"test-server.log\" -RedirectStandardError \"test-server-err.log\")",
       "Bash(Start-Sleep -Seconds 2)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(npm --version)"
     ]
   }
 }

@@ -9,11 +9,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `npm install` | Install dependencies |
 | `npm start` | Start server on ports 3000 (browser) + 3001 (Teams) |
 | `npm run dev` | Start with nodemon (auto-restart on file changes) |
+| `npm test` | Run integration test suites (server must be running first) |
 | `node teams-app/update-url.js <URL>` | Update Teams manifest with tunnel URL + repackage zip |
 
-No build step, no test runner, no TypeScript. The server runs directly with `node server.js`.
+No build step, no TypeScript. The server runs directly with `node server.js`.
 
-**Environment variables:**
+**Tests** live in `tests/workflows/` — integration tests that hit a live server via HTTP. Run a single suite directly:
+```bash
+node tests/workflows/leave.test.js        # or wfh, travel, purchase-orders, material-requisitions, ems-versions
+```
+Set `TEST_BASE_URL` to target a non-default server (default: `http://localhost:3000`). Tests clean up all created records automatically.
+
+**Environment variables** (copy `.env.example` → `.env` to get started):
 - `GROQ_API_KEY` — required for `/api/hr-chat` and `/api/leave-assistant/chat` (both use Groq llama-3.3-70b-versatile via raw `fetch` to `api.groq.com` — no groq npm package)
 - `PORT` — overrides default port 3000
 - `TEAMS_PORT` — overrides Teams proxy server port (default 3001); used by `teams-app/server.js`
