@@ -303,7 +303,7 @@ const EMS_Documents = (() => {
           const ver = doc.versions?.find(v => v.version === doc.currentVersion);
           const filename = ver?.filename || `${doc.title}.pdf`;
           const resp = await fetch(
-            `/api/ems/documents/${doc.id}/versions/${doc.currentVersion}/download`,
+            `/unifiedwp/api/ems/documents/${doc.id}/versions/${doc.currentVersion}/download`,
             { credentials: 'include' }
           );
           if (!resp.ok) throw new Error(`Could not fetch "${doc.title}"`);
@@ -311,7 +311,7 @@ const EMS_Documents = (() => {
           fd.append('files', blob, filename);
         }
 
-        const ingestResp = await fetch('/api/doceval-proxy/api/general/ingest', {
+        const ingestResp = await fetch('/unifiedwp/api/doceval-proxy/api/general/ingest', {
           method: 'POST', credentials: 'include', body: fd
         });
         if (!ingestResp.ok) throw new Error('Ingest failed: ' + ingestResp.statusText);
@@ -429,7 +429,7 @@ const EMS_Documents = (() => {
     if (selectedFile) formData.append('file', selectedFile);
 
     try {
-      const res = await fetch('/api/ems/documents', { method: 'POST', credentials: 'include', body: formData });
+      const res = await fetch('/unifiedwp/api/ems/documents', { method: 'POST', credentials: 'include', body: formData });
       const data = await res.json();
       if (data?.success) {
         UI.toast('Document uploaded successfully');
@@ -509,7 +509,7 @@ const EMS_Documents = (() => {
       formData.append('file', selectedFile);
       formData.append('notes', document.getElementById('versionNotes').value.trim());
 
-      const res = await fetch(`/api/ems/documents/${activeDocId}/versions`, { method: 'POST', credentials: 'include', body: formData });
+      const res = await fetch(`/unifiedwp/api/ems/documents/${activeDocId}/versions`, { method: 'POST', credentials: 'include', body: formData });
       const data = await res.json();
       if (data?.success) {
         UI.toast(data.message || 'Version submitted for approval', 'info');

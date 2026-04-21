@@ -65,11 +65,11 @@ app.set('trust proxy', 1);
 // ─── Middleware ────────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/unifiedwp', express.static(path.join(__dirname, 'public')));
 
 // Serve EMS uploads (no separate auth guard — session middleware runs after static,
 // and files are referenced by opaque document IDs; download API has its own auth)
-app.use('/uploads/ems', express.static(path.join(__dirname, 'uploads', 'ems')));
+app.use('/unifiedwp/uploads/ems', express.static(path.join(__dirname, 'uploads', 'ems')));
 
 // Allow embedding in Microsoft Teams iframe
 app.use((req, res, next) => {
@@ -110,7 +110,7 @@ app.use((req, res, next) => {
 });
 
 // ─── Dynamic Theme CSS (no auth — CSS must load on every page) ─────────────
-app.get('/theme.css', (req, res) => {
+app.get('/unifiedwp/theme.css', (req, res) => {
   try {
     const settings = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/settings.json'), 'utf8'));
     res.setHeader('Content-Type', 'text/css');
@@ -137,69 +137,79 @@ app.use((req, res, next) => {
 // ─── Auth Guard ────────────────────────────────────────────────────────────────
 const requireAuth = (req, res, next) => {
   if (req.session && req.session.user) return next();
-  res.redirect('/login');
+  res.redirect('/unifiedwp/login');
 };
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
-app.use('/api/auth',      require('./routes/auth'));
-app.use('/api/tasks',     require('./routes/tasks'));
-app.use('/api/leaves',    require('./routes/leaves'));
-app.use('/api/analytics', require('./routes/analytics'));
-app.use('/api/goals',     require('./routes/goals'));
-app.use('/api/appraisal', require('./routes/appraisal'));
-app.use('/api/attendance',require('./routes/attendance'));
-app.use('/api/policy',    require('./routes/policy'));
-app.use('/api/helpdesk',  require('./routes/helpdesk'));
-app.use('/api/directory', require('./routes/directory'));
-app.use('/api/news',      require('./routes/news'));
-app.use('/api/customize', require('./routes/customize'));
-app.use('/api/finance',  require('./routes/finance'));
-app.use('/api/wfh',      require('./routes/wfh'));
-app.use('/api/hr-chat',         require('./routes/hr-chat'));
-app.use('/api/leave-assistant', require('./routes/leave-assistant'));
-app.use('/api/doceval-proxy', require('./routes/doceval'));
-app.use('/api/travel',                require('./routes/travel'));
-app.use('/api/purchase-orders',       require('./routes/purchase-orders'));
-app.use('/api/material-requisitions', require('./routes/material-requisitions'));
-app.use('/api/ems',      require('./routes/ems/index'));
+app.use('/unifiedwp/api/auth',      require('./routes/auth'));
+app.use('/unifiedwp/api/tasks',     require('./routes/tasks'));
+app.use('/unifiedwp/api/leaves',    require('./routes/leaves'));
+app.use('/unifiedwp/api/analytics', require('./routes/analytics'));
+app.use('/unifiedwp/api/goals',     require('./routes/goals'));
+app.use('/unifiedwp/api/appraisal', require('./routes/appraisal'));
+app.use('/unifiedwp/api/attendance',require('./routes/attendance'));
+app.use('/unifiedwp/api/policy',    require('./routes/policy'));
+app.use('/unifiedwp/api/helpdesk',  require('./routes/helpdesk'));
+app.use('/unifiedwp/api/directory', require('./routes/directory'));
+app.use('/unifiedwp/api/news',      require('./routes/news'));
+app.use('/unifiedwp/api/customize', require('./routes/customize'));
+app.use('/unifiedwp/api/finance',   require('./routes/finance'));
+app.use('/unifiedwp/api/wfh',       require('./routes/wfh'));
+app.use('/unifiedwp/api/hr-chat',         require('./routes/hr-chat'));
+app.use('/unifiedwp/api/leave-assistant', require('./routes/leave-assistant'));
+app.use('/unifiedwp/api/doceval-proxy',   require('./routes/doceval'));
+app.use('/unifiedwp/api/travel',                require('./routes/travel'));
+app.use('/unifiedwp/api/purchase-orders',       require('./routes/purchase-orders'));
+app.use('/unifiedwp/api/material-requisitions', require('./routes/material-requisitions'));
+app.use('/unifiedwp/api/ems',      require('./routes/ems/index'));
 
-app.get('/api/me', requireAuth, (req, res) => {
+app.get('/unifiedwp/api/me', requireAuth, (req, res) => {
   res.json({ success: true, user: req.session.user });
 });
 
 // ─── Heartbeat (keeps session & tunnel alive for Teams iframe) ────────────
-app.get('/api/heartbeat', (req, res) => {
-  // Touch the session so it doesn't expire while the tab is open
+app.get('/unifiedwp/api/heartbeat', (req, res) => {
   if (req.session) req.session._heartbeat = Date.now();
   res.json({ ok: true });
 });
 
 // ─── AI warm-up (wakes the Heroku dyno before the user needs it) ─────────
-app.get('/api/ai-warmup', (req, res) => {
+app.get('/unifiedwp/api/ai-warmup', (req, res) => {
   const host = process.env.DOCEVAL_URL || 'doceval-8362469192e8.herokuapp.com';
-  // Fire-and-forget: kick the dyno awake without blocking the response
   require('https').get({ hostname: host, path: '/', timeout: 30000 }, () => {}).on('error', () => {});
   res.json({ ok: true });
 });
 
+// ─── Mobile PWA Routes (/unifiedwp/m/*) ──────────────────────────────────────
+app.get('/unifiedwp/m',          (_, res) => res.redirect('/unifiedwp/m/login'));
+app.get('/unifiedwp/m/login',    (_, res) => res.sendFile(path.join(__dirname, 'views/mobile/login.html')));
+app.get('/unifiedwp/m/home',     (_, res) => res.sendFile(path.join(__dirname, 'views/mobile/home.html')));
+app.get('/unifiedwp/m/tasks',    (_, res) => res.sendFile(path.join(__dirname, 'views/mobile/tasks.html')));
+app.get('/unifiedwp/m/services', (_, res) => res.sendFile(path.join(__dirname, 'views/mobile/services.html')));
+app.get('/unifiedwp/m/leave',    (_, res) => res.sendFile(path.join(__dirname, 'views/mobile/leave.html')));
+app.get('/unifiedwp/m/wfh',      (_, res) => res.sendFile(path.join(__dirname, 'views/mobile/wfh.html')));
+
 // ─── View Routes ──────────────────────────────────────────────────────────────
-app.get('/login', (req, res) => {
-  if (req.session && req.session.user) return res.redirect('/');
+app.get('/unifiedwp/login', (req, res) => {
+  if (req.session && req.session.user) return res.redirect('/unifiedwp/');
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
 const pages = ['', 'tasks', 'leaves', 'wfh', 'services', 'analytics', 'goals', 'appraisal', 'attendance', 'policy', 'helpdesk', 'directory', 'customize', 'erp-dialogue', 'leave-assistant', 'voice-agent', 'quick-services', 'proposal-eval', 'resume-eval', 'doc-chat', 'travel', 'purchase-orders', 'material-requisitions'];
 
 pages.forEach(page => {
-  const route = page === '' ? '/' : `/${page}`;
+  const route = page === '' ? '/unifiedwp/' : `/unifiedwp/${page}`;
   const file  = page === '' ? 'landing' : page;
   app.get(route, requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', `${file}.html`));
   });
 });
 
+// Redirect bare /unifiedwp to /unifiedwp/
+app.get('/unifiedwp', (req, res) => res.redirect('/unifiedwp/'));
+
 // ─── EMS View Route ──────────────────────────────────────────────────────────
-app.get('/ems', requireAuth, (req, res) => {
+app.get('/unifiedwp/ems', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'ems', 'index.html'));
 });
 

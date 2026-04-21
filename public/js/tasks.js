@@ -15,8 +15,42 @@ function _exitReviewMode() {
   document.getElementById('taskDetailModal')?.classList.remove('review-mode');
   document.getElementById('taskNormalView')?.classList.remove('d-none');
   document.getElementById('taskReviewView')?.classList.add('d-none');
+  document.getElementById('reviewVersionBar').style.display = 'none';
   document.getElementById('reviewPdfScroller').innerHTML =
     '<div class="task-review-pdf-loading" id="reviewPdfLoading"><div class="spinner-border text-secondary" role="status"></div><div class="mt-2 text-muted" style="font-size:13px;">Loading document…</div></div>';
+}
+
+async function _loadVersionPdf(docId, version) {
+  const scroller = document.getElementById('reviewPdfScroller');
+  scroller.innerHTML = '<div class="task-review-pdf-loading"><div class="spinner-border text-secondary" role="status"></div><div class="mt-2 text-muted" style="font-size:13px;">Loading document…</div></div>';
+  try {
+    const resp = await fetch(`/unifiedwp/api/ems/documents/${docId}/versions/${version}/view`, { credentials: 'include' });
+    if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
+    const buffer = await resp.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+    const outputScale = window.devicePixelRatio || 1;
+
+    scroller.innerHTML = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const availW = Math.max(400, scroller.parentElement.clientWidth - 40);
+      const vp0 = page.getViewport({ scale: 1 });
+      const fitScale = availW / vp0.width;
+      const viewport = page.getViewport({ scale: fitScale * outputScale });
+      const cssW = Math.floor(vp0.width * fitScale);
+      const cssH = Math.floor(vp0.height * fitScale);
+
+      const canvas = document.createElement('canvas');
+      canvas.width  = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      canvas.style.width  = cssW + 'px';
+      canvas.style.height = cssH + 'px';
+      scroller.appendChild(canvas);
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    }
+  } catch (err) {
+    scroller.innerHTML = `<div class="text-danger p-3">Failed to load document: ${err.message}</div>`;
+  }
 }
 
 async function _enterReviewMode(docId, version, docTitle) {
@@ -47,35 +81,31 @@ async function _enterReviewMode(docId, version, docTitle) {
     ${t.comments.length ? `<hr><div class="text-muted mb-2" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Comments</div>${t.comments.map(c=>`<div class="mb-2 p-2 rounded" style="background:#f8f9fa;font-size:12px;"><strong>${c.name||c.by}</strong><div>${c.text}</div></div>`).join('')}` : ''}
   `;
 
-  // Load PDF via pdf.js
-  const scroller = document.getElementById('reviewPdfScroller');
+  // Build version dropdown from document versions list
+  const versionBar = document.getElementById('reviewVersionBar');
+  const versionSelect = document.getElementById('reviewVersionSelect');
   try {
-    const resp = await fetch(`/api/ems/documents/${docId}/versions/${version}/view`, { credentials: 'include' });
-    const buffer = await resp.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
-    const outputScale = window.devicePixelRatio || 1;
-
-    scroller.innerHTML = '';
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const availW = Math.max(400, scroller.parentElement.clientWidth - 40);
-      const vp0 = page.getViewport({ scale: 1 });
-      const fitScale = availW / vp0.width;
-      const viewport = page.getViewport({ scale: fitScale * outputScale });
-      const cssW = Math.floor(vp0.width * fitScale);
-      const cssH = Math.floor(vp0.height * fitScale);
-
-      const canvas = document.createElement('canvas');
-      canvas.width  = Math.floor(viewport.width);
-      canvas.height = Math.floor(viewport.height);
-      canvas.style.width  = cssW + 'px';
-      canvas.style.height = cssH + 'px';
-      scroller.appendChild(canvas);
-      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    const docData = await API.get(`/api/ems/documents/${docId}`);
+    if (docData?.success && docData.document?.versions?.length) {
+      const versions = docData.document.versions;
+      const statusLabel = { approved: 'Approved', pending: 'Pending Approval', rejected: 'Rejected' };
+      versionSelect.innerHTML = versions
+        .slice()
+        .reverse()
+        .map(v => {
+          const label = `v${v.version} — ${v.notes || ''}${v.status !== 'approved' ? ` (${statusLabel[v.status] || v.status})` : ''}`;
+          return `<option value="${v.version}" ${v.version === version ? 'selected' : ''}>${label}</option>`;
+        })
+        .join('');
+      versionBar.style.display = 'flex';
+    } else {
+      versionBar.style.display = 'none';
     }
-  } catch (err) {
-    scroller.innerHTML = `<div class="text-danger p-3">Failed to load document: ${err.message}</div>`;
+  } catch {
+    versionBar.style.display = 'none';
   }
+
+  await _loadVersionPdf(docId, version);
 }
 const createTaskModal   = () => bootstrap.Modal.getOrCreateInstance(document.getElementById('createTaskModal'));
 const delegateModal     = () => bootstrap.Modal.getOrCreateInstance(document.getElementById('delegateModal'));
@@ -538,6 +568,13 @@ function bindModals() {
 
   // Back button — exit review mode
   document.getElementById('btnExitReview')?.addEventListener('click', _exitReviewMode);
+
+  // Version selector — reload PDF when user picks a different version
+  document.getElementById('reviewVersionSelect')?.addEventListener('change', () => {
+    if (!activeTask?.metadata?.docId) return;
+    const selectedVersion = parseInt(document.getElementById('reviewVersionSelect').value, 10);
+    _loadVersionPdf(activeTask.metadata.docId, selectedVersion);
+  });
 
   // Approve from review mode
   document.getElementById('btnApproveReview')?.addEventListener('click', async () => {

@@ -5,7 +5,7 @@
    which is unique to CV evaluations.
    ─────────────────────────────────────────────────────────── */
 
-const DOCEVAL_BASE = '/api/doceval-proxy';
+const DOCEVAL_BASE = '/unifiedwp/api/doceval-proxy';
 
 /* ── Module State ── */
 let uploadedFiles    = [];

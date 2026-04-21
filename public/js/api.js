@@ -3,39 +3,41 @@
    Every page controller imports this file first.
    ============================================================ */
 
+const BASE = '/unifiedwp';
+
 const API = {
   /* ── HTTP Helpers ─────────────────────────────────────── */
   async get(url) {
-    const res = await fetch(url, { credentials: 'include' });
-    if (res.status === 401) { window.location.href = '/login'; return; }
+    const res = await fetch(BASE + url, { credentials: 'include' });
+    if (res.status === 401) { window.location.href = BASE + '/login'; return; }
     return res.json();
   },
 
   async post(url, body = {}) {
-    const res = await fetch(url, {
+    const res = await fetch(BASE + url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify(body)
     });
-    if (res.status === 401) { window.location.href = '/login'; return; }
+    if (res.status === 401) { window.location.href = BASE + '/login'; return; }
     return res.json();
   },
 
   async put(url, body = {}) {
-    const res = await fetch(url, {
+    const res = await fetch(BASE + url, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify(body)
     });
-    if (res.status === 401) { window.location.href = '/login'; return; }
+    if (res.status === 401) { window.location.href = BASE + '/login'; return; }
     return res.json();
   },
 
   async del(url) {
-    const res = await fetch(url, { method: 'DELETE', credentials: 'include' });
-    if (res.status === 401) { window.location.href = '/login'; return; }
+    const res = await fetch(BASE + url, { method: 'DELETE', credentials: 'include' });
+    if (res.status === 401) { window.location.href = BASE + '/login'; return; }
     return res.json();
   },
 
@@ -179,7 +181,7 @@ const Layout = {
       <div class="notif-header">Notifications <span class="notif-badge">${count}</span></div>
       <div class="notif-list">
         ${notifs.map(n => `
-          <a href="${n.link}" class="notif-item ${n.read ? 'read' : ''}" data-id="${n.id}">
+          <a href="${BASE + n.link}" class="notif-item ${n.read ? 'read' : ''}" data-id="${n.id}">
             <i class="bi ${typeIcons[n.type] || 'bi-bell'} notif-icon"></i>
             <div class="notif-content">
               <div class="notif-title">${n.title}</div>
@@ -240,7 +242,7 @@ const Heartbeat = {
 
   async _ping() {
     try {
-      const res = await fetch('/api/heartbeat', {
+      const res = await fetch(BASE + '/api/heartbeat', {
         credentials: 'include',
         signal: AbortSignal.timeout(8000)    // 8s timeout
       });

@@ -5,7 +5,7 @@
    ═══════════════════════════════════════════════════════ */
 window.EMS_KnowledgeChat = (() => {
 
-  const PROXY = '/api/doceval-proxy';
+  const PROXY = '/unifiedwp/api/doceval-proxy';
 
   let _sessionId   = null;
   let _chatHistory = [];

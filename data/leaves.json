@@ -240,5 +240,21 @@
     "reviewedBy": null,
     "reviewedAt": null,
     "reviewNote": ""
+  },
+  {
+    "id": "L1D387497",
+    "userId": "u001",
+    "type": "annual",
+    "startDate": "2026-04-21",
+    "endDate": "2026-04-22",
+    "days": 2,
+    "reason": "",
+    "customFields": {},
+    "status": "approved",
+    "taskId": "T5CF72AFA",
+    "submittedAt": "2026-04-21T09:48:09.944Z",
+    "reviewedBy": "u001",
+    "reviewedAt": "2026-04-21T09:48:18.852Z",
+    "reviewNote": ""
   }
 ]

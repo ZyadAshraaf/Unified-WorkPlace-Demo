@@ -955,5 +955,59 @@
     "trashedAt": null,
     "lockedBy": null,
     "lockedAt": null
+  },
+  {
+    "id": "DOCAE1CF945",
+    "title": "test",
+    "description": "xfgf",
+    "folderId": "FLD1A2B3C08",
+    "docTypeId": "DT007",
+    "metadata": {
+      "proposal_number": "100",
+      "client_name": "X",
+      "proposal_date": "2026-05-06",
+      "proposal_amount": 100,
+      "validity_days": 26
+    },
+    "status": "active",
+    "createdBy": "u001",
+    "createdAt": "2026-04-21T09:51:30.907Z",
+    "updatedAt": "2026-04-21T09:58:02.959Z",
+    "currentVersion": 2,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "Proposal_Alpha_Digital_Solutions (1).pdf",
+        "storagePath": "uploads/ems/DOCAE1CF945_v1.pdf",
+        "mimeType": "application/pdf",
+        "size": 233239,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-04-21T09:51:30.908Z",
+        "notes": "Initial upload"
+      },
+      {
+        "version": 2,
+        "filename": "Proposal_Beta_Tech_Innovations.pdf",
+        "storagePath": "uploads/ems/DOCAE1CF945_v2.pdf",
+        "mimeType": "application/pdf",
+        "size": 240555,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-04-21T09:51:48.581Z",
+        "notes": "Version 2",
+        "status": "approved"
+      }
+    ],
+    "signatures": [],
+    "watermark": {
+      "enabled": false,
+      "text": "CONFIDENTIAL",
+      "opacity": 0.15,
+      "angle": -30
+    },
+    "annotations": [],
+    "starred": [],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
   }
 ]

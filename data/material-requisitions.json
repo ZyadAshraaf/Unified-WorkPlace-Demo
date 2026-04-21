@@ -173,5 +173,32 @@
     "reviewedBy": null,
     "reviewedAt": null,
     "reviewNote": ""
+  },
+  {
+    "id": "MR6B7DE2A6",
+    "mrqNumber": "MR-2026-0006",
+    "userId": "u001",
+    "department": "Executive",
+    "deliveryLocation": "Riyadh HQ",
+    "requiredBy": "2026-05-01",
+    "priority": "normal",
+    "projectCode": "",
+    "lineItems": [
+      {
+        "materialCode": "MAT-001",
+        "materialName": "A4 Paper Ream (500 sheets)",
+        "category": "Stationery",
+        "uom": "Ream",
+        "qtyRequested": 1,
+        "stockAvailable": 120
+      }
+    ],
+    "justification": "iojyutr",
+    "status": "approved",
+    "taskId": "TF296F0EA",
+    "submittedAt": "2026-04-21T09:49:50.635Z",
+    "reviewedBy": "u001",
+    "reviewedAt": "2026-04-21T09:49:54.079Z",
+    "reviewNote": ""
   }
 ]

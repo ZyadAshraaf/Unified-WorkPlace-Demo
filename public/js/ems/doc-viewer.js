@@ -113,7 +113,7 @@ const EMS_DocViewer = (() => {
     document.getElementById('btnViewerDownload').onclick = () => {
       if (!currentDoc.versions?.length) return UI.toast('No file to download', 'warning');
       const a = document.createElement('a');
-      a.href = `/api/ems/documents/${docId}/versions/${currentDoc.currentVersion}/download`;
+      a.href = `/unifiedwp/api/ems/documents/${docId}/versions/${currentDoc.currentVersion}/download`;
       a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
@@ -161,10 +161,10 @@ const EMS_DocViewer = (() => {
     }
 
     const latest = currentDoc.versions[currentDoc.versions.length - 1];
-    const url    = `/${latest.storagePath}`;
+    const url    = `/unifiedwp/${latest.storagePath}`;
 
     if (latest.mimeType === 'application/pdf') {
-      const viewUrl = `/api/ems/documents/${currentDoc.id}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`;
+      const viewUrl = `/unifiedwp/api/ems/documents/${currentDoc.id}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`;
       _renderPdfPreview(viewUrl); // pdf.js canvas rendering — no browser PDF chrome
     } else if (latest.mimeType?.startsWith('image/')) {
       body.innerHTML = `<img src="${url}" alt="${currentDoc.title}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
@@ -255,7 +255,7 @@ const EMS_DocViewer = (() => {
     } catch (err) {
       console.error('[DocViewer] pdf.js preview failed:', err);
       const url = typeof source === 'string' ? source
-        : `/api/ems/documents/${currentDoc.id}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`;
+        : `/unifiedwp/api/ems/documents/${currentDoc.id}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`;
       body.innerHTML = `<iframe src="${url}" style="width:100%;height:100%;border:none;"></iframe>`;
     }
   }
@@ -314,7 +314,7 @@ const EMS_DocViewer = (() => {
 
     const pageInput = document.getElementById('signPlacementPage');
     const pageNum   = Math.max(1, parseInt(pageInput?.value || '1'));
-    const viewUrl   = `/api/ems/documents/${currentDoc.id}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`;
+    const viewUrl   = `/unifiedwp/api/ems/documents/${currentDoc.id}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`;
 
     try {
       const pdf         = await pdfjsLib.getDocument(viewUrl).promise;
@@ -666,7 +666,7 @@ const EMS_DocViewer = (() => {
             </div>
             ${v.notes ? `<div class="version-meta mt-1"><i class="bi bi-chat-left-text me-1"></i>${v.notes}</div>` : ''}
           </div>
-          ${!isPending ? `<button class="btn btn-sm btn-outline-primary" onclick="window.open('/api/ems/documents/${docId}/versions/${v.version}/download','_blank')"><i class="bi bi-download"></i></button>` : '<span class="btn btn-sm btn-outline-secondary disabled"><i class="bi bi-hourglass"></i></span>'}
+          ${!isPending ? `<button class="btn btn-sm btn-outline-primary" onclick="window.open('/unifiedwp/api/ems/documents/${docId}/versions/${v.version}/download','_blank')"><i class="bi bi-download"></i></button>` : '<span class="btn btn-sm btn-outline-secondary disabled"><i class="bi bi-hourglass"></i></span>'}
         </div>`;
       }).join('');
 
@@ -921,7 +921,7 @@ const EMS_DocViewer = (() => {
     if (latestVer?.mimeType === 'application/pdf') {
       try {
         const resp = await fetch(
-          `/api/ems/documents/${currentDoc.id}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`,
+          `/unifiedwp/api/ems/documents/${currentDoc.id}/versions/${currentDoc.currentVersion}/view?t=${Date.now()}`,
           { cache: 'no-store', credentials: 'include' }
         );
         const ab = await resp.arrayBuffer();

@@ -124,5 +124,19 @@
     "reviewedBy": "u001",
     "reviewedAt": "2026-04-19T15:27:24.214Z",
     "reviewNote": ""
+  },
+  {
+    "id": "W2CCB1BBF",
+    "userId": "u001",
+    "startDate": "2026-04-24",
+    "endDate": "2026-04-25",
+    "days": 1,
+    "reason": "",
+    "status": "approved",
+    "taskId": "T187F3110",
+    "submittedAt": "2026-04-21T09:48:28.879Z",
+    "reviewedBy": "u001",
+    "reviewedAt": "2026-04-21T09:48:33.799Z",
+    "reviewNote": ""
   }
 ]

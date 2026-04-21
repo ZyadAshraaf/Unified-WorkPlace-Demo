@@ -993,5 +993,230 @@
     "comments": [],
     "escalated": false,
     "delegatedFrom": null
+  },
+  {
+    "id": "T5CF72AFA",
+    "title": "Approve Leave Request — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested annual leave for 2 day(s) (2026-04-21 to 2026-04-22). Reason: ",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-04-21",
+    "createdAt": "2026-04-21T09:48:09.944Z",
+    "updatedAt": "2026-04-21T09:48:18.852Z",
+    "metadata": {
+      "leaveId": "L1D387497",
+      "requestDetails": {
+        "userName": "Ahmed Al-Rashidi",
+        "type": "annual",
+        "startDate": "2026-04-21",
+        "endDate": "2026-04-22",
+        "days": 2,
+        "reason": "",
+        "customFields": {},
+        "submittedAt": "2026-04-21T09:48:09.944Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-21T09:48:09.944Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-21T09:48:18.852Z",
+        "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T187F3110",
+    "title": "Approve WFH Request — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested to work from home for 1 day(s) (2026-04-24 to 2026-04-25). Reason: Not provided",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-04-24",
+    "createdAt": "2026-04-21T09:48:28.879Z",
+    "updatedAt": "2026-04-21T09:48:33.799Z",
+    "metadata": {
+      "wfhId": "W2CCB1BBF",
+      "requestDetails": {
+        "userName": "Ahmed Al-Rashidi",
+        "startDate": "2026-04-24",
+        "endDate": "2026-04-25",
+        "days": 1,
+        "reason": "",
+        "submittedAt": "2026-04-21T09:48:28.879Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-21T09:48:28.879Z",
+        "note": "WFH request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-21T09:48:33.799Z",
+        "note": "WFH request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T742E1666",
+    "title": "Approve Business Trip — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested a business trip to Abha for 4 day(s) (2026-05-01 to 2026-05-04). Purpose: klhkjh. Total estimated cost: SAR 3,160.",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "completed",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-05-01",
+    "createdAt": "2026-04-21T09:48:59.391Z",
+    "updatedAt": "2026-04-21T09:49:06.527Z",
+    "metadata": {
+      "travelId": "TR-4941A0F5"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-21T09:48:59.391Z",
+        "note": "Business travel request submitted"
+      },
+      {
+        "action": "updated",
+        "by": "u001",
+        "at": "2026-04-21T09:49:06.527Z",
+        "note": "Marked as complete"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T36DA7AF2",
+    "title": "Approve Purchase Order — PO-2026-0007",
+    "description": "Ahmed Al-Rashidi submitted PO-2026-0007 to Al Futtaim Office Solutions for USD 115.00. Cost Center: HR.",
+    "sourceSystem": "Procurement",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-04-24",
+    "createdAt": "2026-04-21T09:49:31.951Z",
+    "updatedAt": "2026-04-21T09:49:35.749Z",
+    "metadata": {
+      "poId": "PO624E5CB4"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-21T09:49:31.951Z",
+        "note": "Purchase Order submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-21T09:49:35.749Z",
+        "note": "PO approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TF296F0EA",
+    "title": "Approve Material Requisition — MR-2026-0006",
+    "description": "Ahmed Al-Rashidi (Executive) requested 1 material line(s) (1 total units) for Riyadh HQ. Required by: 2026-05-01.",
+    "sourceSystem": "Warehouse",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-05-01",
+    "createdAt": "2026-04-21T09:49:50.635Z",
+    "updatedAt": "2026-04-21T09:49:54.079Z",
+    "metadata": {
+      "mrqId": "MR6B7DE2A6"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-21T09:49:50.635Z",
+        "note": "Material Requisition submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-21T09:49:54.079Z",
+        "note": "Requisition approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T858F1F75",
+    "title": "Approve new version of \"test\"",
+    "description": "Ahmed Al-Rashidi uploaded version 2 of \"test\" and it is pending your approval.",
+    "sourceSystem": "EMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-04-21T09:51:48.582Z",
+    "updatedAt": "2026-04-21T09:58:02.960Z",
+    "metadata": {
+      "emsVersionId": "DOCAE1CF945_v2",
+      "docId": "DOCAE1CF945",
+      "version": 2,
+      "docTitle": "test"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-04-21T09:51:48.582Z",
+        "note": "Version 2 submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-04-21T09:58:02.960Z",
+        "note": "Version 2 approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
   }
 ]

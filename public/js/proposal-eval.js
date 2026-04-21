@@ -3,7 +3,7 @@
    server) using fetch + FormData for multipart uploads.
    ─────────────────────────────────────────────────────────── */
 
-const DOCEVAL_BASE = '/api/doceval-proxy';
+const DOCEVAL_BASE = '/unifiedwp/api/doceval-proxy';
 
 /* ── Module State ── */
 let uploadedFiles    = [];   // File objects chosen by the user

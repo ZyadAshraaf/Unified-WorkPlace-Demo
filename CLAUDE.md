@@ -21,7 +21,7 @@ node tests/workflows/leave.test.js        # or wfh, travel, purchase-orders, mat
 Set `TEST_BASE_URL` to target a non-default server (default: `http://localhost:3000`). Tests clean up all created records automatically.
 
 **Environment variables** (copy `.env.example` → `.env` to get started):
-- `GROQ_API_KEY` — required for `/api/hr-chat` and `/api/leave-assistant/chat` (both use Groq llama-3.3-70b-versatile via raw `fetch` to `api.groq.com` — no groq npm package)
+- `GROQ_API_KEY` — required for `/unifiedwp/api/hr-chat` and `/unifiedwp/api/leave-assistant/chat` (both use Groq llama-3.3-70b-versatile via raw `fetch` to `api.groq.com` — no groq npm package)
 - `PORT` — overrides default port 3000
 - `TEAMS_PORT` — overrides Teams proxy server port (default 3001); used by `teams-app/server.js`
 - `MAIN_APP_ORIGIN` — overrides proxy target in `teams-app/server.js` (default `http://localhost:3000`)
@@ -37,7 +37,7 @@ public/
   js/                  # Client-side controllers (1-to-1 with views); ems/ sub-controllers
   assets/
 data/                  # JSON "database" files (users, tasks, leaves, settings, ems-*, etc.)
-uploads/ems/           # Uploaded document files (served at /uploads/ems/*)
+uploads/ems/           # Uploaded document files (served at /unifiedwp/uploads/ems/*)
 utils/teamsNotify.js   # Teams activity feed notification helper
 teams-app/             # Teams tab manifest + standalone server (port 3001)
 teams-app-tasks/       # Separate Teams manifest for tasks-only view
@@ -53,11 +53,13 @@ Key non-obvious files:
 
 Single **Node.js/Express** server (`server.js`) serving both a browser app (port 3000) and Microsoft Teams iframe (port 3001 via tunnel). One codebase — Teams is just a manifest pointing at the same Express routes.
 
+**Base path: `/unifiedwp`** — every route, static asset, and API call is prefixed with `/unifiedwp`. Examples: `http://localhost:3000/unifiedwp/`, `/unifiedwp/api/leaves`, `/unifiedwp/theme.css`, `/unifiedwp/m/home`. When adding new routes or writing client-side `fetch` calls, always include this prefix.
+
 - **Backend:** Express routes in `routes/` — each route reads/writes JSON files in `data/` directly via `fs.readFileSync`/`fs.writeFileSync`
 - **Frontend:** Vanilla HTML/CSS/JS — no React/Vue/Angular, no bundler. Bootstrap 5.3 + Chart.js 4.4 loaded from CDN
 - **Database:** JSON files in `data/` — no external DB
 - **Auth:** `express-session` with file-based store in `.sessions/`, 8-hour TTL
-- **Theme engine:** `GET /theme.css` is a **dynamic Express endpoint** (not a static file) that computes CSS variables from `data/settings.json` on every request
+- **Theme engine:** `GET /unifiedwp/theme.css` is a **dynamic Express endpoint** (not a static file) that computes CSS variables from `data/settings.json` on every request
 
 **1-to-1 view/controller pairing:** Every `views/X.html` has exactly one `public/js/X.js` controller. HTML has structure only; JS handles all API calls, DOM updates, and events. The only exception is `views/ems/index.html`, which orchestrates multiple sub-controllers from `public/js/ems/`.
 
@@ -133,7 +135,9 @@ Leave and WFH modules follow an identical workflow pattern:
 
 Tasks also support comments (`/:id/comment`), delegation (`/:id/delegate`), reassignment (`/:id/reassign`), and escalation (`/:id/escalate`) — tracked via `history[]`, `comments[]`, `delegatedFrom`, and `escalated` fields.
 
-The **Appraisal**, **Travel**, **Material Requisitions**, and **Purchase Orders** modules also follow this same approval workflow — submissions create tasks in `data/tasks.json` linked to the manager, and approval/rejection updates both the record and the linked task.
+The **Appraisal**, **Travel**, **Material Requisitions**, **Purchase Orders**, and **EMS document versions** modules also follow this same approval workflow — submissions create tasks in `data/tasks.json` linked to the manager, and approval/rejection updates both the record and the linked task.
+
+**EMS document version approval** (`POST /unifiedwp/api/ems/documents/:id/versions` → approve/reject): uploading a new version sets it to `pending`, locks the document (no further uploads), and creates a manager task. On approval the `currentVersion` is bumped; on rejection the version entry and physical file are deleted. The "View Document" button is hidden for rejected EMS tasks.
 
 - **Material Requisitions** (`routes/material-requisitions.js`) — `data/material-requisitions.json` + `data/materials.json` (catalog). MRQ IDs: `MR` + 8 hex chars from UUID; human-readable `mrqNumber` in `MR-YYYY-NNNN` format. Supports `lineItems[]`, `priority`, `projectCode`, `deliveryLocation`.
 - **Purchase Orders** (`routes/purchase-orders.js`) — `data/purchase-orders.json` + `data/vendors.json` (10 vendors). PO IDs: `PO` + 8 hex chars; `poNumber` in `PO-YYYY-NNNN` format. Supports `lineItems[]`, `currency` (default AED), `paymentTerms`, `taxPct`, `costCenter`.
@@ -150,17 +154,19 @@ if (user.role === 'employee') {
 
 ### AI Features
 
-- **HR Chat** (`/api/hr-chat`) — Groq llama-3.3-70b-versatile; requires `GROQ_API_KEY`
-- **Leave Assistant** (`/api/leave-assistant/chat`) — Conversational AI that checks leave balances AND submits leave, WFH, and travel requests on behalf of the user. The AI collects all required fields via chat, shows a summary, then emits a structured JSON block that `routes/leave-assistant.js` intercepts to call `submitLeave()`, `submitWfh()`, or `submitTravel()` — each of which also creates the approval task in `data/tasks.json`.
-- **Document Chat** (`doc-chat.html`) — Upload PDF → POST `/api/general/ingest` (returns `session_id`) → POST `/api/general/query` with accumulated `chat_history`
+- **HR Chat** (`/unifiedwp/api/hr-chat`) — Groq llama-3.3-70b-versatile; requires `GROQ_API_KEY`
+- **Leave Assistant** (`/unifiedwp/api/leave-assistant/chat`) — Conversational AI that checks leave balances AND submits leave, WFH, and travel requests on behalf of the user. The AI collects all required fields via chat, shows a summary, then emits a structured JSON block that `routes/leave-assistant.js` intercepts to call `submitLeave()`, `submitWfh()`, or `submitTravel()` — each of which also creates the approval task in `data/tasks.json`.
+- **Document Chat** (`doc-chat.html`) — Upload PDF → POST `/unifiedwp/api/doceval-proxy/ingest` (returns `session_id`) → POST `/unifiedwp/api/doceval-proxy/query` with accumulated `chat_history`
 - **Proposal Evaluation** and **Resume Evaluation** — AI-powered document analysis
 
-The document AI features (doc-chat, proposal-eval, resume-eval) all proxy through `routes/doceval.js` at `/api/doceval-proxy` to avoid CORS with the upstream service at `doceval-8362469192e8.herokuapp.com`. No auth guard on this proxy route. Sample test files live in `AI Test Files/`.
+The document AI features (doc-chat, proposal-eval, resume-eval) all proxy through `routes/doceval.js` at `/unifiedwp/api/doceval-proxy` to avoid CORS with the upstream service at `doceval-8362469192e8.herokuapp.com`. No auth guard on this proxy route. Sample test files live in `AI Test Files/`.
+
+`GET /unifiedwp/api/ai-warmup` — fires an HTTP ping to the Heroku dyno on page load so the AI service is warm before the user needs it. No auth required.
 
 ### Dynamic Theming
 
-1. Admin updates colors via `/customize` → saved to `data/settings.json`
-2. Every page loads `<link href="/theme.css">` — dynamic Express endpoint, not a static file
+1. Admin updates colors via `/unifiedwp/customize` → saved to `data/settings.json`
+2. Every page loads `<link href="/unifiedwp/theme.css">` — dynamic Express endpoint, not a static file
 3. `server.js` computes CSS variables (shades, tints, RGB values) on each request
 4. `data/settings.json` structure: `colors.primary` (default `#198D87`), `colors.secondary` (default `#2C3E50`), `appName`, `logoPath`, optionally `teamsGraph: { tenantId, clientId, clientSecret }`
 
@@ -179,39 +185,65 @@ The document AI features (doc-chat, proposal-eval, resume-eval) all proxy throug
 The EMS module (`/ems`) is architecturally different from all other modules:
 
 - **SPA inside the app:** `views/ems/index.html` has a tab bar and loads multiple sub-controllers from `public/js/ems/` — does not follow the 1-to-1 view/controller pattern
-- **Sub-router:** All API calls go to `/api/ems/*`, handled by `routes/ems/index.js` which mounts eight sub-routers: `documents`, `folders`, `groups`, `signatures`, `users`, `audit`, `doctypes`, `metadata`
+- **Sub-router:** All API calls go to `/unifiedwp/api/ems/*`, handled by `routes/ems/index.js` which mounts eight sub-routers: `documents`, `folders`, `groups`, `signatures`, `users`, `audit`, `doctypes`, `metadata`
 - **EMS sub-controllers** (`public/js/ems/`): `index.js` (orchestrator), `documents.js`, `folder-tree.js`, `doc-viewer.js`, `signature-pad.js`, `groups.js`, `users.js`, `audit.js`, `doctypes-mgr.js`, `metadata-mgr.js`, `knowledge-chat.js`
-- **Knowledge Chat** (`public/js/ems/knowledge-chat.js`) — slide-in drawer for conversational Q&A over selected EMS documents; proxies through `/api/doceval-proxy` (same upstream as doc-chat)
-- **File uploads:** Stored under `uploads/ems/`, served at `/uploads/ems/*` without an auth guard (static middleware runs first). Metadata in `data/ems-documents.json`
+- **Knowledge Chat** (`public/js/ems/knowledge-chat.js`) — slide-in drawer for conversational Q&A over selected EMS documents; proxies through `/unifiedwp/api/doceval-proxy` (same upstream as doc-chat)
+- **File uploads:** Stored under `uploads/ems/`, served at `/unifiedwp/uploads/ems/*` without an auth guard (static middleware runs first). Metadata in `data/ems-documents.json`
 - **Dedicated CSS:** `public/css/ems.css` for EMS-specific layout (split-pane, resizable folder panel, signature pad). Do not add EMS styles to `global.css` or `pages.css`
 - **No approval workflow integration:** EMS manages access via groups (`ems-groups.json`) and per-document permissions, not `data/tasks.json`
 
 ## Gotchas
 
-- `/theme.css` is dynamic — color changes reflect immediately without restart
+- `/unifiedwp/theme.css` is dynamic — color changes reflect immediately without restart
 - JSON body limit is `50mb` (supports base64 logo upload)
 - Sidebar collapse state persisted in `localStorage` key `sidebarCollapsed`
-- Heartbeat (`/api/heartbeat` every 30s) is critical for Teams — without it the iframe disconnects
-- **Login uses email, not username** — `POST /api/auth/login` body is `{ "email": "...", "password": "..." }`. Demo credentials:
+- Heartbeat (`/unifiedwp/api/heartbeat` every 30s) is critical for Teams — without it the iframe disconnects
+- **Login uses email, not username** — `POST /unifiedwp/api/auth/login` body is `{ "email": "...", "password": "..." }`. Demo credentials:
   | Email | Role | Password |
   |---|---|---|
   | `ahmed@company.com` | admin (CEO) | demo123 |
   | `khalid@company.com` | manager | demo123 |
+  | `fatima@company.com` | hr | demo123 |
   | `sara@company.com` | employee | demo123 |
+  | `omar@company.com` | employee | demo123 |
+  | `mariam@company.com` | manager | demo123 |
+  Approval chain: employee → their manager; manager → CEO (Ahmed); CEO → self-approval.
 - `?embed=1` query param triggers auto-login for Teams embedded mode
 - **Data reset:** Delete/truncate files in `data/` — no migration system
 - **Session reset:** Delete `.sessions/` directory to log out all users
 - Entity IDs: type prefix + first 8 chars of UUID (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `HD9B1C3D` for helpdesk). Helpdesk tickets also get a `ticketNo` in `TKT-YYYY-NNN` format
 - **Pages with no JS controller:** `erp-dialogue.html`, `voice-agent.html`, and `services.html`. Every other view has a matching controller — including `leave-assistant`, `wfh`, `travel`, `doc-chat`, `proposal-eval`, `resume-eval`, and `quick-services`
 - **Pages with no backing route file:** `erp-dialogue`, `voice-agent`, `quick-services`, `services`, `proposal-eval`, `resume-eval`, `doc-chat` — these are served by a generic static-page loop in `server.js` (see the `pages` array). They either have no server state or rely exclusively on proxied/external APIs (e.g. `/api/doceval-proxy`)
-- `views/landing.html` is the home dashboard (entry point after login); `views/services.html` and `views/quick-services.html` are service catalog views
+- `views/landing.html` is the home dashboard (entry point after login); `views/services.html` and `views/quick-services.html` are service catalog views. `landing` is in the static `pages` array so both `/` and `/landing` serve it.
 - `routes/finance.js` and `routes/news.js` are **API-only** — they have no corresponding view pages. All other routes have matching `views/*.html` + `public/js/*.js` pairs, including `material-requisitions` and `purchase-orders`.
-- `routes/analytics.js`, `routes/goals.js`, and `routes/directory.js` follow the standard route pattern (JSON-backed, role-filtered). `analytics.js` aggregates cross-module data (tasks, leaves, helpdesk, attendance) for dashboard widgets at `GET /api/analytics/summary`.
-- `GET /api/me` — returns `{ success: true, user: req.session.user }` for the currently authenticated session; used by client controllers to get the logged-in user.
+- `routes/analytics.js`, `routes/goals.js`, and `routes/directory.js` follow the standard route pattern (JSON-backed, role-filtered). `analytics.js` aggregates cross-module data (tasks, leaves, helpdesk, attendance) for dashboard widgets at `GET /unifiedwp/api/analytics/summary`.
+- `GET /unifiedwp/api/me` — returns `{ success: true, user: req.session.user }` for the currently authenticated session; used by client controllers to get the logged-in user.
 - `multer` and `pdf-lib` are available as dependencies (multer used for EMS uploads; pdf-lib available for PDF manipulation)
 - `claude-cli` is in `package.json` as a runtime dependency (unused in server code — ignore it)
 - `uuid` (`v4`) is the standard ID generator — used everywhere; import with `const { v4: uuidv4 } = require('uuid')`
 - **Travel module** (`routes/travel.js`) has simulated airline/hotel provider data hardcoded in the route file itself (not in `data/`) — it generates realistic mock search results on the fly
+
+## Mobile PWA (`/unifiedwp/m/*`)
+
+A purpose-built mobile Progressive Web App lives under `/unifiedwp/m/` — six pages served by six route handlers in `server.js`:
+
+| Route | View |
+|---|---|
+| `/unifiedwp/m/login` | `views/mobile/login.html` |
+| `/unifiedwp/m/home` | `views/mobile/home.html` — greeting, 4 stat cards, recent tasks strip, donut chart, news feed |
+| `/unifiedwp/m/tasks` | `views/mobile/tasks.html` — task list + detail bottom sheet + all approval types |
+| `/unifiedwp/m/services` | `views/mobile/services.html` — 2 catalog cards |
+| `/unifiedwp/m/leave` | `views/mobile/leave.html` — Create Leave form |
+| `/unifiedwp/m/wfh` | `views/mobile/wfh.html` — Create WFH form |
+
+**Zero backend changes** — all data from existing `/unifiedwp/api/*` endpoints. New frontend only:
+- `public/mobile/css/mobile.css` — No Bootstrap; uses `/unifiedwp/theme.css` CSS variables; bottom tab bar (Home / Tasks / Services); safe-area insets; bottom sheets
+- `public/mobile/js/api.js` — lightweight fetch wrappers, `UI.toast`, `fmtDate`, `Nav.setActive`; 401 redirects to `/unifiedwp/m/login`
+- `public/manifest.webmanifest` + `public/sw.js` — app-shell cache of 6 HTML pages + static assets; no API caching; `start_url: /unifiedwp/m/home`
+
+**Approval routing** in `tasks.js` uses an `APPROVAL_MAP` keyed on task `metadata` fields (`leaveId`, `wfhId`, `travelId`, `mrqId`, `poId`, `planId`) to call the correct approve/reject endpoint for each approval type.
+
+See `MOBILE_PWA_PLAN.md` for the full design spec.
 
 ## Known Demo Limitations
 
@@ -224,3 +256,5 @@ These are intentional gaps — do not "fix" them unless explicitly asked:
 - **Single-level approval only** — leave/WFH approval goes to direct manager only; no multi-level chains.
 - **Leave balances are hardcoded** — `routes/leave-assistant.js` uses fixed caps of 21 annual days and 30 sick days per year; not configurable from settings.
 - **Helpdesk ticketNo year is hardcoded** — `routes/helpdesk.js` generates `TKT-2026-NNN` with a literal `'2026'` string instead of `new Date().getFullYear()`.
+- **Passwords are plaintext** — `data/users.json` stores passwords as plain strings. Demo only.
+- **No real-time updates** — no WebSocket; all modules require a manual page refresh to see changes made by other users.

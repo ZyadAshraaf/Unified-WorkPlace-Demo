@@ -1252,5 +1252,38 @@
     "userName": "Ahmed Al-Rashidi",
     "details": "Added annotation: \"efdfdfdfdf\"",
     "timestamp": "2026-04-20T10:33:27.446Z"
+  },
+  {
+    "id": "AUDA2885BA5",
+    "action": "document.upload",
+    "entityType": "document",
+    "entityId": "DOCAE1CF945",
+    "entityName": "test",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Created document with file upload",
+    "timestamp": "2026-04-21T09:51:30.910Z"
+  },
+  {
+    "id": "AUD5F116175",
+    "action": "document.version",
+    "entityType": "document",
+    "entityId": "DOCAE1CF945",
+    "entityName": "test",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Uploaded version 2 (pending approval)",
+    "timestamp": "2026-04-21T09:51:48.583Z"
+  },
+  {
+    "id": "AUDECBAFD8F",
+    "action": "document.version.approved",
+    "entityType": "document",
+    "entityId": "DOCAE1CF945",
+    "entityName": "test",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Approved version 2",
+    "timestamp": "2026-04-21T09:58:02.960Z"
   }
 ]
