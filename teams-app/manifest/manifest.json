@@ -5,9 +5,9 @@
   "id": "fc21a8b4-9503-4b72-8b1e-8493d9e2b67d",
   "developer": {
     "name": "WIND-IS",
-    "websiteUrl": "http://localhost:3002",
-    "privacyUrl": "http://localhost:3002/privacy",
-    "termsOfUseUrl": "http://localhost:3002/terms"
+    "websiteUrl": "https://commercial.windinfosys.com/unifiedwp",
+    "privacyUrl": "https://commercial.windinfosys.com/unifiedwp/privacy",
+    "termsOfUseUrl": "https://commercial.windinfosys.com/unifiedwp/terms"
   },
   "name": {
     "short": "Unified Workspace",
@@ -26,14 +26,14 @@
     {
       "entityId": "unified-home",
       "name": "Home",
-      "contentUrl": "http://localhost:3002/",
+      "contentUrl": "https://commercial.windinfosys.com/unifiedwp/",
       "scopes": ["personal"]
     }
   ],
   "configurableTabs": [],
   "permissions": ["identity", "messageTeamMembers"],
   "validDomains": [
-    "localhost:3002"
+    "commercial.windinfosys.com"
   ],
   "showLoadingIndicator": false
 }

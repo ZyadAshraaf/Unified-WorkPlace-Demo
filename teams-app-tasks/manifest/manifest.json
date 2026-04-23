@@ -5,9 +5,9 @@
   "id": "a7e3c1d9-4f82-4b6a-9e15-3d8f0c2b1a47",
   "developer": {
     "name": "WIND-IS",
-    "websiteUrl": "https://vcr-phillips-assisted-southwest.trycloudflare.com",
-    "privacyUrl": "https://vcr-phillips-assisted-southwest.trycloudflare.com/privacy",
-    "termsOfUseUrl": "https://vcr-phillips-assisted-southwest.trycloudflare.com/terms"
+    "websiteUrl": "https://commercial.windinfosys.com/unifiedwp",
+    "privacyUrl": "https://commercial.windinfosys.com/unifiedwp/privacy",
+    "termsOfUseUrl": "https://commercial.windinfosys.com/unifiedwp/terms"
   },
   "name": {
     "short": "Wind Workplace",
@@ -26,32 +26,32 @@
     {
       "entityId": "tasks-tab",
       "name": "My Tasks",
-      "contentUrl": "https://vcr-phillips-assisted-southwest.trycloudflare.com/tasks?embed=1",
+      "contentUrl": "https://commercial.windinfosys.com/unifiedwp/tasks?embed=1",
       "scopes": ["personal"]
     },
     {
       "entityId": "quick-services-tab",
       "name": "Quick Services",
-      "contentUrl": "https://vcr-phillips-assisted-southwest.trycloudflare.com/quick-services?embed=1",
+      "contentUrl": "https://commercial.windinfosys.com/unifiedwp/quick-services?embed=1",
       "scopes": ["personal"]
     },
     {
       "entityId": "assistant-tab",
       "name": "My Assistant",
-      "contentUrl": "https://vcr-phillips-assisted-southwest.trycloudflare.com/leave-assistant?embed=1",
+      "contentUrl": "https://commercial.windinfosys.com/unifiedwp/leave-assistant?embed=1",
       "scopes": ["personal"]
     },
     {
       "entityId": "analytics-tab",
       "name": "Analytics",
-      "contentUrl": "https://vcr-phillips-assisted-southwest.trycloudflare.com/analytics?embed=1",
+      "contentUrl": "https://commercial.windinfosys.com/unifiedwp/analytics?embed=1",
       "scopes": ["personal"]
     }
   ],
   "configurableTabs": [],
   "permissions": ["identity", "messageTeamMembers"],
   "validDomains": [
-    "vcr-phillips-assisted-southwest.trycloudflare.com"
+    "commercial.windinfosys.com"
   ],
   "activities": {
     "activityTypes": [

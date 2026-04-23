@@ -8,8 +8,9 @@
   "background_color": "#ffffff",
   "theme_color": "#198D87",
   "icons": [
-    { "src": "/unifiedwp/assets/logo.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/unifiedwp/assets/logo.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "/unifiedwp/assets/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "/unifiedwp/assets/pwa-icon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/unifiedwp/assets/pwa-icon.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/unifiedwp/assets/pwa-icon.png", "sizes": "1024x1024", "type": "image/png" },
+    { "src": "/unifiedwp/assets/pwa-icon.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any maskable" }
   ]
 }

@@ -18,13 +18,15 @@ No build step, no TypeScript. The server runs directly with `node server.js`.
 ```bash
 node tests/workflows/leave.test.js        # or wfh, travel, purchase-orders, material-requisitions, ems-versions
 ```
-Set `TEST_BASE_URL` to target a non-default server (default: `http://localhost:3000`). Tests clean up all created records automatically.
+Set `TEST_BASE_URL` to target a non-default server. **The default is `http://localhost:3000/unifiedwp`** (not bare `http://localhost:3000`) because all API paths in the helpers are relative to the base path (e.g. `/api/leaves`). Tests clean up all created records automatically.
 
 **Environment variables** (copy `.env.example` → `.env` to get started):
 - `GROQ_API_KEY` — required for `/unifiedwp/api/hr-chat` and `/unifiedwp/api/leave-assistant/chat` (both use Groq llama-3.3-70b-versatile via raw `fetch` to `api.groq.com` — no groq npm package)
 - `PORT` — overrides default port 3000
 - `TEAMS_PORT` — overrides Teams proxy server port (default 3001); used by `teams-app/server.js`
 - `MAIN_APP_ORIGIN` — overrides proxy target in `teams-app/server.js` (default `http://localhost:3000`)
+- `SESSION_SECRET` — session signing secret (default `unified-workspace-secret-2026`)
+- `DOCEVAL_URL` — upstream document-AI hostname (default `doceval-8362469192e8.herokuapp.com`); used by the AI warmup endpoint and `routes/doceval.js`
 
 ## Project Structure
 
@@ -214,7 +216,7 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 - Entity IDs: type prefix + first 8 chars of UUID (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `HD9B1C3D` for helpdesk). Helpdesk tickets also get a `ticketNo` in `TKT-YYYY-NNN` format
 - **Pages with no JS controller:** `erp-dialogue.html`, `voice-agent.html`, and `services.html`. Every other view has a matching controller — including `leave-assistant`, `wfh`, `travel`, `doc-chat`, `proposal-eval`, `resume-eval`, and `quick-services`
 - **Pages with no backing route file:** `erp-dialogue`, `voice-agent`, `quick-services`, `services`, `proposal-eval`, `resume-eval`, `doc-chat` — these are served by a generic static-page loop in `server.js` (see the `pages` array). They either have no server state or rely exclusively on proxied/external APIs (e.g. `/api/doceval-proxy`)
-- `views/landing.html` is the home dashboard (entry point after login); `views/services.html` and `views/quick-services.html` are service catalog views. `landing` is in the static `pages` array so both `/` and `/landing` serve it.
+- `views/landing.html` is the home dashboard (entry point after login); `views/services.html` and `views/quick-services.html` are service catalog views. The empty-string `''` entry in the static `pages` array maps `/unifiedwp/` to `landing.html` — `/unifiedwp/landing` is **not** a valid route.
 - `routes/finance.js` and `routes/news.js` are **API-only** — they have no corresponding view pages. All other routes have matching `views/*.html` + `public/js/*.js` pairs, including `material-requisitions` and `purchase-orders`.
 - `routes/analytics.js`, `routes/goals.js`, and `routes/directory.js` follow the standard route pattern (JSON-backed, role-filtered). `analytics.js` aggregates cross-module data (tasks, leaves, helpdesk, attendance) for dashboard widgets at `GET /unifiedwp/api/analytics/summary`.
 - `GET /unifiedwp/api/me` — returns `{ success: true, user: req.session.user }` for the currently authenticated session; used by client controllers to get the logged-in user.

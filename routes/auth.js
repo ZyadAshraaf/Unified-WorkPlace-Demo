@@ -27,12 +27,18 @@ router.post('/login', (req, res) => {
 
 // POST /api/auth/logout
 router.post('/logout', (req, res) => {
-  req.session.destroy(() => res.json({ success: true }));
+  req.session.destroy(() => {
+    res.clearCookie('connect.sid');
+    res.json({ success: true });
+  });
 });
 
 // GET /api/auth/logout (browser link fallback)
 router.get('/logout', (req, res) => {
-  req.session.destroy(() => res.redirect('/login'));
+  req.session.destroy(() => {
+    res.clearCookie('connect.sid');
+    res.redirect('/unifiedwp/login');
+  });
 });
 
 module.exports = router;

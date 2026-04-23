@@ -1,4 +1,4 @@
-const CACHE = 'uw-mobile-v3';
+const CACHE = 'uw-mobile-v4';
 const SHELL = [
   '/unifiedwp/m/login',
   '/unifiedwp/m/home',
@@ -12,7 +12,8 @@ const SHELL = [
   '/unifiedwp/mobile/js/services.js',
   '/unifiedwp/mobile/js/leave.js',
   '/unifiedwp/mobile/js/wfh.js',
-  '/unifiedwp/assets/logo.png'
+  '/unifiedwp/assets/logo.png',
+  '/unifiedwp/assets/pwa-icon.png'
 ];
 
 self.addEventListener('install', e => {
