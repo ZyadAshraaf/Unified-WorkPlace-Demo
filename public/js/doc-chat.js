@@ -5,7 +5,7 @@
            accumulated chat_history for conversational context).
    ─────────────────────────────────────────────────────────── */
 
-const DOCEVAL_BASE = '/api/doceval-proxy';
+const DOCEVAL_BASE = '/unifiedwp/api/doceval-proxy';
 const MAX_FILES    = 5;
 
 /* ── Module State ── */

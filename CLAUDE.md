@@ -139,6 +139,16 @@ Tasks also support comments (`/:id/comment`), delegation (`/:id/delegate`), reas
 
 The **Appraisal**, **Travel**, **Material Requisitions**, **Purchase Orders**, and **EMS document versions** modules also follow this same approval workflow — submissions create tasks in `data/tasks.json` linked to the manager, and approval/rejection updates both the record and the linked task.
 
+**Approval endpoint patterns differ by module** — do not assume uniformity:
+- Leave / WFH / Travel: `PUT /api/{module}/:id` with `{ status: 'approved'|'rejected' }` in the body
+- Purchase Orders: `PUT /api/purchase-orders/:id/approve` and `PUT /api/purchase-orders/:id/reject` (dedicated sub-routes, no body needed)
+- Material Requisitions: `PUT /api/material-requisitions/:id/approve` and `PUT /api/material-requisitions/:id/reject` (same pattern as PO)
+- EMS versions: `POST /api/ems/documents/:id/versions/:version/approve` and `/reject`
+
+**Task priority rules on submission:**
+- Travel: `priority: 'high'` if total trip cost > SAR 10,000, otherwise `'medium'`
+- MRQ: `priority: 'high'` if requisition `priority === 'urgent'`, otherwise `'medium'`
+
 **EMS document version approval** (`POST /unifiedwp/api/ems/documents/:id/versions` → approve/reject): uploading a new version sets it to `pending`, locks the document (no further uploads), and creates a manager task. On approval the `currentVersion` is bumped; on rejection the version entry and physical file are deleted. The "View Document" button is hidden for rejected EMS tasks.
 
 - **Material Requisitions** (`routes/material-requisitions.js`) — `data/material-requisitions.json` + `data/materials.json` (catalog). MRQ IDs: `MR` + 8 hex chars from UUID; human-readable `mrqNumber` in `MR-YYYY-NNNN` format. Supports `lineItems[]`, `priority`, `projectCode`, `deliveryLocation`.
@@ -243,7 +253,7 @@ A purpose-built mobile Progressive Web App lives under `/unifiedwp/m/` — six p
 - `public/mobile/js/api.js` — lightweight fetch wrappers, `UI.toast`, `fmtDate`, `Nav.setActive`; 401 redirects to `/unifiedwp/m/login`
 - `public/manifest.webmanifest` + `public/sw.js` — app-shell cache of 6 HTML pages + static assets; no API caching; `start_url: /unifiedwp/m/home`
 
-**Approval routing** in `tasks.js` uses an `APPROVAL_MAP` keyed on task `metadata` fields (`leaveId`, `wfhId`, `travelId`, `mrqId`, `poId`, `planId`) to call the correct approve/reject endpoint for each approval type.
+**Approval routing** in `tasks.js` uses an `APPROVAL_MAP` keyed on task `metadata` fields (`leaveId`, `wfhId`, `travelId`, `mrqId`, `poId`, `planId`) to call the correct approve/reject endpoint for each approval type. `planId` maps to appraisal plan/cycle approval tasks (`routes/appraisal.js`).
 
 See `MOBILE_PWA_PLAN.md` for the full design spec.
 
