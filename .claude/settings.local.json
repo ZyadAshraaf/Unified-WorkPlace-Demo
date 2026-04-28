@@ -274,7 +274,9 @@
       "Bash(grep -n \"fetch\\('/unifiedwp/\\\\|fetch\\(\\\\`/unifiedwp/\\\\|a\\\\.href.*unifiedwp\\\\|window\\\\.open.*unifiedwp\\\\|url = '/unifiedwp\\\\|PROXY.*unifiedwp\" \"D:/Pre Sales/Generic Demos/Unified Workplace Demo/public/js/ems/documents.js\" \"D:/Pre Sales/Generic Demos/Unified Workplace Demo/public/js/ems/doc-viewer.js\" \"D:/Pre Sales/Generic Demos/Unified Workplace Demo/public/js/ems/knowledge-chat.js\")",
       "Bash(taskkill *)",
       "PowerShell(Stop-Process *)",
-      "Bash(python -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(p['id'], p.get\\('userId'\\), p.get\\('planName'\\), p.get\\('appraisalStatus'\\), p.get\\('endDate'\\)\\) for p in data]\")"
+      "Bash(python -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(p['id'], p.get\\('userId'\\), p.get\\('planName'\\), p.get\\('appraisalStatus'\\), p.get\\('endDate'\\)\\) for p in data]\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(f['name']\\) for f in d]\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(doc['title']\\) for doc in d]\")"
     ]
   }
 }

@@ -521,15 +521,15 @@
         <div class="pc-mosque">🕌</div>
         <div>
           <div class="pc-next-label">Next Prayer</div>
-          <div class="pc-next-name">Isha</div>
-          <div class="pc-countdown">In 1 hour 42 minutes</div>
+          <div class="pc-next-name" id="pcNextName">—</div>
+          <div class="pc-countdown" id="pcCountdown">Loading…</div>
         </div>
-        <div class="prayer-times">
-          <div class="pt"><div class="pt-n">Fajr</div><div class="pt-t">5:12</div></div>
-          <div class="pt"><div class="pt-n">Dhuhr</div><div class="pt-t">12:18</div></div>
-          <div class="pt"><div class="pt-n">Asr</div><div class="pt-t">3:42</div></div>
-          <div class="pt cur"><div class="pt-n">Maghrib</div><div class="pt-t">6:31</div></div>
-          <div class="pt"><div class="pt-n">Isha</div><div class="pt-t">8:14</div></div>
+        <div class="prayer-times" id="prayerTimesRow">
+          <div class="pt" id="ptFajrWrap"><div class="pt-n">Fajr</div><div class="pt-t" id="ptFajr">—</div></div>
+          <div class="pt" id="ptDhuhrWrap"><div class="pt-n">Dhuhr</div><div class="pt-t" id="ptDhuhr">—</div></div>
+          <div class="pt" id="ptAsrWrap"><div class="pt-n">Asr</div><div class="pt-t" id="ptAsr">—</div></div>
+          <div class="pt" id="ptMaghribWrap"><div class="pt-n">Maghrib</div><div class="pt-t" id="ptMaghrib">—</div></div>
+          <div class="pt" id="ptIshaWrap"><div class="pt-n">Isha</div><div class="pt-t" id="ptIsha">—</div></div>
         </div>
       </div>
     </div>
@@ -630,6 +630,87 @@
       if (inp.type === 'password') { inp.type = 'text';     icon.className = 'bi bi-eye-slash'; }
       else                         { inp.type = 'password'; icon.className = 'bi bi-eye'; }
     });
+
+    // ── Prayer times ────────────────────────────────────────────
+    const PRAYER_API = 'https://islamicapi.com/api/v1/prayer-time/?lat=24.7136&lon=46.6753&api_key=bzXnDyg34zfyjckyvXjgZi4g4zLyux1qDhKH5NM4iVA2Uq9X';
+    const PRAYERS = [
+      { key: 'Fajr',    id: 'ptFajr',    wrap: 'ptFajrWrap' },
+      { key: 'Dhuhr',   id: 'ptDhuhr',   wrap: 'ptDhuhrWrap' },
+      { key: 'Asr',     id: 'ptAsr',     wrap: 'ptAsrWrap' },
+      { key: 'Maghrib', id: 'ptMaghrib', wrap: 'ptMaghribWrap' },
+      { key: 'Isha',    id: 'ptIsha',    wrap: 'ptIshaWrap' },
+    ];
+
+    function toMinutes(t) {
+      // handles "HH:MM" or "HH:MM AM/PM"
+      const parts = t.trim().split(/[\s:]/);
+      let h = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10);
+      if (parts[2]) {
+        const ampm = parts[2].toUpperCase();
+        if (ampm === 'PM' && h !== 12) h += 12;
+        if (ampm === 'AM' && h === 12) h = 0;
+      }
+      return h * 60 + m;
+    }
+
+    function fmt12(t) {
+      const mins = toMinutes(t);
+      const h = Math.floor(mins / 60) % 24;
+      const m = mins % 60;
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const h12  = h % 12 || 12;
+      return `${h12}:${String(m).padStart(2,'0')}`;
+    }
+
+    let _prayerMins = [];
+
+    function updatePrayerCountdown() {
+      if (!_prayerMins.length) return;
+      const now = new Date();
+      const nowMins = now.getHours() * 60 + now.getMinutes();
+      let nextIdx = _prayerMins.findIndex(p => p.mins > nowMins);
+      if (nextIdx === -1) nextIdx = 0; // wrap to Fajr after Isha
+
+      PRAYERS.forEach((p, i) => {
+        document.getElementById(p.wrap).classList.toggle('cur', i === nextIdx);
+      });
+
+      const diff = nextIdx === 0 && _prayerMins[0].mins <= nowMins
+        ? (_prayerMins[0].mins + 1440 - nowMins)
+        : (_prayerMins[nextIdx].mins - nowMins);
+
+      const hh = Math.floor(diff / 60);
+      const mm = diff % 60;
+      const countdown = hh > 0 ? `In ${hh}h ${mm}m` : `In ${mm} minutes`;
+
+      document.getElementById('pcNextName').textContent  = PRAYERS[nextIdx].key;
+      document.getElementById('pcCountdown').textContent = countdown;
+    }
+
+    async function fetchPrayerTimes() {
+      try {
+        const res  = await fetch(PRAYER_API);
+        const json = await res.json();
+        // try common response shapes
+        const timings = json.data?.timings || json.timings || json.data?.times || json;
+        PRAYERS.forEach(p => {
+          const raw = timings[p.key] || timings[p.key.toLowerCase()];
+          if (raw) {
+            document.getElementById(p.id).textContent = fmt12(raw);
+          }
+        });
+        _prayerMins = PRAYERS.map(p => {
+          const raw = timings[p.key] || timings[p.key.toLowerCase()] || '00:00';
+          return { key: p.key, mins: toMinutes(raw) };
+        });
+        updatePrayerCountdown();
+        setInterval(updatePrayerCountdown, 60000);
+      } catch (err) {
+        document.getElementById('pcCountdown').textContent = 'Unavailable';
+      }
+    }
+    fetchPrayerTimes();
 
     document.getElementById('loginForm').addEventListener('submit', async function (e) {
       e.preventDefault();

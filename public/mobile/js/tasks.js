@@ -43,7 +43,7 @@ const Tasks = {
 async function loadTasks() {
   const data = await API.get('/api/tasks');
   if (!data || !data.success) return;
-  allTasks = data.tasks || [];
+  allTasks = (data.tasks || []).reverse();
   updateBadges();
   renderList();
 }

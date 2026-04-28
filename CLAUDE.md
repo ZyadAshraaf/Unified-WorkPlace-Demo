@@ -225,7 +225,7 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 - **Session reset:** Delete `.sessions/` directory to log out all users
 - Entity IDs: type prefix + first 8 chars of UUID (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `HD9B1C3D` for helpdesk). Helpdesk tickets also get a `ticketNo` in `TKT-YYYY-NNN` format
 - **Pages with no JS controller:** `erp-dialogue.html`, `voice-agent.html`, and `services.html`. Every other view has a matching controller — including `leave-assistant`, `wfh`, `travel`, `doc-chat`, `proposal-eval`, `resume-eval`, and `quick-services`
-- **Pages with no backing route file:** `erp-dialogue`, `voice-agent`, `quick-services`, `services`, `proposal-eval`, `resume-eval`, `doc-chat` — these are served by a generic static-page loop in `server.js` (see the `pages` array). They either have no server state or rely exclusively on proxied/external APIs (e.g. `/api/doceval-proxy`)
+- **Pages with no backing route file:** `erp-dialogue`, `voice-agent`, `quick-services`, `services`, `proposal-eval`, `resume-eval`, `doc-chat` — these are served by a generic static-page loop in `server.js` (see the `pages` array at line ~198). They either have no server state or rely exclusively on proxied/external APIs (e.g. `/api/doceval-proxy`). The `pages` array is the authoritative list of valid static routes — add new static pages there.
 - `views/landing.html` is the home dashboard (entry point after login); `views/services.html` and `views/quick-services.html` are service catalog views. The empty-string `''` entry in the static `pages` array maps `/unifiedwp/` to `landing.html` — `/unifiedwp/landing` is **not** a valid route.
 - `routes/finance.js` and `routes/news.js` are **API-only** — they have no corresponding view pages. All other routes have matching `views/*.html` + `public/js/*.js` pairs, including `material-requisitions` and `purchase-orders`.
 - `routes/analytics.js`, `routes/goals.js`, and `routes/directory.js` follow the standard route pattern (JSON-backed, role-filtered). `analytics.js` aggregates cross-module data (tasks, leaves, helpdesk, attendance) for dashboard widgets at `GET /unifiedwp/api/analytics/summary`.
@@ -234,6 +234,7 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 - `claude-cli` is in `package.json` as a runtime dependency (unused in server code — ignore it)
 - `uuid` (`v4`) is the standard ID generator — used everywhere; import with `const { v4: uuidv4 } = require('uuid')`
 - **Travel module** (`routes/travel.js`) has simulated airline/hotel provider data hardcoded in the route file itself (not in `data/`) — it generates realistic mock search results on the fly
+- **`views/login.html` is self-contained** — it has its own inline `<style>` and `<script>` blocks (including the clock, prayer times display, and login form logic). It does **not** follow the 1-to-1 controller pattern and does not load `api.js` or `Layout`. Edit it as a standalone file.
 
 ## Mobile PWA (`/unifiedwp/m/*`)
 
