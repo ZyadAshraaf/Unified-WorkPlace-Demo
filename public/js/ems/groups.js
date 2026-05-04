@@ -33,7 +33,7 @@ const EMS_Groups = (() => {
       <tr>
         <td class="fw-bold">${g.name}</td>
         <td class="text-muted" style="font-size:13px;">${g.description || '—'}</td>
-        <td><span class="badge bg-primary bg-opacity-10 text-primary">${g.members.length}</span></td>
+        <td><span class="badge text-white" style="background:var(--color-primary)">${g.members.length}</span></td>
         <td><span class="badge bg-success bg-opacity-10 text-success">${g.permissions.length} folders</span></td>
         <td>
           <div class="d-flex gap-1">

@@ -14,7 +14,6 @@ async function loadLeaves() {
   if (!data?.success) return;
   allLeaves = data.leaves;
   renderMyLeaves();
-  renderPendingApprovals();
   updateBalance();
 }
 
@@ -405,7 +404,7 @@ function calcWorkingDays(start, end) {
   const cur = new Date(start);
   while (cur <= end) {
     const day = cur.getDay();
-    if (day !== 0 && day !== 6) count++;
+    if (day !== 5 && day !== 6) count++; // Fri+Sat weekend (Saudi)
     cur.setDate(cur.getDate() + 1);
   }
   return count;

@@ -200,7 +200,7 @@ router.post('/:id/versions', requireAuth, upload.single('file'), (req, res) => {
       id:           taskId,
       title:        `Approve new version of "${doc.title}"`,
       description:  `${req.session.user.name} uploaded version ${newVersion} of "${doc.title}" and it is pending your approval.`,
-      sourceSystem: 'EMS',
+      sourceSystem: 'CMS',
       type:         'approval',
       priority:     'medium',
       status:       'pending',
@@ -696,24 +696,7 @@ router.post('/:id/unlock', requireAuth, (req, res) => {
   res.json({ success: true, document: docs[idx] });
 });
 
-// POST — move to different folder
-router.post('/:id/move', requireAuth, (req, res) => {
-  const { folderId } = req.body;
-  if (!folderId) return res.status(400).json({ success: false, message: 'folderId is required' });
-
-  const docs = readDocs();
-  const idx = docs.findIndex(d => d.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ success: false, message: 'Document not found' });
-
-  docs[idx].folderId = folderId;
-  docs[idx].updatedAt = new Date().toISOString();
-
-  writeDocs(docs);
-  logAudit('document.move', 'document', docs[idx].id, docs[idx].title, req.session.user, 'Moved document');
-  res.json({ success: true, document: docs[idx] });
-});
-
-// POST — bulk move
+// POST — bulk move (must be before /:id/move to avoid wildcard capture)
 router.post('/bulk/move', requireAuth, (req, res) => {
   const { documentIds, folderId } = req.body;
   if (!documentIds || !folderId) return res.status(400).json({ success: false, message: 'documentIds and folderId are required' });
@@ -730,7 +713,7 @@ router.post('/bulk/move', requireAuth, (req, res) => {
   res.json({ success: true, moved });
 });
 
-// POST — bulk delete (soft)
+// POST — bulk delete (soft, must be before /:id route)
 router.post('/bulk/delete', requireAuth, (req, res) => {
   const { documentIds } = req.body;
   if (!documentIds) return res.status(400).json({ success: false, message: 'documentIds is required' });
@@ -746,6 +729,23 @@ router.post('/bulk/delete', requireAuth, (req, res) => {
   writeDocs(docs);
   logAudit('document.bulk_delete', 'document', '', '', req.session.user, `Bulk trashed ${deleted} documents`);
   res.json({ success: true, deleted });
+});
+
+// POST — move single document to different folder
+router.post('/:id/move', requireAuth, (req, res) => {
+  const { folderId } = req.body;
+  if (!folderId) return res.status(400).json({ success: false, message: 'folderId is required' });
+
+  const docs = readDocs();
+  const idx = docs.findIndex(d => d.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ success: false, message: 'Document not found' });
+
+  docs[idx].folderId = folderId;
+  docs[idx].updatedAt = new Date().toISOString();
+
+  writeDocs(docs);
+  logAudit('document.move', 'document', docs[idx].id, docs[idx].title, req.session.user, 'Moved document');
+  res.json({ success: true, document: docs[idx] });
 });
 
 module.exports = router;

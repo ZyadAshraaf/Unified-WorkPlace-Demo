@@ -468,7 +468,7 @@
     "id": "TE4F9183E",
     "title": "Approve new version of \"Proposal\"",
     "description": "Fatima Al-Zahra uploaded version 3 of \"Proposal\" and it is pending your approval.",
-    "sourceSystem": "EMS",
+    "sourceSystem": "CMS",
     "type": "approval",
     "priority": "medium",
     "status": "completed",
@@ -505,7 +505,7 @@
     "id": "TCB107801",
     "title": "Approve new version of \"Proposal\"",
     "description": "Fatima Al-Zahra uploaded version 3 of \"Proposal\" and it is pending your approval.",
-    "sourceSystem": "EMS",
+    "sourceSystem": "CMS",
     "type": "approval",
     "priority": "medium",
     "status": "completed",
@@ -737,7 +737,7 @@
     "id": "T2E8CAED7",
     "title": "Approve new version of \"test\"",
     "description": "Ahmed Al-Rashidi uploaded version 2 of \"test\" and it is pending your approval.",
-    "sourceSystem": "EMS",
+    "sourceSystem": "CMS",
     "type": "approval",
     "priority": "medium",
     "status": "approved",
@@ -818,7 +818,7 @@
     "id": "T23B503D2",
     "title": "Approve new version of \"test\"",
     "description": "Ahmed Al-Rashidi uploaded version 3 of \"test\" and it is pending your approval.",
-    "sourceSystem": "EMS",
+    "sourceSystem": "CMS",
     "type": "approval",
     "priority": "medium",
     "status": "approved",
@@ -855,7 +855,7 @@
     "id": "T2FF2811E",
     "title": "Approve new version of \"test\"",
     "description": "Ahmed Al-Rashidi uploaded version 4 of \"test\" and it is pending your approval.",
-    "sourceSystem": "EMS",
+    "sourceSystem": "CMS",
     "type": "approval",
     "priority": "medium",
     "status": "approved",
@@ -892,7 +892,7 @@
     "id": "T6D4EABBB",
     "title": "Approve new version of \"test\"",
     "description": "Ahmed Al-Rashidi uploaded version 5 of \"test\" and it is pending your approval.",
-    "sourceSystem": "EMS",
+    "sourceSystem": "CMS",
     "type": "approval",
     "priority": "medium",
     "status": "rejected",
@@ -967,7 +967,7 @@
     "id": "T213B3F7C",
     "title": "Approve new version of \"Q1 2026 Vendor Invoice - Acme Corp\"",
     "description": "Sara Hassan uploaded version 2 of \"Q1 2026 Vendor Invoice - Acme Corp\" and it is pending your approval.",
-    "sourceSystem": "EMS",
+    "sourceSystem": "CMS",
     "type": "approval",
     "priority": "medium",
     "status": "pending",
@@ -1186,7 +1186,7 @@
     "id": "T858F1F75",
     "title": "Approve new version of \"test\"",
     "description": "Ahmed Al-Rashidi uploaded version 2 of \"test\" and it is pending your approval.",
-    "sourceSystem": "EMS",
+    "sourceSystem": "CMS",
     "type": "approval",
     "priority": "medium",
     "status": "approved",
@@ -1212,6 +1212,200 @@
         "action": "approved",
         "by": "u001",
         "at": "2026-04-21T09:58:02.960Z",
+        "note": "Version 2 approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TC381ECB0",
+    "title": "Approve Leave Request — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested marriage leave for 10 day(s) (2026-05-03 to 2026-05-14). Reason: ",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-05-03",
+    "createdAt": "2026-05-01T00:58:47.494Z",
+    "updatedAt": "2026-05-01T02:39:33.467Z",
+    "metadata": {
+      "leaveId": "LF5D7AB89",
+      "requestDetails": {
+        "userName": "Ahmed Al-Rashidi",
+        "type": "marriage",
+        "startDate": "2026-05-03",
+        "endDate": "2026-05-14",
+        "days": 10,
+        "reason": "",
+        "customFields": {
+          "weddingDate": "2026-05-04"
+        },
+        "submittedAt": "2026-05-01T00:58:47.494Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-05-01T00:58:47.494Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-05-01T02:39:33.467Z",
+        "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TD6E6C2B5",
+    "title": "Approve new version of \"Saudi Downtown\"",
+    "description": "Ahmed Al-Rashidi uploaded version 2 of \"Saudi Downtown\" and it is pending your approval.",
+    "sourceSystem": "CMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "rejected",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-05-02T04:32:03.596Z",
+    "updatedAt": "2026-05-02T04:32:08.885Z",
+    "metadata": {
+      "emsVersionId": "DOCA5391BC0_v2",
+      "docId": "DOCA5391BC0",
+      "version": 2,
+      "docTitle": "Saudi Downtown"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-05-02T04:32:03.596Z",
+        "note": "Version 2 submitted for approval"
+      },
+      {
+        "action": "rejected",
+        "by": "u001",
+        "at": "2026-05-02T04:32:08.885Z",
+        "note": "Version 2 rejected — file removed"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TC10DECC3",
+    "title": "Approve new version of \"Proposal Beta Tech Innovations\"",
+    "description": "Ahmed Al-Rashidi uploaded version 2 of \"Proposal Beta Tech Innovations\" and it is pending your approval.",
+    "sourceSystem": "CMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-05-02T05:15:59.947Z",
+    "updatedAt": "2026-05-02T05:16:56.971Z",
+    "metadata": {
+      "emsVersionId": "DOCEDA64FFC_v2",
+      "docId": "DOCEDA64FFC",
+      "version": 2,
+      "docTitle": "Proposal Beta Tech Innovations"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-05-02T05:15:59.947Z",
+        "note": "Version 2 submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-05-02T05:16:56.971Z",
+        "note": "Version 2 approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T1BAA3993",
+    "title": "Approve new version of \"Proposal Alpha Digital Solutions\"",
+    "description": "Ahmed Al-Rashidi uploaded version 2 of \"Proposal Alpha Digital Solutions\" and it is pending your approval.",
+    "sourceSystem": "CMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-05-02T05:27:44.894Z",
+    "updatedAt": "2026-05-02T05:27:50.119Z",
+    "metadata": {
+      "emsVersionId": "DOCC3DFDF9C_v2",
+      "docId": "DOCC3DFDF9C",
+      "version": 2,
+      "docTitle": "Proposal Alpha Digital Solutions"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-05-02T05:27:44.894Z",
+        "note": "Version 2 submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-05-02T05:27:50.119Z",
+        "note": "Version 2 approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T37F16D08",
+    "title": "Approve new version of \"Proposal Beta Tech Innovations\"",
+    "description": "Ahmed Al-Rashidi uploaded version 2 of \"Proposal Beta Tech Innovations\" and it is pending your approval.",
+    "sourceSystem": "CMS",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-05-02T05:32:59.668Z",
+    "updatedAt": "2026-05-02T05:33:03.657Z",
+    "metadata": {
+      "emsVersionId": "DOC164A0BA3_v2",
+      "docId": "DOC164A0BA3",
+      "version": 2,
+      "docTitle": "Proposal Beta Tech Innovations"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-05-02T05:32:59.668Z",
+        "note": "Version 2 submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-05-02T05:33:03.657Z",
         "note": "Version 2 approved"
       }
     ],

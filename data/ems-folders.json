@@ -97,5 +97,38 @@
     "color": "#FF6B35",
     "icon": "bi-folder",
     "sortOrder": 4
+  },
+  {
+    "id": "FLDFA11C9C2",
+    "name": "Marketing",
+    "parentId": "FLD00000001",
+    "createdBy": "u001",
+    "createdAt": "2026-05-01T18:00:42.985Z",
+    "updatedAt": "2026-05-01T18:00:42.985Z",
+    "color": "#198d87",
+    "icon": "bi-folder",
+    "sortOrder": 5
+  },
+  {
+    "id": "FLDB816D261",
+    "name": "Commercial",
+    "parentId": "FLD00000001",
+    "createdBy": "u001",
+    "createdAt": "2026-05-01T23:43:24.476Z",
+    "updatedAt": "2026-05-01T23:43:24.476Z",
+    "color": "#198d87",
+    "icon": "bi-folder",
+    "sortOrder": 6
+  },
+  {
+    "id": "FLD68992BD0",
+    "name": "Proposals",
+    "parentId": "FLDB816D261",
+    "createdBy": "u001",
+    "createdAt": "2026-05-01T23:43:43.611Z",
+    "updatedAt": "2026-05-01T23:43:43.611Z",
+    "color": "#198d87",
+    "icon": "bi-folder",
+    "sortOrder": 1
   }
 ]

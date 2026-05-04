@@ -27,58 +27,89 @@ window.EMS_KnowledgeChat = (() => {
     document.body.style.overflow = '';
   }
 
+  /* ─── Suggested starter questions ────────────────────── */
+  function _suggestionsFor(docCount) {
+    const base = [
+      { icon: 'bi-card-text',     text: 'Summarize the key points' },
+      { icon: 'bi-exclamation-triangle', text: 'What are the main risks or concerns?' },
+      { icon: 'bi-list-check',    text: 'Extract action items and deadlines' },
+      { icon: 'bi-search',        text: 'What are the most important details?' }
+    ];
+    if (docCount > 1) {
+      base[3] = { icon: 'bi-arrow-left-right', text: 'Compare these documents' };
+    }
+    return base;
+  }
+
+  function _renderSuggestions(docCount) {
+    const wrap = document.getElementById('kcSuggestions');
+    const grid = document.getElementById('kcSuggestionGrid');
+    if (!wrap || !grid) return;
+    grid.innerHTML = _suggestionsFor(docCount).map(s =>
+      `<button class="kc-suggestion-chip" data-q="${_esc(s.text)}">
+         <i class="bi ${s.icon}"></i><span>${_esc(s.text)}</span>
+       </button>`
+    ).join('');
+    wrap.classList.remove('d-none');
+  }
+
+  function _hideSuggestions() {
+    document.getElementById('kcSuggestions')?.classList.add('d-none');
+  }
+
   /* ─── Public: openLoading ───────────────────────────── */
-  // Called by documents.js immediately when the action is triggered.
-  // Shows the drawer in loading state while files are being fetched/ingested.
   function openLoading(docNames) {
     _sessionId   = null;
     _chatHistory = [];
 
-    // Reset to loading state
     document.getElementById('knowledgeChatLoading')?.classList.remove('d-none');
     document.getElementById('kcChatBody')?.classList.add('d-none');
-    document.getElementById('knowledgeChatTitle').textContent = 'Ask Documents';
+    document.getElementById('knowledgeChatTitle').textContent = 'Ask Your Documents';
 
     const sub = document.getElementById('kcDocSubtitle');
     if (sub) sub.textContent = docNames.length === 1
-      ? docNames[0]
-      : `${docNames.length} documents selected`;
+      ? `Reading "${docNames[0]}"`
+      : `Reading ${docNames.length} documents`;
 
     document.getElementById('kcDocChips').innerHTML = '';
     document.getElementById('kcMessages').innerHTML = '';
+    _hideSuggestions();
 
     _drawerOpen();
     if (!_bound) { _bindEvents(); _bound = true; }
   }
 
   /* ─── Public: open ──────────────────────────────────── */
-  // Called by documents.js after a successful ingest.
   function open(sessionId, docNames) {
     _sessionId   = sessionId;
     _chatHistory = [];
 
-    // Switch from loading → chat
     document.getElementById('knowledgeChatLoading')?.classList.add('d-none');
     document.getElementById('kcChatBody')?.classList.remove('d-none');
 
     const title = document.getElementById('knowledgeChatTitle');
-    if (title) title.textContent = 'Ask Documents';
+    if (title) title.textContent = 'Ask Your Documents';
 
     const sub = document.getElementById('kcDocSubtitle');
     if (sub) sub.textContent = docNames.length === 1
-      ? docNames[0]
-      : `${docNames.length} documents`;
+      ? `Ready • 1 document indexed`
+      : `Ready • ${docNames.length} documents indexed`;
 
     // Doc chips
     const chips = document.getElementById('kcDocChips');
     if (chips) chips.innerHTML = docNames.map(n =>
-      `<span class="kc-doc-chip"><i class="bi bi-file-earmark-text"></i>${_esc(n)}</span>`
+      `<span class="kc-doc-chip" title="${_esc(n)}"><i class="bi bi-file-earmark-text"></i>${_esc(n)}</span>`
     ).join('');
 
     // Greeting message
     _appendMsg('assistant',
-      `I've indexed ${docNames.length} document${docNames.length !== 1 ? 's' : ''}. Ask me anything about their contents.`
+      docNames.length === 1
+        ? `Hi! I've read through "${docNames[0]}" and I'm ready to answer questions about it.`
+        : `Hi! I've read through your ${docNames.length} documents and I'm ready to answer questions about them.`
     );
+
+    // Render starter suggestions
+    _renderSuggestions(docNames.length);
 
     setTimeout(() => document.getElementById('kcInput')?.focus(), 150);
   }
@@ -91,16 +122,17 @@ window.EMS_KnowledgeChat = (() => {
   }
 
   /* ─── Private: send message ─────────────────────────── */
-  async function _sendMessage() {
+  async function _sendMessage(prefilled) {
     const input = document.getElementById('kcInput');
     const btn   = document.getElementById('kcSendBtn');
-    const text  = input?.value.trim();
+    const text  = (prefilled ?? input?.value ?? '').trim();
     if (!text || !_sessionId) return;
 
-    input.value  = '';
+    if (input) input.value = '';
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm" style="width:13px;height:13px;"></span>';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" style="width:14px;height:14px;"></span>';
 
+    _hideSuggestions();
     _appendMsg('user', text);
     const snapshot = [..._chatHistory];
     _chatHistory.push({ role: 'user', content: text });
@@ -124,12 +156,20 @@ window.EMS_KnowledgeChat = (() => {
       _chatHistory.pop();
     } finally {
       btn.disabled  = false;
-      btn.innerHTML = '<i class="bi bi-send"></i>';
+      btn.innerHTML = '<i class="bi bi-send-fill"></i>';
       input?.focus();
     }
   }
 
   /* ─── Private: rendering ─────────────────────────────── */
+  function _avatarHtml(role) {
+    if (role === 'assistant') {
+      return `<div class="chat-avatar chat-avatar-ai"><i class="bi bi-stars"></i></div>`;
+    }
+    const initial = (window.EMS_currentUserName || 'You').trim().charAt(0).toUpperCase() || 'U';
+    return `<div class="chat-avatar chat-avatar-user">${_esc(initial)}</div>`;
+  }
+
   function _appendMsg(role, text, sources) {
     const container = document.getElementById('kcMessages');
     if (!container) return;
@@ -140,7 +180,15 @@ window.EMS_KnowledgeChat = (() => {
         ).join('')}</div>` : '';
     const div = document.createElement('div');
     div.className = `chat-msg ${role}`;
-    div.innerHTML = `<div class="chat-bubble">${_esc(text)}</div>${sourcesHtml}<div class="chat-time">${time}</div>`;
+    div.innerHTML = `
+      <div class="chat-row">
+        ${_avatarHtml(role)}
+        <div class="chat-bubble-wrap">
+          <div class="chat-bubble">${_esc(text)}</div>
+          ${sourcesHtml}
+          <div class="chat-time">${time}</div>
+        </div>
+      </div>`;
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
   }
@@ -151,7 +199,13 @@ window.EMS_KnowledgeChat = (() => {
     const div = document.createElement('div');
     div.className = 'chat-msg assistant';
     div.id = 'kcTyping';
-    div.innerHTML = '<div class="chat-bubble chat-typing"><span></span><span></span><span></span></div>';
+    div.innerHTML = `
+      <div class="chat-row">
+        ${_avatarHtml('assistant')}
+        <div class="chat-bubble-wrap">
+          <div class="chat-bubble chat-typing"><span></span><span></span><span></span></div>
+        </div>
+      </div>`;
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
   }
@@ -162,9 +216,15 @@ window.EMS_KnowledgeChat = (() => {
   function _bindEvents() {
     document.getElementById('btnBackFromChat')?.addEventListener('click', close);
     document.getElementById('kcBackdrop')?.addEventListener('click', close);
-    document.getElementById('kcSendBtn')?.addEventListener('click', _sendMessage);
+    document.getElementById('kcSendBtn')?.addEventListener('click', () => _sendMessage());
     document.getElementById('kcInput')?.addEventListener('keydown', e => {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); _sendMessage(); }
+    });
+    // Suggested-question chips
+    document.getElementById('kcSuggestionGrid')?.addEventListener('click', e => {
+      const chip = e.target.closest('.kc-suggestion-chip');
+      if (!chip) return;
+      _sendMessage(chip.dataset.q);
     });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && _drawer()?.classList.contains('kc-open')) close();

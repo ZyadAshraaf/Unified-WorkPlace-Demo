@@ -10,7 +10,8 @@ const FolderTree = (() => {
 
   function setFolders(data) { folders = data; }
   function getActiveId() { return activeId; }
-  function getActiveName() { const f = folders.find(x => x.id === activeId); return f ? f.name : ''; }
+  function getActiveName() { const f = folders.find(x => x.id === activeId); return f ? _dn(f.name) : ''; }
+  function _dn(name) { return (name || '').replace(/^\/+/, ''); }
   function setCallbacks(selectCb, contextCb) { onSelect = selectCb; onContextMenu = contextCb; }
 
   function buildTree(parentId) {
@@ -31,7 +32,7 @@ const FolderTree = (() => {
         <div class="folder-tree-item ${isActive ? 'active' : ''}" data-folder-id="${f.id}">
           <span class="folder-expand">${hasKids ? (isExpanded ? '<i class="bi bi-chevron-down"></i>' : '<i class="bi bi-chevron-right"></i>') : ''}</span>
           <i class="folder-icon bi ${f.icon || 'bi-folder'}${isActive ? '-fill' : ''}"></i>
-          <span class="folder-name">${f.name}</span>
+          <span class="folder-name">${_dn(f.name)}</span>
           ${docCount ? `<span class="folder-count">${docCount}</span>` : ''}
         </div>
         ${hasKids && isExpanded ? buildTree(f.id) : ''}
@@ -99,7 +100,7 @@ const FolderTree = (() => {
     const path = [];
     let current = folders.find(f => f.id === folderId);
     while (current) {
-      path.unshift({ id: current.id, name: current.name });
+      path.unshift({ id: current.id, name: _dn(current.name) });
       current = current.parentId ? folders.find(f => f.id === current.parentId) : null;
     }
     return path;
@@ -113,7 +114,7 @@ const FolderTree = (() => {
         .filter(f => f.parentId === parentId && f.id !== excludeId)
         .sort((a, b) => a.sortOrder - b.sortOrder)
         .forEach(f => {
-          result.push({ id: f.id, name: '\u00A0\u00A0'.repeat(depth) + f.name, depth });
+          result.push({ id: f.id, name: '\u00A0\u00A0'.repeat(depth) + _dn(f.name), depth });
           walk(f.id, depth + 1);
         });
     }
@@ -121,5 +122,7 @@ const FolderTree = (() => {
     return result;
   }
 
-  return { setFolders, getActiveId, getActiveName, setCallbacks, render, selectFolder, getBreadcrumb, getFolderOptions, getFolders: () => folders };
+  function clearActive() { activeId = null; render(); }
+
+  return { setFolders, getActiveId, getActiveName, setCallbacks, render, selectFolder, clearActive, getBreadcrumb, getFolderOptions, getFolders: () => folders };
 })();

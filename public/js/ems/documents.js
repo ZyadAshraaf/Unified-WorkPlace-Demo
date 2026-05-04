@@ -56,9 +56,59 @@ const EMS_Documents = (() => {
     const data = await API.get(url);
     if (data?.success) {
       allDocs = data.documents;
+      renderSubfolders(folderId);
       renderDocList();
     }
   }
+
+  function renderSubfolders(folderId) {
+    const wrap = document.getElementById('docSubfoldersWrap');
+    if (!wrap) return;
+
+    // Only show subfolders when browsing a real folder (not virtual modes)
+    if (virtualMode || !folderId) {
+      wrap.classList.add('d-none');
+      wrap.innerHTML = '';
+      return;
+    }
+
+    const allFolders = FolderTree.getFolders();
+    const children = allFolders.filter(f => f.parentId === folderId);
+
+    if (!children.length) {
+      wrap.classList.add('d-none');
+      wrap.innerHTML = '';
+      return;
+    }
+
+    wrap.classList.remove('d-none');
+    wrap.innerHTML = `
+      <div class="subfolder-section-label">
+        <i class="bi bi-folder2-open me-1"></i>Folders <span class="subfolder-count">${children.length}</span>
+      </div>
+      <div class="subfolder-grid">
+        ${children.map(f => {
+          const docCount = typeof window.EMS_getDocCountForFolder === 'function'
+            ? window.EMS_getDocCountForFolder(f.id) : 0;
+          const subCount = allFolders.filter(x => x.parentId === f.id).length;
+          const color = f.color || 'var(--color-primary)';
+          return `
+            <div class="subfolder-card" onclick="FolderTree.selectFolder('${f.id}')">
+              <div class="subfolder-icon" style="background:${color}18;color:${color};">
+                <i class="bi ${f.icon || 'bi-folder'}"></i>
+              </div>
+              <div class="subfolder-info">
+                <div class="subfolder-name">${_dn(f.name)}</div>
+              </div>
+              <i class="bi bi-chevron-right subfolder-arrow"></i>
+            </div>`;
+        }).join('')}
+      </div>
+      ${allDocs.length ? '<div class="subfolder-docs-label"><i class="bi bi-file-earmark me-1"></i>Documents in this folder</div>' : ''}
+    `;
+  }
+
+  function _dn(name) { return (name || '').replace(/^\/+/, ''); }
 
   function renderDocTypeFilter() {
     const select = document.getElementById('docTypeFilter');
@@ -86,6 +136,9 @@ const EMS_Documents = (() => {
     if (!tbody) return;
 
     if (!allDocs.length) {
+      // If subfolders are shown, hide the empty-state table entirely
+      const hasSubs = document.getElementById('docSubfoldersWrap') && !document.getElementById('docSubfoldersWrap').classList.contains('d-none');
+      if (hasSubs) { tbody.innerHTML = ''; return; }
       const msg = virtualMode === 'trash' ? 'Trash is empty' :
                   virtualMode === 'starred' ? 'No starred documents' :
                   virtualMode === 'recent' ? 'No recent documents' :
@@ -151,8 +204,22 @@ const EMS_Documents = (() => {
   }
 
   function updateBulkActions() {
-    const wrap = document.getElementById('bulkActionsWrap');
-    if (wrap) wrap.classList.toggle('d-none', selectedDocIds.size === 0);
+    const count = selectedDocIds.size;
+    const toolbar = document.getElementById('docToolbar');
+    const defaultBar = document.getElementById('docToolbarDefault');
+    const selectionBar = document.getElementById('docSelectionBar');
+    const countNum = document.getElementById('selectionCountNum');
+
+    if (count > 0) {
+      toolbar?.classList.add('selection-active');
+      defaultBar?.classList.add('d-none');
+      selectionBar?.classList.remove('d-none');
+      if (countNum) countNum.textContent = count;
+    } else {
+      toolbar?.classList.remove('selection-active');
+      defaultBar?.classList.remove('d-none');
+      selectionBar?.classList.add('d-none');
+    }
   }
 
   function updateBreadcrumb() {
@@ -249,13 +316,22 @@ const EMS_Documents = (() => {
         virtualMode = v;
         document.querySelectorAll('.folder-virtual-item').forEach(x => x.classList.remove('active'));
         el.classList.add('active');
-        document.querySelectorAll('.folder-tree-item').forEach(f => f.classList.remove('active'));
+        FolderTree.clearActive();
         hideManagementPanels();
+        setDocToolbarVisible(false);
         document.getElementById('docListWrap')?.classList.remove('d-none');
         document.getElementById('docViewerWrap')?.classList.add('d-none');
         updateBreadcrumb();
         loadDocs();
       });
+    });
+
+    // Clear selection
+    document.getElementById('btnSelectionClear')?.addEventListener('click', () => {
+      selectedDocIds.clear();
+      const selectAll = document.getElementById('selectAllDocs');
+      if (selectAll) selectAll.checked = false;
+      renderDocList();
     });
 
     // Bulk actions
@@ -267,6 +343,7 @@ const EMS_Documents = (() => {
         const folderId = document.getElementById('moveFolderSelect').value;
         const data = await API.post('/api/ems/documents/bulk/move', { documentIds: [...selectedDocIds], folderId });
         if (data?.success) { UI.toast(`Moved ${data.moved} documents`); selectedDocIds.clear(); await loadDocs(); }
+        else { UI.toast(data?.message || 'Move failed', 'danger'); }
         bootstrap.Modal.getOrCreateInstance(document.getElementById('moveDocModal')).hide();
       };
     });
@@ -531,6 +608,7 @@ const EMS_Documents = (() => {
       const folderId = document.getElementById('moveFolderSelect').value;
       const data = await API.post(`/api/ems/documents/${docId}/move`, { folderId });
       if (data?.success) { UI.toast('Document moved'); await loadDocs(); FolderTree.render(); }
+      else { UI.toast(data?.message || 'Move failed', 'danger'); }
       bootstrap.Modal.getOrCreateInstance(document.getElementById('moveDocModal')).hide();
     };
     bootstrap.Modal.getOrCreateInstance(document.getElementById('moveDocModal')).show();
@@ -589,6 +667,7 @@ const EMS_Documents = (() => {
     virtualMode = null;
     document.querySelectorAll('.folder-virtual-item').forEach(v => v.classList.remove('active'));
     hideManagementPanels();
+    setDocToolbarVisible(true);
     document.getElementById('docListWrap')?.classList.remove('d-none');
     document.getElementById('docViewerWrap')?.classList.add('d-none');
     updateBreadcrumb();
@@ -601,11 +680,15 @@ const EMS_Documents = (() => {
     document.getElementById('metadataPanelWrap')?.classList.add('d-none');
   }
 
+  function setDocToolbarVisible(visible) {
+    document.getElementById('docToolbar')?.classList.toggle('d-none', !visible);
+  }
+
   function getDocTypes() { return allDocTypes; }
   function getActiveDocId() { return activeDocId; }
 
   return {
     init, loadDocs, loadDocTypes, onFolderSelected, viewDoc, showDetail, showNewVersion, showMove,
-    toggleStar, deleteDoc, restoreDoc, getDocTypes, getActiveDocId, updateBreadcrumb
+    toggleStar, deleteDoc, restoreDoc, getDocTypes, getActiveDocId, updateBreadcrumb, setDocToolbarVisible
   };
 })();

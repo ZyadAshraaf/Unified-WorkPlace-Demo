@@ -131,33 +131,53 @@
           <!-- Right: Document Area -->
           <div class="ems-doc-area">
             <!-- Breadcrumb & Toolbar -->
-            <div class="doc-toolbar">
-              <div class="doc-breadcrumb" id="docBreadcrumb">
-                <span class="breadcrumb-item">Root</span>
-              </div>
-              <div class="doc-toolbar-actions">
-                <div class="input-group input-group-sm doc-search-wrap">
-                  <span class="input-group-text"><i class="bi bi-search"></i></span>
-                  <input type="text" class="form-control" placeholder="Search documents..." id="docSearchInput">
+            <div class="doc-toolbar" id="docToolbar">
+              <!-- Default toolbar (no selection) -->
+              <div class="doc-toolbar-default" id="docToolbarDefault">
+                <div class="doc-breadcrumb" id="docBreadcrumb">
+                  <span class="breadcrumb-item">Root</span>
                 </div>
-                <select class="form-select form-select-sm" id="docTypeFilter" style="width:auto;">
-                  <option value="">All Types</option>
-                </select>
-                <button class="btn btn-sm btn-primary" id="btnUploadDoc"><i class="bi bi-cloud-upload me-1"></i>Upload</button>
-                <div class="dropdown d-none" id="bulkActionsWrap">
-                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-check2-square me-1"></i>Bulk</button>
-                  <ul class="dropdown-menu">
-                    <li><button class="dropdown-item" id="btnBulkMove"><i class="bi bi-folder-symlink me-1"></i>Move</button></li>
-                    <li><button class="dropdown-item text-danger" id="btnBulkDelete"><i class="bi bi-trash3 me-1"></i>Delete</button></li>
-                    <li><hr class="dropdown-divider my-1"></li>
-                    <li><button class="dropdown-item" id="btnBulkKnowledgeChat"><i class="bi bi-chat-dots me-1"></i>Ask Your Documents</button></li>
-                  </ul>
+                <div class="doc-toolbar-actions">
+                  <div class="input-group input-group-sm doc-search-wrap">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Search documents..." id="docSearchInput">
+                  </div>
+                  <select class="form-select form-select-sm" id="docTypeFilter" style="width:auto;">
+                    <option value="">All Types</option>
+                  </select>
+                  <button class="btn btn-sm btn-primary btn-upload-icon" id="btnUploadDoc" title="Upload Document"><i class="bi bi-cloud-upload"></i></button>
+                  <div class="toolbar-divider"></div>
+                  <button class="btn btn-sm btn-ask-ai-ghost" id="btnAskAiGhost" disabled title="Select one or more documents to start an AI conversation">
+                    <i class="bi bi-stars me-1"></i>
+                    <span class="ghost-label">Ask Your Documents</span>
+                    <span class="ghost-hint ms-1">select files</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Selection bar (shown when 1+ selected) — replaces toolbar in-place -->
+              <div class="doc-selection-bar d-none" id="docSelectionBar">
+                <div class="selection-info">
+                  <button class="selection-clear-x" id="btnSelectionClear" title="Clear selection"><i class="bi bi-x-lg"></i></button>
+                  <span class="selection-count"><strong id="selectionCountNum">0</strong> selected</span>
+                </div>
+                <div class="selection-actions">
+                  <button class="btn-ask-ai" id="btnBulkKnowledgeChat" title="Chat with the selected documents using AI">
+                    <span class="ask-ai-glow"></span>
+                    <i class="bi bi-stars"></i>
+                    <span class="ask-ai-label">Ask Your Documents</span>
+                    <span class="ask-ai-shortcut"><kbd>AI</kbd></span>
+                  </button>
+                  <button class="btn btn-sm btn-outline-secondary selection-secondary-btn" id="btnBulkMove"><i class="bi bi-folder-symlink me-1"></i><span class="btn-label">Move</span></button>
+                  <button class="btn btn-sm btn-outline-danger selection-secondary-btn" id="btnBulkDelete"><i class="bi bi-trash3 me-1"></i><span class="btn-label">Delete</span></button>
                 </div>
               </div>
             </div>
 
             <!-- Document List -->
             <div class="doc-list-wrap" id="docListWrap">
+              <!-- Subfolder cards (shown when active folder has children) -->
+              <div id="docSubfoldersWrap" class="d-none doc-subfolders-wrap"></div>
               <table class="table table-hover mb-0 doc-table">
                 <thead>
                   <tr>
@@ -179,11 +199,13 @@
             <!-- Document Types Management Panel -->
             <div class="d-none" id="doctypesPanelWrap">
               <div class="doc-toolbar">
-                <div class="doc-breadcrumb">
-                  <span class="breadcrumb-item"><i class="bi bi-tags me-1"></i>Document Types</span>
-                </div>
-                <div class="doc-toolbar-actions">
-                  <button class="btn btn-sm btn-primary" id="btnNewDocType"><i class="bi bi-plus-lg me-1"></i>New Type</button>
+                <div class="doc-toolbar-default">
+                  <div class="doc-breadcrumb">
+                    <span class="breadcrumb-item"><i class="bi bi-tags me-1"></i>Document Types</span>
+                  </div>
+                  <div class="doc-toolbar-actions">
+                    <button class="btn btn-sm btn-primary" id="btnNewDocType"><i class="bi bi-plus-lg me-1"></i>New Type</button>
+                  </div>
                 </div>
               </div>
               <div id="doctypesGrid" style="padding:16px;overflow-y:auto;flex:1;">
@@ -194,11 +216,13 @@
             <!-- Metadata Fields Management Panel -->
             <div class="d-none" id="metadataPanelWrap">
               <div class="doc-toolbar">
-                <div class="doc-breadcrumb">
-                  <span class="breadcrumb-item"><i class="bi bi-list-columns-reverse me-1"></i>Metadata Templates</span>
-                </div>
-                <div class="doc-toolbar-actions">
-                  <button class="btn btn-sm btn-primary" id="btnNewMetaField"><i class="bi bi-plus-lg me-1"></i>New Template</button>
+                <div class="doc-toolbar-default">
+                  <div class="doc-breadcrumb">
+                    <span class="breadcrumb-item"><i class="bi bi-list-columns-reverse me-1"></i>Metadata Templates</span>
+                  </div>
+                  <div class="doc-toolbar-actions">
+                    <button class="btn btn-sm btn-primary" id="btnNewMetaField"><i class="bi bi-plus-lg me-1"></i>New Template</button>
+                  </div>
                 </div>
               </div>
               <div style="padding:16px;overflow-y:auto;flex:1;">
@@ -889,10 +913,10 @@
 <div class="kc-drawer" id="knowledgeChatWrap">
   <div class="kc-drawer-header">
     <div class="kc-drawer-title-wrap">
-      <i class="bi bi-chat-dots-fill kc-header-icon"></i>
+      <div class="kc-header-badge"><i class="bi bi-stars"></i></div>
       <div>
-        <div class="kc-drawer-title" id="knowledgeChatTitle">Ask Documents</div>
-        <div class="kc-drawer-sub" id="kcDocSubtitle"></div>
+        <div class="kc-drawer-title" id="knowledgeChatTitle">Ask Your Documents</div>
+        <div class="kc-drawer-sub" id="kcDocSubtitle">AI-powered Q&amp;A</div>
       </div>
     </div>
     <button class="kc-close-btn" id="btnBackFromChat" title="Close"><i class="bi bi-x-lg"></i></button>
@@ -900,20 +924,27 @@
 
   <!-- Loading state -->
   <div class="kc-loading-state" id="knowledgeChatLoading">
-    <div class="kc-loading-spinner">
-      <span class="spinner-border" style="width:36px;height:36px;color:var(--color-primary);"></span>
+    <div class="kc-loading-orb">
+      <i class="bi bi-stars"></i>
     </div>
-    <div class="kc-loading-label">Indexing documents…</div>
-    <div class="kc-loading-sub">This may take a few seconds</div>
+    <div class="kc-loading-label">Reading your documents…</div>
+    <div class="kc-loading-sub">Indexing content for fast Q&amp;A</div>
+    <div class="kc-loading-bar"><div class="kc-loading-bar-fill"></div></div>
   </div>
 
   <!-- Chat state (hidden until ready) -->
   <div class="kc-body d-none" id="kcChatBody">
     <div class="kc-doc-chips" id="kcDocChips"></div>
     <div class="kc-messages" id="kcMessages"></div>
+    <div class="kc-suggestions d-none" id="kcSuggestions">
+      <div class="kc-suggestions-label"><i class="bi bi-lightbulb"></i> Try asking</div>
+      <div class="kc-suggestion-grid" id="kcSuggestionGrid"></div>
+    </div>
     <div class="kc-input-row" id="kcInputRow">
-      <input type="text" class="form-control" id="kcInput" placeholder="Ask a question…">
-      <button class="btn btn-primary kc-send-btn" id="kcSendBtn"><i class="bi bi-send"></i></button>
+      <div class="kc-input-wrap">
+        <input type="text" class="form-control" id="kcInput" placeholder="Ask a question about your documents…" autocomplete="off">
+      </div>
+      <button class="btn kc-send-btn" id="kcSendBtn" title="Send"><i class="bi bi-send-fill"></i></button>
     </div>
   </div>
 </div>

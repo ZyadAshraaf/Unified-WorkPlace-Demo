@@ -60,6 +60,7 @@ const EMS_Audit = (() => {
     if (action.includes('unlock')) return 'unlock';
     if (action.includes('folder')) return 'folder';
     if (action.includes('group')) return 'group';
+    if (action.includes('annotate')) return 'annotation';
     return '';
   }
 

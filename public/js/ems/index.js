@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (meData?.success) {
     window.EMS_currentUserId   = meData.user.id;
     window.EMS_currentUserRole = meData.user.role;
+    window.EMS_currentUserName = meData.user.name || meData.user.email || 'You';
   }
 
   // Load folders, then init documents tab
@@ -31,8 +32,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     el.addEventListener('click', () => {
       const v = el.dataset.virtual;
       // Deselect all tree items and other virtual items
-      document.querySelectorAll('.folder-tree-item').forEach(f => f.classList.remove('active'));
+      FolderTree.clearActive();
       document.querySelectorAll('.folder-virtual-item').forEach(x => x.classList.remove('active'));
+      EMS_Documents.setDocToolbarVisible(false);
       el.classList.add('active');
       // Hide doc area panels
       document.getElementById('docListWrap')?.classList.add('d-none');

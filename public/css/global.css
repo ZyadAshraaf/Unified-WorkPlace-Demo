@@ -550,7 +550,7 @@ body {
 .badge-sys-Warehouse       { background: #FFF3E0; color: #b45309; }
 .badge-sys-IT              { background: var(--color-primary-faint); color: var(--color-primary-dark); }
 .badge-sys-Manual          { background: #F1F5F9; color: #475569; }
-.badge-sys-EMS             { background: #E0F7FA; color: #00695c; }
+.badge-sys-CMS             { background: #E0F7FA; color: #00695c; }
 .badge-sys-Procurement     { background: #FEF3C7; color: #92400e; }
 
 .badge-custom {

@@ -256,5 +256,23 @@
     "reviewedBy": "u001",
     "reviewedAt": "2026-04-21T09:48:18.852Z",
     "reviewNote": ""
+  },
+  {
+    "id": "LF5D7AB89",
+    "userId": "u001",
+    "type": "marriage",
+    "startDate": "2026-05-03",
+    "endDate": "2026-05-14",
+    "days": 10,
+    "reason": "",
+    "customFields": {
+      "weddingDate": "2026-05-04"
+    },
+    "status": "approved",
+    "taskId": "TC381ECB0",
+    "submittedAt": "2026-05-01T00:58:47.494Z",
+    "reviewedBy": "u001",
+    "reviewedAt": "2026-05-01T02:39:33.467Z",
+    "reviewNote": ""
   }
 ]

@@ -144,6 +144,9 @@ The **Appraisal**, **Travel**, **Material Requisitions**, **Purchase Orders**, a
 - Purchase Orders: `PUT /api/purchase-orders/:id/approve` and `PUT /api/purchase-orders/:id/reject` (dedicated sub-routes, no body needed)
 - Material Requisitions: `PUT /api/material-requisitions/:id/approve` and `PUT /api/material-requisitions/:id/reject` (same pattern as PO)
 - EMS versions: `POST /api/ems/documents/:id/versions/:version/approve` and `/reject`
+- Appraisal: two separate approval stages — `PUT /api/appraisal/:id/objectives/approve` (objectives phase) and `PUT /api/appraisal/:id/appraisal/approve` (final appraisal phase); `reject` variants exist for both. Tasks carry `metadata: { planId, approvalType: 'objectives'|'appraisal' }`
+
+See `APPROVAL_WORKFLOWS.md` for a detailed per-module flow reference including which demo user maps to which approver.
 
 **Task priority rules on submission:**
 - Travel: `priority: 'high'` if total trip cost > SAR 10,000, otherwise `'medium'`
@@ -181,6 +184,71 @@ The document AI features (doc-chat, proposal-eval, resume-eval) all proxy throug
 2. Every page loads `<link href="/unifiedwp/theme.css">` — dynamic Express endpoint, not a static file
 3. `server.js` computes CSS variables (shades, tints, RGB values) on each request
 4. `data/settings.json` structure: `colors.primary` (default `#198D87`), `colors.secondary` (default `#2C3E50`), `appName`, `logoPath`, optionally `teamsGraph: { tenantId, clientId, clientSecret }`
+
+## Key Data Schemas
+
+Minimal shapes for the most-referenced JSON files — enough to write route code without opening `data/`.
+
+**`data/users.json`** — referenced by almost every route for role checks and `managerId` lookups:
+```json
+{ "id": "u001", "name": "Ahmed Al-Rashidi", "email": "ahmed@company.com", "password": "demo123",
+  "role": "admin|manager|hr|employee", "department": "IT", "jobTitle": "CEO", "managerId": null }
+```
+`managerId` is `null` for the CEO (self-approver). `mariam@company.com` is a second manager — employees can report to either `khalid` or `mariam`, both report to Ahmed.
+
+**`data/tasks.json`** — the central approval/task hub:
+```json
+{ "id": "T2B5D6E1", "title": "...", "description": "...", "sourceSystem": "HR",
+  "type": "approval|task", "priority": "high|medium|low",
+  "status": "pending|in_progress|completed|approved|rejected|escalated|new",
+  "assignedTo": "u002", "createdBy": "u004", "dueDate": "2026-04-01T00:00:00Z",
+  "metadata": { "leaveId": "L..." },
+  "history": [], "comments": [], "delegatedFrom": null, "escalated": false }
+```
+`metadata` keys by module: `leaveId`, `wfhId`, `travelId`, `mrqId`, `poId`, `planId` (appraisal).
+
+**`data/leaves.json`**:
+```json
+{ "id": "L4A7F8C9", "userId": "u004", "type": "annual|sick|emergency|unpaid",
+  "startDate": "2026-04-01", "endDate": "2026-04-03", "days": 3,
+  "reason": "...", "status": "pending|approved|rejected", "taskId": "T..." }
+```
+
+**`data/appraisals.json`** — two-phase approval (`objectives` then `appraisal`):
+```json
+{ "id": "AP...", "userId": "u004", "reviewedBy": "u002", "cycle": "Q1 2026",
+  "period": { "start": "2026-01-01", "end": "2026-03-31" },
+  "objectives": [ { "title": "...", "weight": 30, "score": null } ],
+  "objectivesStatus": "pending|approved|rejected",
+  "selfAssessment": "...", "managerAssessment": "...",
+  "rating": null, "status": "pending|approved|rejected",
+  "objectivesTaskId": "T...", "appraisalTaskId": "T..." }
+```
+
+**`data/material-requisitions.json`**:
+```json
+{ "id": "MR1A2B3C4D", "mrqNumber": "MR-2026-0001", "userId": "u004",
+  "status": "pending|approved|rejected", "priority": "urgent|high|medium|low",
+  "projectCode": "PRJ-001", "deliveryLocation": "Warehouse A",
+  "lineItems": [ { "materialId": "MAT-001", "description": "...", "qtyRequested": 10, "uom": "PCS" } ],
+  "taskId": "T..." }
+```
+
+**`data/purchase-orders.json`**:
+```json
+{ "id": "PO1A2B3C4D", "poNumber": "PO-2026-0001", "userId": "u004",
+  "vendorId": "v001", "vendorName": "ACME Supplies", "currency": "AED",
+  "paymentTerms": "Net 30", "taxPct": 5, "costCenter": "CC-IT",
+  "lineItems": [ { "item": "Laptop", "qty": 2, "unitPrice": 4500, "lineTotal": 9000 } ],
+  "status": "pending|approved|rejected", "taskId": "T..." }
+```
+
+**`data/settings.json`**:
+```json
+{ "colors": { "primary": "#198D87", "secondary": "#2C3E50" },
+  "appName": "Unified Workspace", "logoPath": "/assets/logo.png",
+  "teamsGraph": { "tenantId": "...", "clientId": "...", "clientSecret": "..." } }
+```
 
 ## Cross-Cutting Concerns
 
@@ -220,7 +288,7 @@ The EMS module (`/ems`) is architecturally different from all other modules:
   | `omar@company.com` | employee | demo123 |
   | `mariam@company.com` | manager | demo123 |
   Approval chain: employee → their manager; manager → CEO (Ahmed); CEO → self-approval.
-- `?embed=1` query param triggers auto-login for Teams embedded mode
+- `?embed=1` query param triggers auto-login for Teams embedded mode — defaults to `ahmed@company.com` (admin/CEO)
 - **Data reset:** Delete/truncate files in `data/` — no migration system
 - **Session reset:** Delete `.sessions/` directory to log out all users
 - Entity IDs: type prefix + first 8 chars of UUID (e.g. `L4A7F8C9` for leaves, `T2B5D6E1` for tasks, `HD9B1C3D` for helpdesk). Helpdesk tickets also get a `ticketNo` in `TKT-YYYY-NNN` format
