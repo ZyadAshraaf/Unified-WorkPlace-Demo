@@ -17,19 +17,22 @@ async function loadTickets() {
 }
 
 function updateStats() {
-  document.getElementById('statOpen').textContent       = allTickets.filter(t => t.status === 'open').length;
-  document.getElementById('statResolved').textContent   = allTickets.filter(t => t.status === 'resolved' || t.status === 'closed').length;
-  document.getElementById('statCritical').textContent   = allTickets.filter(t => t.priority === 'critical').length;
+  const active = ['open', 'in_progress', 'reopened'];
+  document.getElementById('statOpen').textContent     = allTickets.filter(t => active.includes(t.status)).length;
+  document.getElementById('statResolved').textContent = allTickets.filter(t => t.status === 'resolved' || t.status === 'closed').length;
+  document.getElementById('statCritical').textContent = allTickets.filter(t => t.priority === 'critical').length;
 }
 
 function getFiltered() {
   const status   = document.getElementById('filterTicketStatus')?.value   || '';
   const priority = document.getElementById('filterTicketPriority')?.value || '';
-  return allTickets.filter(t => {
-    if (status   && t.status   !== status)   return false;
-    if (priority && t.priority !== priority) return false;
-    return true;
-  });
+  return allTickets
+    .filter(t => {
+      if (status   && t.status   !== status)   return false;
+      if (priority && t.priority !== priority) return false;
+      return true;
+    })
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
 function renderTickets() {
@@ -41,28 +44,25 @@ function renderTickets() {
     return;
   }
 
-  el.innerHTML = tickets.map(t => {
-    const priorityColors = { critical: 'var(--color-danger)', high: '#fd7e14', medium: 'var(--color-warning)', low: 'var(--color-success)' };
-    return `
-      <div class="ticket-card priority-${t.priority}" onclick="openTicketDetail('${t.id}')">
-        <div class="d-flex align-items-start justify-content-between gap-3">
-          <div style="flex:1;min-width:0">
-            <div class="ticket-no">${t.ticketNo}</div>
-            <div class="ticket-title">${t.title}</div>
-            <div class="ticket-meta d-flex flex-wrap gap-2 mt-1">
-              <span><i class="bi bi-tag me-1"></i>${t.category}</span>
-              <span><i class="bi bi-person me-1"></i>${t.submittedByName || 'You'}</span>
-              <span><i class="bi bi-clock me-1"></i>${UI.timeAgo(t.createdAt)}</span>
-              ${t.comments.length ? `<span><i class="bi bi-chat me-1"></i>${t.comments.length} comment${t.comments.length > 1 ? 's' : ''}</span>` : ''}
-            </div>
-          </div>
-          <div class="d-flex flex-column align-items-end gap-2">
-            ${UI.statusBadge(t.status)}
-            ${UI.priorityBadge(t.priority)}
+  el.innerHTML = tickets.map(t => `
+    <div class="ticket-card priority-${t.priority}" onclick="openTicketDetail('${t.id}')">
+      <div class="d-flex align-items-start justify-content-between gap-3">
+        <div style="flex:1;min-width:0">
+          <div class="ticket-no">${t.ticketNo}</div>
+          <div class="ticket-title">${t.title}</div>
+          <div class="ticket-meta d-flex flex-wrap gap-2 mt-1">
+            <span><i class="bi bi-tag me-1"></i>${t.category}</span>
+            <span><i class="bi bi-person me-1"></i>${t.submittedByName || 'You'}</span>
+            <span><i class="bi bi-clock me-1"></i>${UI.timeAgo(t.createdAt)}</span>
+            ${t.comments.length ? `<span><i class="bi bi-chat me-1"></i>${t.comments.length} comment${t.comments.length > 1 ? 's' : ''}</span>` : ''}
           </div>
         </div>
-      </div>`;
-  }).join('');
+        <div class="d-flex flex-column align-items-end gap-2">
+          ${UI.statusBadge(t.status)}
+          ${UI.priorityBadge(t.priority)}
+        </div>
+      </div>
+    </div>`).join('');
 }
 
 function openTicketDetail(id) {
@@ -83,6 +83,13 @@ function openTicketDetail(id) {
         </div>`).join('')
     : '<div class="text-muted fs-sm py-2">No comments yet.</div>';
 
+  const historyHtml = (activeTicket.history || []).map(h => `
+    <div class="history-item">
+      <span class="history-action">${h.action.replace(/_/g, ' ')}</span>
+      · ${UI.formatDateTime(h.at)}
+      ${h.note ? `<div class="text-muted" style="font-size:11px;margin-top:2px">${h.note}</div>` : ''}
+    </div>`).join('') || '<div class="text-muted fs-sm py-2">No history yet.</div>';
+
   document.getElementById('ticketDetailBody').innerHTML = `
     <div class="row g-3 mb-3">
       <div class="col-sm-6"><strong>Status:</strong> ${UI.statusBadge(activeTicket.status)}</div>
@@ -99,9 +106,13 @@ function openTicketDetail(id) {
       <div class="fw-600 mb-2">Comments</div>
       <div id="ticketComments">${commentsHtml}</div>
     </div>
-    <div class="input-group">
+    <div class="input-group mb-4">
       <input type="text" class="form-control" id="ticketCommentInput" placeholder="Add a comment...">
       <button class="btn btn-primary" id="btnAddTicketComment"><i class="bi bi-send"></i></button>
+    </div>
+    <div class="mb-3">
+      <div class="fw-600 mb-2">History</div>
+      <div>${historyHtml}</div>
     </div>`;
 
   // Add comment handler
@@ -115,15 +126,24 @@ function openTicketDetail(id) {
       openTicketDetail(activeTicket.id);
     }
   };
-
   document.getElementById('btnAddTicketComment')?.addEventListener('click', addComment);
   document.getElementById('ticketCommentInput')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') addComment();
   });
 
-  const resolveBtn = document.getElementById('btnResolveTicket');
-  const canResolve = Layout.user?.role !== 'employee' || activeTicket.submittedBy === Layout.user?.id;
-  resolveBtn?.classList.toggle('d-none', activeTicket.status === 'resolved' || !canResolve);
+  // Button visibility
+  const isIT        = Layout.user?.role !== 'employee';
+  const isSubmitter = activeTicket.submittedBy === Layout.user?.id;
+  const status      = activeTicket.status;
+
+  document.getElementById('btnStartWork')?.classList.toggle('d-none',
+    !(isIT && (status === 'open' || status === 'reopened')));
+  document.getElementById('btnResolveTicket')?.classList.toggle('d-none',
+    !(isIT && status === 'in_progress'));
+  document.getElementById('btnReopenTicket')?.classList.toggle('d-none',
+    !(isSubmitter && status === 'resolved'));
+  document.getElementById('btnCloseTicket')?.classList.toggle('d-none',
+    !(isSubmitter && status === 'resolved'));
 
   modal.show();
 }
@@ -133,8 +153,8 @@ function bindActions() {
   document.getElementById('filterTicketPriority')?.addEventListener('change', renderTickets);
 
   document.getElementById('btnNewTicket')?.addEventListener('click', () => {
-    document.getElementById('ticketTitle').value   = '';
-    document.getElementById('ticketDesc').value    = '';
+    document.getElementById('ticketTitle').value = '';
+    document.getElementById('ticketDesc').value  = '';
     bootstrap.Modal.getOrCreateInstance(document.getElementById('newTicketModal')).show();
   });
 
@@ -160,13 +180,21 @@ function bindActions() {
     }
   });
 
-  document.getElementById('btnResolveTicket')?.addEventListener('click', async () => {
+  // Unified workflow action helper
+  async function doTicketAction(action, successMsg) {
     if (!activeTicket) return;
-    const data = await API.put(`/api/helpdesk/${activeTicket.id}`, { status: 'resolved' });
+    const data = await API.put(`/api/helpdesk/${activeTicket.id}`, { action });
     if (data?.success) {
-      UI.toast('Ticket marked as resolved', 'success');
+      UI.toast(successMsg, 'success');
       bootstrap.Modal.getOrCreateInstance(document.getElementById('ticketDetailModal')).hide();
       await loadTickets();
+    } else {
+      UI.toast(data?.message || 'Action failed', 'danger');
     }
-  });
+  }
+
+  document.getElementById('btnStartWork')?.addEventListener('click',    () => doTicketAction('start',   'Ticket is now In Progress'));
+  document.getElementById('btnResolveTicket')?.addEventListener('click',() => doTicketAction('resolve', 'Ticket marked as Resolved'));
+  document.getElementById('btnReopenTicket')?.addEventListener('click', () => doTicketAction('reopen',  'Ticket reopened'));
+  document.getElementById('btnCloseTicket')?.addEventListener('click',  () => doTicketAction('close',   'Ticket closed'));
 }

@@ -1,4 +1,4 @@
-const CACHE = 'uw-mobile-v4';
+const CACHE = 'uw-mobile-v8';
 const SHELL = [
   '/unifiedwp/m/login',
   '/unifiedwp/m/home',
@@ -13,7 +13,8 @@ const SHELL = [
   '/unifiedwp/mobile/js/leave.js',
   '/unifiedwp/mobile/js/wfh.js',
   '/unifiedwp/assets/logo.png',
-  '/unifiedwp/assets/pwa-icon.png'
+  '/unifiedwp/assets/pwa-icon.png',
+  'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'
 ];
 
 self.addEventListener('install', e => {
@@ -37,10 +38,11 @@ self.addEventListener('fetch', e => {
   if (url.pathname.startsWith('/unifiedwp/api/')) return;
   if (url.pathname === '/unifiedwp/theme.css') return;
 
-  // Cache-first for immutable static assets (JS, CSS, images)
+  // Cache-first for immutable static assets (JS, CSS, images) and CDN scripts
   if (
     url.pathname.startsWith('/unifiedwp/mobile/') ||
-    url.pathname.startsWith('/unifiedwp/assets/')
+    url.pathname.startsWith('/unifiedwp/assets/') ||
+    url.hostname === 'cdn.jsdelivr.net'
   ) {
     e.respondWith(
       caches.match(e.request).then(cached => cached || fetch(e.request))

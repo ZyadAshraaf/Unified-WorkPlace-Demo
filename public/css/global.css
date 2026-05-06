@@ -538,6 +538,9 @@ body {
 .badge-status-rejected     { background: var(--color-danger-light);  color: var(--color-danger); }
 .badge-status-open         { background: var(--color-info-light);    color: var(--color-info); }
 .badge-status-resolved     { background: var(--color-success-light); color: var(--color-success); }
+.badge-status-in_progress  { background: var(--color-primary-faint); color: var(--color-primary-dark); }
+.badge-status-reopened     { background: #FFF3E0; color: #b45309; }
+.badge-status-closed       { background: #F1F5F9; color: #475569; }
 
 .badge-priority-critical   { background: #FDE8EA; color: #B02A37; font-weight: 700; }
 .badge-priority-high       { background: #FDE8EA; color: var(--color-danger); }

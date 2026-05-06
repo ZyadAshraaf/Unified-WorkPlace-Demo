@@ -62,6 +62,7 @@ Single **Node.js/Express** server (`server.js`) serving both a browser app (port
 - **Database:** JSON files in `data/` — no external DB
 - **Auth:** `express-session` with file-based store in `.sessions/`, 8-hour TTL
 - **Theme engine:** `GET /unifiedwp/theme.css` is a **dynamic Express endpoint** (not a static file) that computes CSS variables from `data/settings.json` on every request
+- **Dual-port:** `server.js` binds the same Express app to both PORT (3000) and TEAMS_PORT (3001). `teams-app/server.js` is a separate optional proxy for alternative tunnel deployments; it is **not** started by `npm start`.
 
 **1-to-1 view/controller pairing:** Every `views/X.html` has exactly one `public/js/X.js` controller. HTML has structure only; JS handles all API calls, DOM updates, and events. The only exception is `views/ems/index.html`, which orchestrates multiple sub-controllers from `public/js/ems/`.
 
@@ -295,6 +296,9 @@ The EMS module (`/ems`) is architecturally different from all other modules:
 - **Pages with no JS controller:** `erp-dialogue.html`, `voice-agent.html`, and `services.html`. Every other view has a matching controller — including `leave-assistant`, `wfh`, `travel`, `doc-chat`, `proposal-eval`, `resume-eval`, and `quick-services`
 - **Pages with no backing route file:** `erp-dialogue`, `voice-agent`, `quick-services`, `services`, `proposal-eval`, `resume-eval`, `doc-chat` — these are served by a generic static-page loop in `server.js` (see the `pages` array at line ~198). They either have no server state or rely exclusively on proxied/external APIs (e.g. `/api/doceval-proxy`). The `pages` array is the authoritative list of valid static routes — add new static pages there.
 - `views/landing.html` is the home dashboard (entry point after login); `views/services.html` and `views/quick-services.html` are service catalog views. The empty-string `''` entry in the static `pages` array maps `/unifiedwp/` to `landing.html` — `/unifiedwp/landing` is **not** a valid route.
+- **Adding a new module:** (1) create `routes/newmodule.js` and add `app.use('/unifiedwp/api/newmodule', require('./routes/newmodule'))` in `server.js`; (2) create `views/newmodule.html` + `public/js/newmodule.js`; (3) add `'newmodule'` to the `pages` array at line ~198 of `server.js`.
+- **EMS is labeled "CMS" in the sidebar** — every view's nav renders `<span>CMS</span>` linking to `/unifiedwp/ems`. Commit messages and UI text saying "CMS" always refer to the EMS module.
+- **Notifications endpoint lives in `routes/news.js`** — `GET /api/news/notifications` and `PUT /api/news/notifications/:id/read` are served by the news route, not a separate notifications route. The notification data is in `data/notifications.json`.
 - `routes/finance.js` and `routes/news.js` are **API-only** — they have no corresponding view pages. All other routes have matching `views/*.html` + `public/js/*.js` pairs, including `material-requisitions` and `purchase-orders`.
 - `routes/analytics.js`, `routes/goals.js`, and `routes/directory.js` follow the standard route pattern (JSON-backed, role-filtered). `analytics.js` aggregates cross-module data (tasks, leaves, helpdesk, attendance) for dashboard widgets at `GET /unifiedwp/api/analytics/summary`.
 - `GET /unifiedwp/api/me` — returns `{ success: true, user: req.session.user }` for the currently authenticated session; used by client controllers to get the logged-in user.

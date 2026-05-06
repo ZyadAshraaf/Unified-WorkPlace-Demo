@@ -8,26 +8,46 @@ const { notifyLeaveRequest } = require('../utils/teamsNotify');
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
 
-const leavesPath  = path.join(__dirname, '../data/leaves.json');
-const wfhPath     = path.join(__dirname, '../data/wfh.json');
-const travelPath  = path.join(__dirname, '../data/travel.json');
-const tasksPath   = path.join(__dirname, '../data/tasks.json');
-const usersPath   = path.join(__dirname, '../data/users.json');
+const leavesPath    = path.join(__dirname, '../data/leaves.json');
+const wfhPath       = path.join(__dirname, '../data/wfh.json');
+const travelPath    = path.join(__dirname, '../data/travel.json');
+const tasksPath     = path.join(__dirname, '../data/tasks.json');
+const usersPath     = path.join(__dirname, '../data/users.json');
+const helpdeskPath  = path.join(__dirname, '../data/helpdesk.json');
 
-const readLeaves  = () => JSON.parse(fs.readFileSync(leavesPath, 'utf8'));
-const readWfh     = () => JSON.parse(fs.readFileSync(wfhPath,    'utf8'));
-const readTravel  = () => JSON.parse(fs.readFileSync(travelPath, 'utf8'));
-const readTasks   = () => JSON.parse(fs.readFileSync(tasksPath,  'utf8'));
-const readUsers   = () => JSON.parse(fs.readFileSync(usersPath,  'utf8'));
-const writeLeaves = d => fs.writeFileSync(leavesPath, JSON.stringify(d, null, 2));
-const writeWfh    = d => fs.writeFileSync(wfhPath,    JSON.stringify(d, null, 2));
-const writeTravel = d => fs.writeFileSync(travelPath, JSON.stringify(d, null, 2));
-const writeTasks  = d => fs.writeFileSync(tasksPath,  JSON.stringify(d, null, 2));
+const readLeaves    = () => JSON.parse(fs.readFileSync(leavesPath,   'utf8'));
+const readWfh       = () => JSON.parse(fs.readFileSync(wfhPath,      'utf8'));
+const readTravel    = () => JSON.parse(fs.readFileSync(travelPath,   'utf8'));
+const readTasks     = () => JSON.parse(fs.readFileSync(tasksPath,    'utf8'));
+const readUsers     = () => JSON.parse(fs.readFileSync(usersPath,    'utf8'));
+const readHelpdesk  = () => JSON.parse(fs.readFileSync(helpdeskPath, 'utf8'));
+const writeLeaves   = d => fs.writeFileSync(leavesPath,   JSON.stringify(d, null, 2));
+const writeWfh      = d => fs.writeFileSync(wfhPath,      JSON.stringify(d, null, 2));
+const writeTravel   = d => fs.writeFileSync(travelPath,   JSON.stringify(d, null, 2));
+const writeTasks    = d => fs.writeFileSync(tasksPath,    JSON.stringify(d, null, 2));
+const writeHelpdesk = d => fs.writeFileSync(helpdeskPath, JSON.stringify(d, null, 2));
 
 const requireAuth = (req, res, next) => {
   if (req.session && req.session.user) return next();
   res.status(401).json({ success: false, message: 'Unauthorized' });
 };
+
+// ── User's helpdesk tickets ───────────────────────────────────────────────────
+function getHelpdeskTickets(userId) {
+  const tickets = readHelpdesk().filter(t => t.submittedBy === userId);
+  const users   = readUsers();
+  const userMap = {};
+  users.forEach(u => userMap[u.id] = u.name);
+  return tickets.map(t => ({
+    ticketNo:   t.ticketNo,
+    title:      t.title,
+    status:     t.status,
+    priority:   t.priority,
+    category:   t.category,
+    assignedTo: userMap[t.assignedTo] || 'Unassigned',
+    createdAt:  t.createdAt.split('T')[0]
+  }));
+}
 
 // ── Leave balance ─────────────────────────────────────────────────────────────
 function getLeaveBalance(userId) {
@@ -62,8 +82,15 @@ function workingDays(start, end) {
 }
 
 // ── System prompt ─────────────────────────────────────────────────────────────
-function buildSystemPrompt(user, balance) {
+function buildSystemPrompt(user, balance, tickets) {
   const today = new Date().toISOString().split('T')[0];
+
+  const ticketLines = tickets.length
+    ? tickets.map(t =>
+        `  • ${t.ticketNo} | "${t.title}" | Status: ${t.status} | Priority: ${t.priority} | Category: ${t.category} | Assigned To: ${t.assignedTo} | Submitted: ${t.createdAt}`
+      ).join('\n')
+    : '  (No tickets submitted yet)';
+
   return `You are My Assistant — a smart, friendly workplace assistant embedded in the Unified Workspace platform.
 
 TODAY: ${today}
@@ -74,7 +101,10 @@ LEAVE BALANCE (${new Date().getFullYear()}):
 - Sick Leave: ${balance.sick.remaining} days remaining (${balance.sick.used} used of ${balance.sick.total})
 - Emergency / Maternity / Paternity / Unpaid: available with no fixed cap
 
-YOU CAN HANDLE THREE REQUEST TYPES:
+MY HELPDESK TICKETS (submitted by this employee):
+${ticketLines}
+
+YOU CAN HANDLE FOUR REQUEST TYPES:
 
 ━━ 1. LEAVE REQUEST ━━
 Collect: leave type (annual/sick/emergency/maternity/paternity/unpaid), start date, end date, reason.
@@ -97,7 +127,26 @@ When confirmed, output on a new line:
 <<<SUBMIT_TRAVEL>>>
 {"destination":"Dubai","origin":"Riyadh","departureDate":"2026-04-20","returnDate":"2026-04-23","days":4,"purpose":"Client meeting","travelClass":"economy"}
 
+━━ 4. HELPDESK IT SUPPORT TICKET ━━
+Collect: brief title/summary, description of the problem, and category.
+Categories: Access & Permissions | Hardware | Software | Network | Training | General
+Priority rules (do NOT ask explicitly — infer from context):
+  - "critical" if user says: critical / blocking / cannot work / emergency
+  - "high" if user says: urgent / ASAP / important / affecting the team
+  - "medium" otherwise (default)
+Show a summary then ask for confirmation.
+When confirmed, output on a new line:
+<<<SUBMIT_HELPDESK>>>
+{"title":"Cannot access email","category":"Software","priority":"medium","description":"I cannot log into Outlook. It shows an account locked error."}
+
+━━ TICKET TRACKING ━━
+- If asked about a ticket status, look it up from MY HELPDESK TICKETS above and report: status, assigned to, priority, and when it was submitted.
+- If asked to list tickets, summarize them in a clean readable list.
+- Status meanings: open = waiting for IT to start | in_progress = IT is working on it | resolved = IT marked it fixed (awaiting your confirmation) | closed = completed | reopened = you reopened it after resolution.
+- Do NOT take workflow actions (Close, Reopen) via chat. If the user wants to close or reopen, direct them to the Help Desk page.
+
 CONVERSATION RULES:
+- LANGUAGE: Detect the language of each user message. If the user writes in Arabic, respond entirely in Arabic. If English, respond in English. Match their language on every reply.
 - Greet warmly. Ask what they need help with today.
 - Identify the request type early then collect missing info through natural conversation.
 - Show a clear summary of all details before asking for confirmation.
@@ -263,6 +312,32 @@ function submitTravel(user, data) {
   return { id: travelId, type: 'travel' };
 }
 
+function submitHelpdesk(user, data) {
+  const tickets = readHelpdesk();
+  const nextNum = tickets.length + 1;
+  const ticketId = 'HD' + uuidv4().split('-')[0].toUpperCase();
+
+  const ticket = {
+    id:          ticketId,
+    ticketNo:    `TKT-2026-${String(nextNum).padStart(3, '0')}`,
+    title:       data.title,
+    description: data.description || '',
+    category:    data.category    || 'General',
+    priority:    data.priority    || 'medium',
+    status:      'open',
+    submittedBy: user.id,
+    assignedTo:  null,
+    createdAt:   new Date().toISOString(),
+    updatedAt:   new Date().toISOString(),
+    comments:    [],
+    history:     [{ action: 'created', by: user.id, at: new Date().toISOString(), note: 'Ticket submitted via My Assistant' }]
+  };
+
+  tickets.push(ticket);
+  writeHelpdesk(tickets);
+  return { id: ticketId, ticketNo: ticket.ticketNo, type: 'helpdesk' };
+}
+
 // ── GET /api/leave-assistant/balance ─────────────────────────────────────────
 router.get('/balance', requireAuth, (req, res) => {
   res.json({ success: true, balance: getLeaveBalance(req.session.user.id) });
@@ -278,7 +353,8 @@ router.post('/chat', requireAuth, async (req, res) => {
   }
 
   const balance      = getLeaveBalance(user.id);
-  const systemPrompt = buildSystemPrompt(user, balance);
+  const hdTickets    = getHelpdeskTickets(user.id);
+  const systemPrompt = buildSystemPrompt(user, balance, hdTickets);
 
   try {
     const groqRes = await fetch(GROQ_URL, {
@@ -288,7 +364,7 @@ router.post('/chat', requireAuth, async (req, res) => {
         model:       'llama-3.3-70b-versatile',
         messages:    [{ role: 'system', content: systemPrompt }, ...messages],
         temperature: 0.3,
-        max_tokens:  700
+        max_tokens:  900
       })
     });
 
@@ -300,24 +376,39 @@ router.post('/chat', requireAuth, async (req, res) => {
     let aiText = (await groqRes.json())?.choices?.[0]?.message?.content || 'Sorry, I could not respond.';
 
     // ── Detect which submit marker is present ─────────────────────────────
-    const markers = ['<<<SUBMIT_LEAVE>>>', '<<<SUBMIT_WFH>>>', '<<<SUBMIT_TRAVEL>>>'];
+    const markers = ['<<<SUBMIT_LEAVE>>>', '<<<SUBMIT_WFH>>>', '<<<SUBMIT_TRAVEL>>>', '<<<SUBMIT_HELPDESK>>>'];
     const found   = markers.find(m => aiText.includes(m));
 
     if (found) {
-      const [displayText, jsonPart] = aiText.split(found);
+      const markerIdx   = aiText.indexOf(found);
+      const displayText = aiText.slice(0, markerIdx).trim();
+      const afterMarker = aiText.slice(markerIdx + found.length);
+
+      // Robustly extract JSON — handles code fences and trailing text
+      const jsonMatch = afterMarker.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        return res.json({ success: true, message: displayText || 'I understood your request but could not process it. Please try again.', submitted: false });
+      }
+
       let data;
-      try { data = JSON.parse(jsonPart.trim()); } catch {
-        return res.json({ success: true, message: displayText.trim(), submitted: false });
+      try { data = JSON.parse(jsonMatch[0]); } catch {
+        return res.json({ success: true, message: displayText || 'I understood your request but could not process it. Please try again.', submitted: false });
       }
 
       let result;
-      if      (found === '<<<SUBMIT_LEAVE>>>')  result = submitLeave(user, data);
-      else if (found === '<<<SUBMIT_WFH>>>')    result = submitWfh(user, data);
-      else                                       result = submitTravel(user, data);
+      try {
+        if      (found === '<<<SUBMIT_LEAVE>>>')     result = submitLeave(user, data);
+        else if (found === '<<<SUBMIT_WFH>>>')       result = submitWfh(user, data);
+        else if (found === '<<<SUBMIT_TRAVEL>>>')    result = submitTravel(user, data);
+        else                                          result = submitHelpdesk(user, data);
+      } catch (submitErr) {
+        console.error('leave-assistant submission error:', submitErr);
+        return res.status(500).json({ success: false, message: 'Failed to submit your request. Please try again.' });
+      }
 
-      const typeLabels = { leave: 'Leave request', wfh: 'Work-from-home request', travel: 'Business travel request' };
-      const fallback   = `${typeLabels[result.type] || 'Request'} submitted successfully! Your manager will be notified for approval.`;
-      const replyText  = displayText.trim() || fallback;
+      const typeLabels = { leave: 'Leave request', wfh: 'Work-from-home request', travel: 'Business travel request', helpdesk: 'Support ticket' };
+      const fallback   = `${typeLabels[result.type] || 'Request'} submitted successfully!`;
+      const replyText  = displayText || fallback;
 
       return res.json({ success: true, message: replyText, submitted: true, ...result });
     }

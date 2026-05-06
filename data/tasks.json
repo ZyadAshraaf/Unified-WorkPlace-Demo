@@ -1412,5 +1412,225 @@
     "comments": [],
     "escalated": false,
     "delegatedFrom": null
+  },
+  {
+    "id": "TDAF4ECC5",
+    "title": "Approve Leave Request — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested annual leave for 2 day(s) (2026-05-06 to 2026-05-07). Reason: ",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-05-06",
+    "createdAt": "2026-05-06T07:02:18.411Z",
+    "updatedAt": "2026-05-06T07:02:46.155Z",
+    "metadata": {
+      "leaveId": "L219EF6DD",
+      "requestDetails": {
+        "userName": "Ahmed Al-Rashidi",
+        "type": "annual",
+        "startDate": "2026-05-06",
+        "endDate": "2026-05-07",
+        "days": 2,
+        "reason": "",
+        "customFields": {},
+        "submittedAt": "2026-05-06T07:02:18.411Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-05-06T07:02:18.411Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-05-06T07:02:46.155Z",
+        "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T77C1DA2C",
+    "title": "Approve Leave Request — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested annual leave for 2 day(s) (2026-05-10 to 2026-05-11). Reason: ",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-05-10",
+    "createdAt": "2026-05-06T07:07:32.981Z",
+    "updatedAt": "2026-05-06T07:07:49.775Z",
+    "metadata": {
+      "leaveId": "L4279AFE9",
+      "requestDetails": {
+        "userName": "Ahmed Al-Rashidi",
+        "type": "annual",
+        "startDate": "2026-05-10",
+        "endDate": "2026-05-11",
+        "days": 2,
+        "reason": "",
+        "customFields": {},
+        "submittedAt": "2026-05-06T07:07:32.981Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-05-06T07:07:32.981Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-05-06T07:07:49.775Z",
+        "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TA2917ADB",
+    "title": "Approve Leave Request — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested annual leave for 1 day(s) (2026-05-07 to 2026-05-07). Reason: ",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "rejected",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-05-07",
+    "createdAt": "2026-05-06T07:22:46.504Z",
+    "updatedAt": "2026-05-06T07:23:19.277Z",
+    "metadata": {
+      "leaveId": "L73A59067",
+      "requestDetails": {
+        "userName": "Ahmed Al-Rashidi",
+        "type": "annual",
+        "startDate": "2026-05-07",
+        "endDate": "2026-05-07",
+        "days": 1,
+        "reason": "",
+        "customFields": {},
+        "submittedAt": "2026-05-06T07:22:46.504Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-05-06T07:22:46.504Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "rejected",
+        "by": "u001",
+        "at": "2026-05-06T07:23:19.277Z",
+        "note": "Leave request rejected"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T073E2F1E",
+    "title": "Approve Leave Request — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested annual leave for 1 day(s) (2026-05-11 to 2026-05-11). Reason: ",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "rejected",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-05-11",
+    "createdAt": "2026-05-06T07:24:43.857Z",
+    "updatedAt": "2026-05-06T07:29:41.868Z",
+    "metadata": {
+      "leaveId": "LD8E9A603",
+      "requestDetails": {
+        "userName": "Ahmed Al-Rashidi",
+        "type": "annual",
+        "startDate": "2026-05-11",
+        "endDate": "2026-05-11",
+        "days": 1,
+        "reason": "",
+        "customFields": {},
+        "submittedAt": "2026-05-06T07:24:43.857Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-05-06T07:24:43.857Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "rejected",
+        "by": "u001",
+        "at": "2026-05-06T07:29:41.868Z",
+        "note": "Leave request rejected"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TC9CEE357",
+    "title": "Approve Leave Request — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested annual leave for 1 day(s) (2026-05-18 to 2026-05-18). Reason: ",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "rejected",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-05-18",
+    "createdAt": "2026-05-06T07:28:41.734Z",
+    "updatedAt": "2026-05-06T07:29:44.916Z",
+    "metadata": {
+      "leaveId": "L279CB719",
+      "requestDetails": {
+        "userName": "Ahmed Al-Rashidi",
+        "type": "annual",
+        "startDate": "2026-05-18",
+        "endDate": "2026-05-18",
+        "days": 1,
+        "reason": "",
+        "customFields": {},
+        "submittedAt": "2026-05-06T07:28:41.734Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-05-06T07:28:41.734Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "rejected",
+        "by": "u001",
+        "at": "2026-05-06T07:29:44.916Z",
+        "note": "Leave request rejected"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
   }
 ]

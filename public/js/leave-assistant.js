@@ -20,10 +20,21 @@ async function loadBalance() {
 }
 
 function setBalanceRow(id, remaining, total) {
-  const el = document.getElementById(id);
+  const el  = document.getElementById(id);
+  const bar = document.getElementById(id + 'Bar');
+  const sub = document.getElementById(id + 'Sub');
   if (!el) return;
+
+  const cls = remaining > 5 ? 'green' : remaining > 0 ? 'orange' : 'red';
   el.textContent = remaining + ' days';
-  el.className   = 'info-row-val ' + (remaining > 5 ? 'green' : remaining > 0 ? 'orange' : 'red');
+  el.className   = 'bal-row-val ' + cls;
+
+  if (bar) {
+    const pct = total > 0 ? Math.round((remaining / total) * 100) : 0;
+    bar.style.width = pct + '%';
+    bar.className   = 'bal-bar-fill ' + (cls !== 'green' ? cls : '');
+  }
+  if (sub) sub.textContent = `of ${total} days`;
 }
 
 // ── Status badge ─────────────────────────────────────────────────────────────
@@ -115,9 +126,10 @@ async function sendMessage() {
 
 // ── Render helpers ────────────────────────────────────────────────────────────
 const SUBMISSION_CONFIG = {
-  leave:  { title: 'Leave Request Submitted',        href: '/leaves',  label: 'View in Leave Requests' },
-  wfh:    { title: 'Work From Home Request Submitted', href: '/wfh',   label: 'View in WFH Requests' },
-  travel: { title: 'Business Trip Request Submitted', href: '/travel', label: 'View in Travel Requests' }
+  leave:    { title: 'Leave Request Submitted',          href: '/unifiedwp/leaves',    label: 'View in Leave Requests' },
+  wfh:      { title: 'Work From Home Request Submitted', href: '/unifiedwp/wfh',       label: 'View in WFH Requests' },
+  travel:   { title: 'Business Trip Request Submitted',  href: '/unifiedwp/travel',    label: 'View in Travel Requests' },
+  helpdesk: { title: 'Support Ticket Submitted',         href: '/unifiedwp/helpdesk',  label: 'View in Help Desk' }
 };
 
 function appendMessage(role, text, submission = null) {
@@ -138,6 +150,7 @@ function appendMessage(role, text, submission = null) {
   if (text) {
     const bubble = document.createElement('div');
     bubble.className = 'msg-bubble';
+    if (/[؀-ۿ]/.test(text)) bubble.dir = 'rtl';
     bubble.innerHTML = formatMessage(text);
     inner.appendChild(bubble);
   }
@@ -145,13 +158,14 @@ function appendMessage(role, text, submission = null) {
   // If a request was submitted, show a success card
   if (submission && submission.id) {
     const cfg  = SUBMISSION_CONFIG[submission.type] || SUBMISSION_CONFIG.leave;
+    const ref  = submission.ticketNo || submission.id;
     const card = document.createElement('div');
     card.className = 'leave-submitted-card';
     card.innerHTML = `
       <div class="lsc-icon"><i class="bi bi-check-circle-fill"></i></div>
       <div class="lsc-body">
         <div class="lsc-title">${cfg.title}</div>
-        <div class="lsc-id">Reference: <strong>${submission.id}</strong></div>
+        <div class="lsc-id">Reference: <strong>${ref}</strong></div>
         <a href="${cfg.href}" class="lsc-link">${cfg.label} <i class="bi bi-arrow-right"></i></a>
       </div>`;
     inner.appendChild(card);

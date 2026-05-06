@@ -27,11 +27,33 @@ let allTasks    = [];
 let activeFilter = 'all';
 let activeTask   = null;
 let _tasksInited = false;
+let _userRole    = null;
+let _userId      = null;
+
+const HD_STATUS_MAP = {
+  open: 'pending', reopened: 'pending',
+  in_progress: 'in_progress',
+  resolved: 'completed', closed: 'completed'
+};
+
+function normalizeHdTicket(t) {
+  return {
+    ...t,
+    _isHelpdesk:  true,
+    type:         'helpdesk',
+    sourceSystem: 'IT',
+    status:       HD_STATUS_MAP[t.status] || 'pending',
+    _ticketStatus: t.status,
+    dueDate:      null
+  };
+}
 
 const Tasks = {
   async init() {
-    // Bind event listeners only once
     if (!_tasksInited) {
+      const me = await API.get('/api/me');
+      _userRole = me?.user?.role || 'employee';
+      _userId   = me?.user?.id   || null;
       bindFilterChips();
       bindSheet();
       _tasksInited = true;
@@ -41,9 +63,16 @@ const Tasks = {
 };
 
 async function loadTasks() {
-  const data = await API.get('/api/tasks');
-  if (!data || !data.success) return;
-  allTasks = (data.tasks || []).reverse();
+  const isEmployee = _userRole === 'employee';
+  const [taskData, hdData] = await Promise.all([
+    API.get('/api/tasks'),
+    isEmployee ? Promise.resolve(null) : API.get('/api/helpdesk')
+  ]);
+  if (!taskData || !taskData.success) return;
+
+  const hdTickets = (hdData?.tickets || []).map(normalizeHdTicket);
+  allTasks = [...(taskData.tasks || []), ...hdTickets]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   updateBadges();
   renderList();
 }
@@ -73,11 +102,12 @@ function renderList() {
   el.innerHTML = list.map(t => `
     <div class="task-card" data-id="${t.id}">
       <div class="task-card__title">${t.title}</div>
+      ${t._isHelpdesk ? `<div style="font-size:11px;font-family:monospace;font-weight:700;color:var(--color-primary);margin-bottom:2px">${t.ticketNo}</div>` : ''}
       <div class="task-card__meta">
-        ${statusBadge(t.status)}
+        ${hdStatusBadge(t)}
         ${priorityDot(t.priority)}
         <span>${t.sourceSystem || ''}</span>
-        <span>${t.dueDate ? fmtDate(t.dueDate) : ''}</span>
+        <span>${t._isHelpdesk ? fmtDate(t.createdAt) : (t.dueDate ? fmtDate(t.dueDate) : '')}</span>
       </div>
     </div>
   `).join('');
@@ -85,6 +115,19 @@ function renderList() {
   el.querySelectorAll('.task-card').forEach(card => {
     card.addEventListener('click', () => openSheet(card.dataset.id));
   });
+}
+
+function hdStatusBadge(t) {
+  if (!t._isHelpdesk) return statusBadge(t.status);
+  const map = {
+    open:        ['Open',        '#e0f2fe', '#0369a1'],
+    in_progress: ['In Progress', '#d1fae5', '#065f46'],
+    resolved:    ['Resolved',    '#dcfce7', '#166534'],
+    reopened:    ['Reopened',    '#fff3e0', '#b45309'],
+    closed:      ['Closed',      '#f1f5f9', '#475569']
+  };
+  const [label, bg, color] = map[t._ticketStatus] || ['Open', '#e0f2fe', '#0369a1'];
+  return `<span class="m-badge" style="background:${bg};color:${color}">${label}</span>`;
 }
 
 function bindFilterChips() {
@@ -118,6 +161,8 @@ function closeSheet() {
 }
 
 function renderSheet(task) {
+  if (task._isHelpdesk) { renderHdSheet(task); return; }
+
   const meta       = task.metadata || {};
   const isApproval = task.type === 'approval' && task.status === 'pending';
 
@@ -159,6 +204,50 @@ function renderSheet(task) {
     `;
   } else {
     actions.innerHTML = `<button class="btn btn--ghost btn--full" onclick="closeSheet()">Close</button>`;
+  }
+}
+
+function renderHdSheet(ticket) {
+  const comments    = (ticket.comments || []).filter(c => !c.isInternal);
+  const isIT        = _userRole !== 'employee';
+  const isSubmitter = ticket.submittedBy === _userId;
+  const st          = ticket._ticketStatus;
+
+  document.getElementById('sheetBody').innerHTML = `
+    <div class="sheet-title">${ticket.title}</div>
+    <div style="font-size:11px;font-family:monospace;font-weight:700;color:var(--color-primary);margin-bottom:10px">${ticket.ticketNo}</div>
+    <div class="detail-row"><span class="detail-row__label">Status</span><span class="detail-row__value">${hdStatusBadge(ticket)}</span></div>
+    <div class="detail-row"><span class="detail-row__label">Priority</span><span class="detail-row__value">${ticket.priority || '—'}</span></div>
+    <div class="detail-row"><span class="detail-row__label">Category</span><span class="detail-row__value">${ticket.category || '—'}</span></div>
+    <div class="detail-row"><span class="detail-row__label">Submitted</span><span class="detail-row__value">${fmtDate(ticket.createdAt)}</span></div>
+    ${ticket.assignedToName ? `<div class="detail-row"><span class="detail-row__label">Assigned To</span><span class="detail-row__value">${ticket.assignedToName}</span></div>` : ''}
+    ${ticket.description ? `<div class="detail-row"><span class="detail-row__label">Description</span><span class="detail-row__value">${ticket.description}</span></div>` : ''}
+    ${comments.length ? `<div style="margin-top:12px"><strong style="font-size:13px;color:#475569">Comments</strong>${comments.map(c => `<div class="history-item"><strong>${c.name||c.by}</strong> · ${fmtDate(c.at)}<br>${c.text}</div>`).join('')}</div>` : ''}
+  `;
+
+  const actionBtns = [];
+  if (isIT && (st === 'open' || st === 'reopened'))
+    actionBtns.push(`<button class="btn btn--primary" onclick="doHdAction('${ticket.id}','start','Ticket is now In Progress')">Start Working</button>`);
+  if (isIT && st === 'in_progress')
+    actionBtns.push(`<button class="btn btn--primary" onclick="doHdAction('${ticket.id}','resolve','Ticket marked as Resolved')">Mark Resolved</button>`);
+  if (isSubmitter && st === 'resolved')
+    actionBtns.push(`<button class="btn btn--ghost" onclick="doHdAction('${ticket.id}','reopen','Ticket reopened')">Reopen</button>`);
+  if (isSubmitter && st === 'resolved')
+    actionBtns.push(`<button class="btn btn--danger" onclick="doHdAction('${ticket.id}','close','Ticket closed')">Close Ticket</button>`);
+
+  document.getElementById('sheetActions').innerHTML = actionBtns.length
+    ? `<button class="btn btn--ghost" onclick="closeSheet()">Dismiss</button>${actionBtns.join('')}`
+    : `<button class="btn btn--ghost btn--full" onclick="closeSheet()">Close</button>`;
+}
+
+async function doHdAction(ticketId, action, successMsg) {
+  const res = await API.put(`/api/helpdesk/${ticketId}`, { action });
+  if (res?.success) {
+    UI.toast(successMsg);
+    closeSheet();
+    await loadTasks();
+  } else {
+    UI.toast(res?.message || 'Action failed', 'error');
   }
 }
 

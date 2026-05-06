@@ -135,6 +135,15 @@ const Router = {
   }
 };
 
+// Sync theme-color meta with the dynamic CSS primary color from theme.css
+document.addEventListener('DOMContentLoaded', () => {
+  const primary = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
+  if (primary) {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.content = primary;
+  }
+});
+
 // Intercept tab-bar clicks — no page reload, use Router instead
 document.addEventListener('click', e => {
   const link = e.target.closest('a[href^="/unifiedwp/m/"]');

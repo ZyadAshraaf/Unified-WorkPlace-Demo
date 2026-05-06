@@ -4,6 +4,31 @@ let allUsers   = [];
 let activeTask = null;
 let activeFilter = 'all';
 
+const HD_STATUS_MAP = {
+  open:        'pending',
+  reopened:    'pending',
+  in_progress: 'in_progress',
+  resolved:    'completed',
+  closed:      'completed'
+};
+
+function normalizeHelpdeskTicket(ticket) {
+  return {
+    ...ticket,
+    _isHelpdeskTicket: true,
+    sourceSystem:  'IT',
+    type:          'helpdesk',
+    dueDate:       null,
+    createdBy:     ticket.submittedBy,
+    createdByName: ticket.submittedByName,
+    escalated:     false,
+    delegatedFrom: null,
+    metadata:      {},
+    status:        HD_STATUS_MAP[ticket.status] || 'pending',
+    _ticketStatus: ticket.status
+  };
+}
+
 const taskDetailModal   = () => bootstrap.Modal.getOrCreateInstance(document.getElementById('taskDetailModal'));
 
 // Reset review mode when modal closes
@@ -136,24 +161,30 @@ function populateUserSelects() {
 }
 
 async function loadTasks() {
-  const data = await API.get('/api/tasks');
-  if (!data?.success) return;
-  allTasks = data.tasks;
+  const isEmployee = Layout.user?.role === 'employee';
+  const [taskData, ticketData] = await Promise.all([
+    API.get('/api/tasks'),
+    isEmployee ? Promise.resolve(null) : API.get('/api/helpdesk')
+  ]);
+  if (!taskData?.success) return;
+  const tickets = (!isEmployee && ticketData?.success)
+    ? ticketData.tickets.map(normalizeHelpdeskTicket)
+    : [];
+  allTasks = [...taskData.tasks, ...tickets];
   updateCounts();
   renderTasks();
 }
 
 function updateCounts() {
-  const f = s => allTasks.filter(t => t.status === s).length;
   const closedStatuses = ['completed', 'approved', 'rejected'];
+  const activePending  = allTasks.filter(t => t.status === 'pending' || t.status === 'in_progress').length;
   document.getElementById('countAll').textContent        = allTasks.length;
-  document.getElementById('countPending').textContent    = f('pending');
+  document.getElementById('countPending').textContent    = activePending;
   document.getElementById('countCompleted').textContent  = allTasks.filter(t => closedStatuses.includes(t.status)).length;
   document.getElementById('countEscalated').textContent  = allTasks.filter(t => t.escalated).length;
 
-  const pending = f('pending');
-  const badge   = document.getElementById('tasksBadge');
-  if (badge) { badge.textContent = pending; badge.classList.toggle('d-none', pending === 0); }
+  const badge = document.getElementById('tasksBadge');
+  if (badge) { badge.textContent = activePending; badge.classList.toggle('d-none', activePending === 0); }
 }
 
 function getFilteredTasks() {
@@ -168,7 +199,8 @@ function getFilteredTasks() {
       const closedStatuses = ['completed', 'approved', 'rejected'];
       if (activeFilter === 'escalated' && !t.escalated) return false;
       else if (activeFilter === 'closed' && !closedStatuses.includes(t.status)) return false;
-      else if (activeFilter !== 'escalated' && activeFilter !== 'closed' && t.status !== activeFilter) return false;
+      else if (activeFilter === 'pending' && t.status !== 'pending' && t.status !== 'in_progress') return false;
+      else if (activeFilter !== 'escalated' && activeFilter !== 'closed' && activeFilter !== 'pending' && t.status !== activeFilter) return false;
     }
     if (search   && !t.title.toLowerCase().includes(search) && !t.description.toLowerCase().includes(search)) return false;
     if (system   && t.sourceSystem !== system) return false;
@@ -219,7 +251,9 @@ function renderTasks() {
           <td>${UI.priorityBadge(t.priority)}</td>
           <td>
             <div class="task-title-cell">${t.title}</div>
-            ${t.description ? `<div class="task-desc-preview">${t.description}</div>` : ''}
+            ${t._isHelpdeskTicket
+              ? `<div class="task-desc-preview" style="font-family:monospace;font-weight:700">${t.ticketNo}</div>`
+              : (t.description ? `<div class="task-desc-preview">${t.description}</div>` : '')}
           </td>
           <td>${UI.systemBadge(t.sourceSystem)}</td>
           <td class="fs-sm" style="color:var(--color-text-muted)">${t.createdAt ? UI.formatDate(t.createdAt) : '—'}</td>
@@ -230,6 +264,7 @@ function renderTasks() {
               <button class="btn btn-sm btn-outline-primary btn-view" onclick="openDetail('${t.id}')">
                 <i class="bi bi-eye me-1"></i>View
               </button>
+              ${!t._isHelpdeskTicket ? `
               <div class="dropdown">
                 <button class="btn btn-sm btn-outline-secondary btn-more dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="bi bi-three-dots"></i>
@@ -240,7 +275,7 @@ function renderTasks() {
                   <li><button class="dropdown-item" onclick="openComment('${t.id}')"><i class="bi bi-chat-dots me-2 text-info"></i>Add Comment</button></li>
                   ${escalateItem}
                 </ul>
-              </div>
+              </div>` : ''}
             </div>
           </td>
         </tr>`;
@@ -274,6 +309,15 @@ function bindFilters() {
 
 // ── Detail Modal ───────────────────────────────────────────
 async function openDetail(id) {
+  if (allTasks.find(t => t.id === id)?._isHelpdeskTicket) {
+    return openHelpdeskDetail(id);
+  }
+
+  // Hide helpdesk buttons when opening a regular task
+  ['btnHdStartWork','btnHdResolve','btnHdReopen','btnHdClose'].forEach(bid =>
+    document.getElementById(bid)?.classList.add('d-none')
+  );
+
   const data = await API.get(`/api/tasks/${id}`);
   if (!data?.success) return;
   const t = data.task;
@@ -348,6 +392,65 @@ async function openDetail(id) {
   document.getElementById('btnViewEmsDoc').classList.toggle('d-none', !isEmsVersionApproval || t.status === 'rejected');
   document.getElementById('btnApproveReview').classList.toggle('d-none', isDone);
   document.getElementById('btnRejectReview').classList.toggle('d-none', isDone);
+
+  taskDetailModal().show();
+}
+
+async function openHelpdeskDetail(id) {
+  const data = await API.get(`/api/helpdesk/${id}`);
+  if (!data?.success) return;
+  const ticket = data.ticket;
+  activeTask = normalizeHelpdeskTicket(ticket);
+
+  document.getElementById('detailTitle').textContent = `${ticket.ticketNo} — ${ticket.title}`;
+
+  const comments = (ticket.comments || []).filter(c => !c.isInternal).map(c => `
+    <div class="comment-bubble">
+      <div class="comment-meta"><strong>${c.name || c.by}</strong> · ${UI.formatDateTime(c.at)}</div>
+      <div class="comment-text">${c.text}</div>
+    </div>`).join('') || '<div class="text-muted fs-sm">No comments yet.</div>';
+
+  const history = (ticket.history || []).map(h => `
+    <div class="history-item">
+      <span class="history-action">${h.action.replace(/_/g, ' ')}</span> · ${UI.formatDateTime(h.at)}
+      ${h.note ? `<div class="text-muted fs-xs mt-1">${h.note}</div>` : ''}
+    </div>`).join('');
+
+  document.getElementById('detailBody').innerHTML = `
+    <div class="row g-3 mb-3">
+      <div class="col-sm-6"><strong>Status:</strong> ${UI.statusBadge(ticket.status)}</div>
+      <div class="col-sm-6"><strong>Priority:</strong> ${UI.priorityBadge(ticket.priority)}</div>
+      <div class="col-sm-6"><strong>Category:</strong> <span class="fs-sm">${ticket.category}</span></div>
+      <div class="col-sm-6"><strong>Submitted:</strong> <span class="fs-sm">${UI.formatDateTime(ticket.createdAt)}</span></div>
+      <div class="col-sm-6"><strong>Submitted By:</strong> <span class="fs-sm">${ticket.submittedByName}</span></div>
+      <div class="col-sm-6"><strong>Assigned To:</strong> <span class="fs-sm">${ticket.assignedToName}</span></div>
+    </div>
+    <div class="mb-4 p-3 rounded" style="background:var(--color-surface);border:1px solid var(--color-border)">
+      <div class="fs-sm fw-600 mb-1">Description</div>
+      <div class="fs-sm">${ticket.description || 'No description.'}</div>
+    </div>
+    <div class="mb-3"><div class="fw-600 mb-2">Comments</div>${comments}</div>
+    ${history ? `<div><div class="fw-600 mb-2">History</div>${history}</div>` : ''}
+  `;
+
+  // Hide all standard task action buttons
+  ['btnCompleteTask','btnApproveLeave','btnRejectLeave','btnViewEmsDoc'].forEach(bid =>
+    document.getElementById(bid)?.classList.add('d-none')
+  );
+
+  // Show helpdesk workflow buttons based on real ticket status and current user role
+  const isIT        = Layout.user?.role !== 'employee';
+  const isSubmitter = ticket.submittedBy === Layout.user?.id;
+  const status      = ticket.status;
+
+  document.getElementById('btnHdStartWork')?.classList.toggle('d-none',
+    !(isIT && (status === 'open' || status === 'reopened')));
+  document.getElementById('btnHdResolve')?.classList.toggle('d-none',
+    !(isIT && status === 'in_progress'));
+  document.getElementById('btnHdReopen')?.classList.toggle('d-none',
+    !(isSubmitter && status === 'resolved'));
+  document.getElementById('btnHdClose')?.classList.toggle('d-none',
+    !(isSubmitter && status === 'resolved'));
 
   taskDetailModal().show();
 }
@@ -514,7 +617,7 @@ function bindModals() {
 
   // Approve leave, WFH, or EMS version
   document.getElementById('btnApproveLeave')?.addEventListener('click', async () => {
-    if (!activeTask) return;
+    if (!activeTask || activeTask._isHelpdeskTicket) return;
     let data;
     if (activeTask.metadata?.leaveId) {
       data = await API.put(`/api/leaves/${activeTask.metadata.leaveId}`, { status: 'approved' });
@@ -534,7 +637,7 @@ function bindModals() {
 
   // Reject leave, WFH, or EMS version
   document.getElementById('btnRejectLeave')?.addEventListener('click', async () => {
-    if (!activeTask) return;
+    if (!activeTask || activeTask._isHelpdeskTicket) return;
     let data;
     if (activeTask.metadata?.leaveId) {
       data = await API.put(`/api/leaves/${activeTask.metadata.leaveId}`, { status: 'rejected' });
@@ -554,7 +657,7 @@ function bindModals() {
 
   // Complete task
   document.getElementById('btnCompleteTask')?.addEventListener('click', async () => {
-    if (!activeTask) return;
+    if (!activeTask || activeTask._isHelpdeskTicket) return;
     const data = await API.put(`/api/tasks/${activeTask.id}`, { status: 'completed', note: 'Marked as complete' });
     if (data?.success) { UI.toast('Task marked complete', 'success'); taskDetailModal().hide(); await loadTasks(); }
   });
@@ -631,6 +734,24 @@ function bindModals() {
     const data = await API.post(`/api/tasks/${activeTask.id}/comment`, { text });
     if (data?.success) { UI.toast('Comment added'); commentModal().hide(); document.getElementById('commentText').value = ''; }
   });
+
+  // ── Helpdesk workflow actions ───────────────────────────
+  async function doHdAction(action, successMsg) {
+    if (!activeTask?._isHelpdeskTicket) return;
+    const data = await API.put(`/api/helpdesk/${activeTask.id}`, { action });
+    if (data?.success) {
+      UI.toast(successMsg, 'success');
+      taskDetailModal().hide();
+      await loadTasks();
+    } else {
+      UI.toast(data?.message || 'Action failed', 'danger');
+    }
+  }
+
+  document.getElementById('btnHdStartWork')?.addEventListener('click', () => doHdAction('start',   'Ticket is now In Progress'));
+  document.getElementById('btnHdResolve')?.addEventListener('click',   () => doHdAction('resolve', 'Ticket marked as Resolved'));
+  document.getElementById('btnHdReopen')?.addEventListener('click',    () => doHdAction('reopen',  'Ticket reopened'));
+  document.getElementById('btnHdClose')?.addEventListener('click',     () => doHdAction('close',   'Ticket closed'));
 }
 
 function openDelegate(id) { activeTask = allTasks.find(t => t.id === id); document.getElementById('delegateReason').value = ''; delegateModal().show(); }

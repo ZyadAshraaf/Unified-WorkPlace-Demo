@@ -11,60 +11,97 @@
   <link rel="stylesheet" href="/unifiedwp/css/global.css">
   <link rel="stylesheet" href="/unifiedwp/css/pages.css">
   <style>
-    .chat-wrap { display: flex; gap: 20px; height: calc(100vh - 140px); }
-    .chat-sidebar { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
-    .chat-sidebar-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--color-text-muted); margin-bottom: 4px; }
+    /* ── Layout ── */
+    .chat-wrap { display: flex; gap: 20px; height: calc(100vh - 148px); }
+    .chat-sidebar { width: 250px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+    .chat-sidebar-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); margin-bottom: 2px; }
+
+    /* ── Balance card ── */
     .info-card { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 14px 16px; }
-    .info-card-title { font-size: 12px; font-weight: 700; color: var(--color-text); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .info-card-title { font-size: 12px; font-weight: 700; color: var(--color-text); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
     .info-card-title i { color: var(--color-primary); }
+    .bal-row { margin-bottom: 10px; }
+    .bal-row:last-child { margin-bottom: 0; }
+    .bal-row-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 12px; }
+    .bal-row-label { color: var(--color-text-muted); }
+    .bal-row-val { font-weight: 700; font-size: 12px; }
+    .bal-row-val.green  { color: #16a34a; }
+    .bal-row-val.orange { color: #d97706; }
+    .bal-row-val.red    { color: #dc2626; }
+    .bal-bar { height: 4px; border-radius: 99px; background: var(--color-border); overflow: hidden; }
+    .bal-bar-fill { height: 100%; border-radius: 99px; background: var(--color-primary); transition: width .4s ease; }
+    .bal-bar-fill.orange { background: #d97706; }
+    .bal-bar-fill.red    { background: #dc2626; }
+    .bal-avail { font-size: 11px; color: var(--color-text-muted); display: flex; justify-content: space-between; margin-top: 3px; }
     .info-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--color-border-light); font-size: 12px; }
     .info-row:last-child { border-bottom: none; }
     .info-row-label { color: var(--color-text-muted); }
     .info-row-val { font-weight: 600; color: var(--color-text); }
-    .info-row-val.green { color: #16a34a; }
-    .step-card { background: var(--color-primary-faint); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px 14px; }
-    .step-item { display: flex; gap: 10px; align-items: flex-start; font-size: 12px; color: var(--color-text-muted); margin-bottom: 8px; }
-    .step-item:last-child { margin-bottom: 0; }
-    .step-num { width: 20px; height: 20px; border-radius: 50%; background: var(--color-primary); color: white; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .chat-main { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
-    .chat-header { padding: 16px 20px; border-bottom: 1px solid var(--color-border); display: flex; align-items: center; gap: 12px; background: var(--color-primary-faint); }
-    .chat-header-icon { width: 38px; height: 38px; background: var(--color-primary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
-    .chat-header-badge { margin-left: auto; background: var(--color-primary-faint); border: 1px solid var(--color-border); color: var(--color-primary); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
-    .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-    .msg { display: flex; gap: 10px; max-width: 85%; }
+
+    /* ── Capabilities card ── */
+    .cap-card { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 14px 16px; }
+    .cap-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--color-border-light); font-size: 12px; color: var(--color-text-muted); }
+    .cap-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .cap-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+
+    /* ── Chat main ── */
+    .chat-main { flex: 1; display: flex; flex-direction: column; background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,.06); min-width: 0; }
+
+    /* ── Chat header ── */
+    .chat-header { padding: 14px 20px; border-bottom: 1px solid var(--color-border); display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, var(--color-primary-faint) 0%, white 100%); }
+    .chat-header-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark,#14756f)); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 19px; box-shadow: 0 2px 8px rgba(var(--color-primary-rgb),.35); }
+    .chat-header-info { flex: 1; }
+    .chat-header-name { font-size: 15px; font-weight: 700; color: var(--color-text); }
+    .chat-header-sub  { font-size: 11px; color: var(--color-text-muted); margin-top: 1px; }
+    .chat-header-badge { background: white; border: 1px solid var(--color-border); color: var(--color-text-muted); font-size: 11px; font-weight: 600; padding: 4px 11px; border-radius: 20px; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+
+    /* ── Messages ── */
+    .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 99px; }
+    .msg { display: flex; gap: 10px; max-width: 82%; animation: msgIn .22s ease both; }
     .msg.user { align-self: flex-end; flex-direction: row-reverse; }
-    .msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
-    .msg.bot  .msg-avatar { background: var(--color-primary); color: white; }
+    @keyframes msgIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+    .msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .msg.bot  .msg-avatar { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark,#14756f)); color: white; }
     .msg.user .msg-avatar { background: var(--color-secondary); color: white; }
-    .msg-bubble { padding: 12px 16px; border-radius: 16px; font-size: 13px; line-height: 1.6; }
+    .msg-bubble { padding: 11px 15px; border-radius: 18px; font-size: 13px; line-height: 1.65; }
     .msg.bot  .msg-bubble { background: var(--color-surface); border: 1px solid var(--color-border); border-top-left-radius: 4px; color: var(--color-text); }
-    .msg.user .msg-bubble { background: var(--color-primary); color: white; border-top-right-radius: 4px; }
-    .leave-summary { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px 14px; margin-top: 10px; font-size: 12px; }
-    .leave-summary-title { font-weight: 700; color: var(--color-primary); margin-bottom: 8px; font-size: 13px; }
-    .leave-summary-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--color-border-light); }
-    .leave-summary-row:last-child { border-bottom: none; }
-    .suggested-questions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .sq-btn { background: white; border: 1px solid var(--color-primary); color: var(--color-primary); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
-    .sq-btn:hover { background: var(--color-primary); color: white; }
-    .chat-input-bar { padding: 14px 16px; border-top: 1px solid var(--color-border); display: flex; gap: 10px; align-items: flex-end; }
-    .chat-input-bar textarea { flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 13px; resize: none; outline: none; font-family: var(--font-family); }
-    .chat-input-bar textarea:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb),0.12); }
-    .btn-send { width: 40px; height: 40px; border: none; background: var(--color-primary); color: white; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; transition: background 0.15s; flex-shrink: 0; }
-    .btn-send:hover { background: var(--color-primary-dark); }
-    .btn-send:disabled { background: var(--color-text-light); cursor: not-allowed; }
+    .msg.user .msg-bubble { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark,#14756f)); color: white; border-top-right-radius: 4px; }
+
+    /* ── Suggestion chips ── */
+    .suggested-questions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+    .sq-btn { background: white; border: 1px solid var(--color-border); color: var(--color-text); border-radius: 20px; padding: 5px 13px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 5px; }
+    .sq-btn i { color: var(--color-primary); font-size: 11px; }
+    .sq-btn:hover { border-color: var(--color-primary); background: var(--color-primary-faint); color: var(--color-primary); }
+
+    /* ── Typing indicator ── */
     .typing-indicator { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
     .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-primary-lighter); animation: typing 1.2s infinite; }
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes typing { 0%,80%,100%{transform:scale(1);opacity:.5} 40%{transform:scale(1.2);opacity:1} }
-    .info-row-val.orange { color: #d97706; }
-    .info-row-val.red    { color: #dc2626; }
-    .leave-submitted-card { display: flex; align-items: center; gap: 12px; background: #f0fdf4; border: 1px solid #86efac; border-radius: var(--radius-md); padding: 12px 16px; margin-top: 10px; }
-    .lsc-icon { font-size: 24px; color: #16a34a; flex-shrink: 0; }
+    .typing-dot:nth-child(2) { animation-delay: .2s; }
+    .typing-dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes typing { 0%,80%,100%{transform:scale(1);opacity:.4} 40%{transform:scale(1.25);opacity:1} }
+
+    /* ── Input bar ── */
+    .chat-input-bar { padding: 12px 16px; border-top: 1px solid var(--color-border); display: flex; gap: 10px; align-items: flex-end; background: var(--color-surface); }
+    .chat-input-wrap { flex: 1; background: white; border: 1px solid var(--color-border); border-radius: 24px; padding: 8px 14px; display: flex; align-items: flex-end; gap: 8px; transition: border-color .15s, box-shadow .15s; }
+    .chat-input-wrap:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb),.1); }
+    .chat-input-wrap textarea { flex: 1; border: none; outline: none; resize: none; font-size: 13px; font-family: var(--font-family); background: transparent; line-height: 1.5; max-height: 100px; }
+    .input-hint { font-size: 10px; color: var(--color-text-light); white-space: nowrap; align-self: flex-end; padding-bottom: 1px; }
+    .btn-send { width: 38px; height: 38px; border: none; background: var(--color-primary); color: white; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: background .15s, transform .1s; flex-shrink: 0; }
+    .btn-send:hover:not(:disabled) { background: var(--color-primary-dark,#14756f); transform: scale(1.06); }
+    .btn-send:disabled { background: var(--color-border); cursor: not-allowed; }
+
+    /* ── Submitted card ── */
+    .leave-submitted-card { display: flex; align-items: flex-start; gap: 12px; background: linear-gradient(135deg,#f0fdf4,#dcfce7); border: 1px solid #86efac; border-radius: var(--radius-md); padding: 14px 16px; margin-top: 10px; }
+    .lsc-icon { font-size: 22px; color: #16a34a; flex-shrink: 0; margin-top: 1px; }
     .lsc-title { font-weight: 700; font-size: 13px; color: #15803d; }
-    .lsc-id { font-size: 12px; color: var(--color-text-muted); margin: 2px 0; }
-    .lsc-link { font-size: 12px; color: var(--color-primary); text-decoration: none; font-weight: 600; }
+    .lsc-id { font-size: 12px; color: #166534; margin: 3px 0; font-family: monospace; }
+    .lsc-link { font-size: 12px; color: var(--color-primary); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-top: 2px; }
     .lsc-link:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
     @media (max-width:768px) { .chat-wrap { flex-direction: column; height: auto; } .chat-sidebar { width: 100%; } }
   </style>
 </head>
@@ -143,64 +180,75 @@
       <div class="page-hero" style="margin-bottom:18px">
         <div class="page-hero-bc">Dashboard &rsaquo; AI Use Cases &rsaquo; <span>My Assistant</span></div>
         <div class="page-hero-title"><i class="bi bi-stars me-2"></i>My Assistant</div>
-        <div class="page-hero-sub">Submit leave requests, work-from-home, or business travel — all through a natural conversation.</div>
+        <div class="page-hero-sub">Submit leave requests, work-from-home, business travel, or IT support tickets — all through a natural conversation.</div>
       </div>
 
       <div class="chat-wrap">
         <!-- Info Sidebar -->
         <div class="chat-sidebar">
-          <div class="chat-sidebar-label">My Leave Balance</div>
+          <div class="chat-sidebar-label">Leave Balance</div>
           <div class="info-card">
             <div class="info-card-title"><i class="bi bi-calendar2-check"></i> Balance Overview</div>
-            <div class="info-row">
-              <span class="info-row-label">Annual Leave</span>
-              <span class="info-row-val green" id="balAnnual">—</span>
+            <div class="bal-row">
+              <div class="bal-row-head">
+                <span class="bal-row-label">Annual Leave</span>
+                <span class="bal-row-val green" id="balAnnual">— days</span>
+              </div>
+              <div class="bal-bar"><div class="bal-bar-fill" id="balAnnualBar" style="width:0%"></div></div>
+              <div class="bal-avail"><span id="balAnnualSub">of 21 days</span></div>
             </div>
-            <div class="info-row">
-              <span class="info-row-label">Sick Leave</span>
-              <span class="info-row-val green" id="balSick">—</span>
+            <div class="bal-row">
+              <div class="bal-row-head">
+                <span class="bal-row-label">Sick Leave</span>
+                <span class="bal-row-val green" id="balSick">— days</span>
+              </div>
+              <div class="bal-bar"><div class="bal-bar-fill" id="balSickBar" style="width:0%"></div></div>
+              <div class="bal-avail"><span id="balSickSub">of 30 days</span></div>
             </div>
-            <div class="info-row">
+            <div class="info-row" style="margin-top:4px">
               <span class="info-row-label">Emergency</span>
-              <span class="info-row-val">Available</span>
+              <span class="info-row-val" style="color:var(--color-primary)">Available</span>
             </div>
             <div class="info-row">
               <span class="info-row-label">Unpaid</span>
-              <span class="info-row-val">Available</span>
+              <span class="info-row-val" style="color:var(--color-primary)">Available</span>
             </div>
           </div>
 
-          <div class="chat-sidebar-label" style="margin-top:4px">How It Works</div>
-          <div class="step-card">
-            <div class="step-item">
-              <div class="step-num">1</div>
-              <span>Tell the assistant what you need — leave, WFH, or travel</span>
+          <div class="chat-sidebar-label">What I Can Do</div>
+          <div class="cap-card">
+            <div class="cap-item">
+              <div class="cap-icon" style="background:#e0f2fe"><i class="bi bi-calendar2-plus" style="color:#0369a1"></i></div>
+              <span>Submit leave requests</span>
             </div>
-            <div class="step-item">
-              <div class="step-num">2</div>
-              <span>Provide dates, destination, and reason</span>
+            <div class="cap-item">
+              <div class="cap-icon" style="background:#f0fdf4"><i class="bi bi-house-door" style="color:#16a34a"></i></div>
+              <span>Work from home requests</span>
             </div>
-            <div class="step-item">
-              <div class="step-num">3</div>
-              <span>Review the summary and confirm</span>
+            <div class="cap-item">
+              <div class="cap-icon" style="background:#fdf4ff"><i class="bi bi-airplane" style="color:#9333ea"></i></div>
+              <span>Business travel booking</span>
             </div>
-            <div class="step-item">
-              <div class="step-num">4</div>
-              <span>Request is submitted and sent for approval</span>
+            <div class="cap-item">
+              <div class="cap-icon" style="background:#fff7ed"><i class="bi bi-headset" style="color:#ea580c"></i></div>
+              <span>IT support tickets</span>
+            </div>
+            <div class="cap-item">
+              <div class="cap-icon" style="background:var(--color-primary-faint)"><i class="bi bi-search" style="color:var(--color-primary)"></i></div>
+              <span>Track your requests</span>
             </div>
           </div>
-
         </div>
 
         <!-- Chat Area -->
         <div class="chat-main">
           <div class="chat-header">
             <div class="chat-header-icon"><i class="bi bi-stars"></i></div>
-            <div>
-              <div class="fw-700" style="font-size:15px">My Assistant</div>
-              <div class="fs-sm text-muted">Leave · Work From Home · Business Travel</div>
+            <div class="chat-header-info">
+              <div class="chat-header-name">My Assistant</div>
+              <div class="chat-header-sub">Leave · WFH · Travel · Help Desk</div>
             </div>
-            <span class="chat-header-badge" id="statusBadge"><i class="bi bi-circle-fill me-1" style="font-size:8px;color:#f59e0b"></i>Connecting...</span>
+            <span class="chat-header-badge" id="statusBadge"><i class="bi bi-circle-fill" style="font-size:7px;color:#f59e0b"></i>Connecting...</span>
           </div>
 
           <div class="chat-messages" id="chatMessages">
@@ -208,21 +256,26 @@
               <div class="msg-avatar"><i class="bi bi-stars"></i></div>
               <div>
                 <div class="msg-bubble">
-                  Hi! I'm My Assistant. I can help you submit a <strong>leave request</strong>, arrange <strong>work from home</strong>, or book a <strong>business trip</strong> — all through a simple conversation.<br><br>
-                  Just tell me what you need — for example:
+                  Hi there! I&#39;m your AI workplace assistant. I can help you with <strong>leave requests</strong>, <strong>work from home</strong>, <strong>business travel</strong>, and <strong>IT support tickets</strong> &mdash; all through a simple conversation.<br><br>
+                  What do you need help with today?
                 </div>
                 <div class="suggested-questions">
-                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)">I need annual leave next week</button>
-                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)">I want to work from home tomorrow</button>
-                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)">Request a business trip to Dubai</button>
-                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)">How many leave days do I have left?</button>
+                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)"><i class="bi bi-calendar2-plus"></i>I need annual leave next week</button>
+                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)"><i class="bi bi-house-door"></i>Work from home tomorrow</button>
+                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)"><i class="bi bi-airplane"></i>Business trip to Dubai</button>
+                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)"><i class="bi bi-calendar2-check"></i>How many leave days left?</button>
+                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)"><i class="bi bi-headset"></i>Report an IT issue</button>
+                  <button class="sq-btn" onclick="LeaveAssistant.askSuggestion(this)"><i class="bi bi-ticket-detailed"></i>Show my support tickets</button>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="chat-input-bar">
-            <textarea id="chatInput" rows="1" placeholder="Tell me what you need — leave, WFH, or business travel..." maxlength="500"></textarea>
+            <div class="chat-input-wrap">
+              <textarea id="chatInput" rows="1" placeholder="Ask me anything: leave, WFH, travel, IT support..." maxlength="500"></textarea>
+              <span class="input-hint">Enter ↵</span>
+            </div>
             <button class="btn-send" id="btnSend" title="Send"><i class="bi bi-send-fill"></i></button>
           </div>
         </div>

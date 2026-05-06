@@ -28,6 +28,9 @@
     .comment-author { font-size: 12px; font-weight: 600; color: var(--color-text); }
     .comment-time   { font-size: 11px; color: var(--color-text-muted); }
     .comment-text   { font-size: 13px; color: var(--color-text); line-height: 1.5; }
+    .history-item { font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--color-border-light); }
+    .history-item:last-child { border-bottom: none; }
+    .history-action { font-weight: 600; color: var(--color-primary); text-transform: capitalize; }
   </style>
 </head>
 <body>
@@ -117,7 +120,11 @@
         <div class="d-flex gap-2">
           <select class="form-select form-select-sm" id="filterTicketStatus" style="width:auto">
             <option value="">All Status</option>
-            <option>open</option><option>resolved</option><option>closed</option>
+            <option value="open">Open</option>
+            <option value="in_progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+            <option value="reopened">Reopened</option>
+            <option value="closed">Closed</option>
           </select>
           <select class="form-select form-select-sm" id="filterTicketPriority" style="width:auto">
             <option value="">All Priorities</option>
@@ -173,7 +180,10 @@
       <div class="modal-body" id="ticketDetailBody"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success d-none" id="btnResolveTicket"><i class="bi bi-check-lg me-1"></i>Mark Resolved</button>
+        <button type="button" class="btn btn-primary   d-none" id="btnStartWork"><i class="bi bi-play-fill me-1"></i>Start Working</button>
+        <button type="button" class="btn btn-success   d-none" id="btnResolveTicket"><i class="bi bi-check-lg me-1"></i>Mark Resolved</button>
+        <button type="button" class="btn btn-warning   d-none" id="btnReopenTicket"><i class="bi bi-arrow-counterclockwise me-1"></i>Reopen</button>
+        <button type="button" class="btn btn-secondary d-none" id="btnCloseTicket"><i class="bi bi-lock me-1"></i>Close Ticket</button>
       </div>
     </div>
   </div>
