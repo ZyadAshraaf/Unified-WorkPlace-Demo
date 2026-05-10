@@ -279,7 +279,7 @@
   btnReset.addEventListener('click', async function () {
     const confirmed = await UI.confirm(
       'Reset to defaults?',
-      'This will restore the original teal color palette and app name. Your logo file will remain unchanged.',
+      'This will restore the original color palette, app name, and logo.',
       'Reset',
       'danger'
     );

@@ -3,8 +3,9 @@ const router  = express.Router();
 const fs      = require('fs');
 const path    = require('path');
 
-const settingsPath = path.join(__dirname, '../data/settings.json');
-const logoPath     = path.join(__dirname, '../public/assets/logo.png');
+const settingsPath    = path.join(__dirname, '../data/settings.json');
+const logoPath        = path.join(__dirname, '../public/assets/logo.png');
+const logoDefaultPath = path.join(__dirname, '../public/assets/logo-default.png');
 
 const readSettings  = () => JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
 const writeSettings = d  => fs.writeFileSync(settingsPath, JSON.stringify(d, null, 2));
@@ -34,6 +35,11 @@ router.post('/logo', requireAuth, (req, res) => {
   const { data } = req.body;
   if (!data) return res.status(400).json({ success: false, message: 'No image data provided' });
 
+  // Back up the default logo before first overwrite
+  if (!fs.existsSync(logoDefaultPath) && fs.existsSync(logoPath)) {
+    fs.copyFileSync(logoPath, logoDefaultPath);
+  }
+
   const base64 = data.replace(/^data:image\/\w+;base64,/, '');
   const buffer = Buffer.from(base64, 'base64');
   fs.writeFileSync(logoPath, buffer);
@@ -49,6 +55,12 @@ router.post('/reset', requireAuth, (req, res) => {
     logoPath: '/assets/logo.png'
   };
   writeSettings(defaults);
+
+  // Restore the default logo file if a backup exists
+  if (fs.existsSync(logoDefaultPath)) {
+    fs.copyFileSync(logoDefaultPath, logoPath);
+  }
+
   res.json({ success: true, settings: defaults });
 });
 
