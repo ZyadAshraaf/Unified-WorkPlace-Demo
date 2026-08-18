@@ -1,8 +1,17 @@
 /* ── Tasks Page Controller ───────────────────────────────── */
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 let allTasks   = [];
 let allUsers   = [];
 let activeTask = null;
 let activeFilter = 'all';
+let activeInvoiceDocId = null;   // CMS document id linked to the open invoice task (for Preview)
 
 const HD_STATUS_MAP = {
   open:        'pending',
@@ -322,6 +331,7 @@ async function openDetail(id) {
   if (!data?.success) return;
   const t = data.task;
   activeTask = t;
+  activeInvoiceDocId = null;
 
   document.getElementById('detailTitle').textContent = t.title;
 
@@ -330,7 +340,9 @@ async function openDetail(id) {
   const isEmsVersionApproval = t.type === 'approval' && t.metadata?.emsVersionId;
   const isPOApproval         = t.type === 'approval' && t.metadata?.poId;
   const isMRQApproval        = t.type === 'approval' && t.metadata?.mrqId;
-  const isApproval           = isLeaveApproval || isWfhApproval || isEmsVersionApproval || isPOApproval || isMRQApproval;
+  const isInvoiceApproval    = t.type === 'approval' && t.metadata?.invoiceId;
+  const isTravelApproval     = t.type === 'approval' && t.metadata?.travelId;
+  const isApproval           = isLeaveApproval || isWfhApproval || isEmsVersionApproval || isPOApproval || isMRQApproval || isInvoiceApproval || isTravelApproval;
   const isDone = ['completed', 'approved', 'rejected'].includes(t.status);
 
   // Fetch linked record for approval tasks
@@ -355,6 +367,15 @@ async function openDetail(id) {
   } else if (isMRQApproval) {
     const r = await API.get(`/api/material-requisitions/${t.metadata.mrqId}`);
     if (r?.success) requestDetailsHtml = buildMRQDetails(r.mrq);
+  } else if (isInvoiceApproval) {
+    const r = await API.get(`/api/invoices/${t.metadata.invoiceId}`);
+    if (r?.success) {
+      activeInvoiceDocId = r.invoice.emsDocId || null;
+      requestDetailsHtml = buildInvoiceDetails(r.invoice);
+    }
+  } else if (isTravelApproval) {
+    const r = await API.get(`/api/travel/${t.metadata.travelId}`);
+    if (r?.success) requestDetailsHtml = buildTravelDetails(r.travel);
   }
 
   const comments = t.comments.map(c => `
@@ -390,6 +411,7 @@ async function openDetail(id) {
   document.getElementById('btnApproveLeave').classList.toggle('d-none', !isApproval || isDone);
   document.getElementById('btnRejectLeave').classList.toggle('d-none', !isApproval || isDone);
   document.getElementById('btnViewEmsDoc').classList.toggle('d-none', !isEmsVersionApproval || t.status === 'rejected');
+  document.getElementById('btnPreviewInvoice').classList.toggle('d-none', !(isInvoiceApproval && activeInvoiceDocId));
   document.getElementById('btnApproveReview').classList.toggle('d-none', isDone);
   document.getElementById('btnRejectReview').classList.toggle('d-none', isDone);
 
@@ -434,7 +456,7 @@ async function openHelpdeskDetail(id) {
   `;
 
   // Hide all standard task action buttons
-  ['btnCompleteTask','btnApproveLeave','btnRejectLeave','btnViewEmsDoc'].forEach(bid =>
+  ['btnCompleteTask','btnApproveLeave','btnRejectLeave','btnViewEmsDoc','btnPreviewInvoice'].forEach(bid =>
     document.getElementById(bid)?.classList.add('d-none')
   );
 
@@ -506,6 +528,109 @@ function buildWfhDetails(w) {
   const reason = `<div class="mt-2"><label class="form-label mb-1" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--color-text-muted)">Reason</label>
     <textarea class="form-control form-control-sm" rows="2" disabled>${w.reason || '—'}</textarea></div>`;
   return detailSection('WFH Request Details', fields, reason);
+}
+
+// ── Business travel details ─────────────────────────────────
+function travelFlightCard(label, f) {
+  if (!f) return '';
+  return `<div style="flex:1;min-width:220px;border:1px solid var(--color-border);border-radius:12px;padding:14px 16px;background:var(--color-surface)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--color-text-muted)">${label}</span>
+      <span style="font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--color-primary-faint);color:var(--color-primary)">${escapeHtml(f.class || '—')}</span>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+      <span style="font-size:13px;font-weight:700;color:var(--color-text)">${escapeHtml(f.airline || '—')}</span>
+      <span style="font-size:11px;color:var(--color-text-muted);font-family:'SFMono-Regular',Consolas,monospace">${escapeHtml(f.flightNo || '')}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin:10px 0 8px">
+      <div style="font-size:17px;font-weight:800;color:var(--color-text)">${escapeHtml(f.departure || '--:--')}</div>
+      <div style="flex:1;height:2px;background:var(--color-border);position:relative;border-radius:2px">
+        <i class="bi bi-airplane-fill" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);font-size:11px;color:var(--color-primary);background:var(--color-surface)"></i>
+      </div>
+      <div style="font-size:17px;font-weight:800;color:var(--color-text)">${escapeHtml(f.arrival || '--:--')}</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:11px;color:var(--color-text-muted)">${f.stops === 0 || f.stops === undefined ? 'Direct' : f.stops + ' stop(s)'}</span>
+      <span style="font-size:13.5px;font-weight:800;color:var(--color-primary)">SAR ${(f.price || 0).toLocaleString()}</span>
+    </div>
+  </div>`;
+}
+
+function travelHotelCard(h) {
+  if (!h) return '';
+  return `<div style="display:flex;align-items:center;gap:14px;border:1px solid var(--color-border);border-radius:12px;padding:14px 16px;background:var(--color-surface)">
+    <div style="width:42px;height:42px;border-radius:10px;background:var(--color-primary-faint);color:var(--color-primary);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0"><i class="bi bi-building"></i></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:13px;font-weight:700;color:var(--color-text)">${escapeHtml(h.name || '—')} ${h.stars ? '★'.repeat(h.stars) : ''}</div>
+      <div style="font-size:11.5px;color:var(--color-text-muted);margin-top:1px">${h.nights || 0} night(s) &middot; SAR ${(h.pricePerNight || 0).toLocaleString()}/night</div>
+    </div>
+    <div style="font-size:14.5px;font-weight:800;color:var(--color-primary);white-space:nowrap">SAR ${(h.total || 0).toLocaleString()}</div>
+  </div>`;
+}
+
+function travelCostBreakdown(cost) {
+  if (!cost) return '';
+  const rows = [['Flights', cost.flights], ['Hotel', cost.hotel], ['Per Diem', cost.perDiem], ['Transport', cost.transport]];
+  const rowsHtml = rows.map(([label, val]) => `
+    <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:12.5px">
+      <span style="color:var(--color-text-muted)">${label}</span>
+      <span style="font-weight:600;color:var(--color-text)">SAR ${(val || 0).toLocaleString()}</span>
+    </div>`).join('');
+  return `<div style="border:1px solid var(--color-border);border-radius:12px;padding:14px 16px;background:var(--color-surface)">
+    ${rowsHtml}
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:4px;border-top:1px solid var(--color-border)">
+      <span style="font-size:13px;font-weight:700;color:var(--color-text)">Total Estimated Cost</span>
+      <span style="font-size:16px;font-weight:800;color:var(--color-primary)">SAR ${(cost.total || 0).toLocaleString()}</span>
+    </div>
+  </div>`;
+}
+
+function buildTravelDetails(tr) {
+  const classLabel = (tr.travelClass || 'economy').charAt(0).toUpperCase() + (tr.travelClass || 'economy').slice(1);
+
+  const hero = `
+    <div style="background:linear-gradient(135deg,var(--color-primary-darker),var(--color-primary));border-radius:14px;padding:18px 20px;color:#fff;margin-bottom:16px">
+      <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;opacity:.75;margin-bottom:8px">Business Trip</div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+        <div style="font-size:19px;font-weight:800">${escapeHtml(tr.origin || '—')}</div>
+        <i class="bi bi-airplane-fill" style="font-size:15px;opacity:.85;transform:rotate(90deg)"></i>
+        <div style="font-size:19px;font-weight:800">${escapeHtml(tr.destination || '—')}</div>
+      </div>
+      <div style="font-size:12.5px;opacity:.85">${UI.formatDate(tr.departureDate)} &rarr; ${UI.formatDate(tr.returnDate)} &middot; ${tr.days || 0} day(s) &middot; ${tr.travelers || 1} traveler(s) &middot; ${classLabel} class</div>
+    </div>`;
+
+  const infoFields =
+    detailField('Traveler',    tr.userName) +
+    detailField('Submitted',   UI.formatDate(tr.submittedAt)) +
+    detailField('Reviewed By', tr.reviewerName || '—');
+
+  const purpose = `<div class="mt-2"><label class="form-label mb-1" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--color-text-muted)">Purpose of Trip</label>
+    <textarea class="form-control form-control-sm" rows="2" disabled>${tr.purpose || '—'}</textarea></div>`;
+
+  const infoSection = detailSection('Trip Details', infoFields, purpose);
+
+  const flightsHtml = (tr.flight?.outbound || tr.flight?.return) ? `
+    <div class="mb-3">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--color-text-muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--color-border)">Flights</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        ${travelFlightCard('Outbound', tr.flight?.outbound)}
+        ${travelFlightCard('Return', tr.flight?.return)}
+      </div>
+    </div>` : '';
+
+  const hotelHtml = tr.hotel ? `
+    <div class="mb-3">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--color-text-muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--color-border)">Accommodation</div>
+      ${travelHotelCard(tr.hotel)}
+    </div>` : '';
+
+  const costHtml = tr.costBreakdown ? `
+    <div class="mb-2">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--color-text-muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--color-border)">Cost Breakdown</div>
+      ${travelCostBreakdown(tr.costBreakdown)}
+    </div>` : '';
+
+  return hero + infoSection + flightsHtml + hotelHtml + costHtml;
 }
 
 function buildPODetails(p) {
@@ -597,6 +722,160 @@ function buildMRQDetails(m) {
   return detailSection('Material Requisition Details', fields, lineTable + justif);
 }
 
+// ── Invoice validation details ─────────────────────────────
+const INV_OUTCOME_STYLE = {
+  full_match:       { cls: 'success', icon: 'bi-patch-check-fill',        label: 'Fully Validated' },
+  partial_match:    { cls: 'success', icon: 'bi-check-circle-fill',       label: 'Partially Validated' },
+  partial_rejected: { cls: 'warning', icon: 'bi-exclamation-triangle-fill', label: 'Partially Rejected' },
+  wrong_currency:   { cls: 'danger',  icon: 'bi-currency-exchange',       label: 'Currency Mismatch' },
+  full_rejected:    { cls: 'danger',  icon: 'bi-x-octagon-fill',          label: 'Fully Rejected' },
+  wrong_po:         { cls: 'danger',  icon: 'bi-search',                  label: 'Purchase Order Not Found' }
+};
+
+const INV_BANNER_BG = { success: 'var(--color-success-light)', warning: 'var(--color-warning-light)', danger: 'var(--color-danger-light)' };
+const INV_BANNER_FG = { success: 'var(--color-success)', warning: '#92600A', danger: 'var(--color-danger)' };
+
+function invStatusPill(status) {
+  // Informational fields (dates, totals, descriptions) are neutral — no pass/fail chip
+  if (status === 'info') return `<span style="color:var(--color-text-muted);font-size:13px">—</span>`;
+  const map = {
+    approved: { bg: 'var(--color-success-light)', fg: 'var(--color-success)', ic: 'bi-check-circle-fill', tx: 'Validated' },
+    rejected: { bg: 'var(--color-danger-light)',  fg: 'var(--color-danger)',  ic: 'bi-x-circle-fill',    tx: 'Rejected' },
+    missing:  { bg: 'var(--color-surface)',       fg: 'var(--color-text-muted)', ic: 'bi-dash-circle',   tx: 'N/A' }
+  };
+  const s = map[status] || map.missing;
+  return `<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:${s.bg};color:${s.fg}"><i class="bi ${s.ic}"></i>${s.tx}</span>`;
+}
+
+// Distinct rejection reasons across header + line fields, with the locations each affects
+function collectInvoiceIssues(headerFields, lineItems) {
+  const map = new Map();
+  const add = (reason, loc) => {
+    if (!reason) return;
+    const r = String(reason).trim();
+    if (!r) return;
+    if (!map.has(r)) map.set(r, new Set());
+    if (loc) map.get(r).add(loc);
+  };
+  (headerFields || []).forEach(f => { if (f.status === 'rejected') add(f.reason, f.display_name); });
+  (lineItems || []).forEach(li => {
+    if (li.status !== 'rejected') return;
+    const loc = `Line ${li.line_num || ''}`.trim();
+    let matched = false;
+    (li.fields || []).forEach(f => { if (f.status === 'rejected' && f.reason) { add(f.reason, loc); matched = true; } });
+    if (li.reason) { add(li.reason, loc); matched = true; }
+    if (!matched) add('Line item does not match the purchase order', loc);
+  });
+  return [...map.entries()].map(([reason, locs]) => ({ reason, locations: [...locs] }));
+}
+
+function formatIssueLocations(locs) {
+  if (!locs.length) return '';
+  if (locs.length <= 4) return locs.join(' · ');
+  return locs.slice(0, 4).join(' · ') + ` · +${locs.length - 4} more`;
+}
+
+function buildInvoiceIssuesHtml(inv) {
+  const issues = collectInvoiceIssues(inv.headerFields, inv.lineItemResults);
+  if (!issues.length) return '';
+  const rows = issues.map(is => `
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-top:1px solid rgba(0,0,0,0.06)">
+      <i class="bi bi-exclamation-triangle-fill" style="color:var(--color-danger);font-size:14px;margin-top:1px;flex-shrink:0"></i>
+      <div style="min-width:0">
+        <div style="font-size:12.5px;font-weight:600;color:var(--color-text);line-height:1.4">${escapeHtml(is.reason)}</div>
+        ${is.locations.length ? `<div style="font-size:11px;color:var(--color-text-muted);margin-top:2px;font-family:'SFMono-Regular',Consolas,monospace">${escapeHtml(formatIssueLocations(is.locations))}</div>` : ''}
+      </div>
+    </div>`).join('');
+  return `<div style="margin-top:12px;background:rgba(255,255,255,0.6);border:1px solid rgba(0,0,0,0.06);border-radius:10px;padding:10px 14px">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--color-text-muted);margin-bottom:8px">Issues found (${issues.length})</div>
+    ${rows}
+  </div>`;
+}
+
+function invCompareTable(fields) {
+  if (!fields || !fields.length) return '';
+  const rows = fields.map(f => {
+    const poVal  = (f.db_value === null || f.db_value === undefined || f.db_value === '') ? '<span class="text-muted fst-italic">N/A</span>' : escapeHtml(String(f.db_value));
+    const invVal = escapeHtml(String(f.invoice_value ?? '—'));
+    const invColor = f.status === 'rejected' ? 'color:var(--color-danger);font-weight:700' : f.status === 'approved' ? 'color:var(--color-success);font-weight:700' : '';
+    const reasonRow = f.reason ? `<tr><td colspan="4" style="padding:2px 10px 8px"><span style="font-size:11px;color:var(--color-danger);background:var(--color-danger-light);border-radius:6px;padding:3px 8px;display:inline-flex;align-items:center;gap:5px"><i class="bi bi-info-circle"></i>${escapeHtml(f.reason)}</span></td></tr>` : '';
+    return `<tr>
+        <td class="fs-sm fw-600" style="padding:7px 10px">${escapeHtml(f.display_name || '')}</td>
+        <td class="fs-sm" style="padding:7px 10px">${poVal}</td>
+        <td class="fs-sm" style="padding:7px 10px;${invColor}">${invVal}</td>
+        <td style="padding:7px 10px;text-align:right">${invStatusPill(f.status)}</td>
+      </tr>${reasonRow}`;
+  }).join('');
+  return `<div style="border:1px solid var(--color-border);border-radius:8px;overflow:hidden">
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr style="background:var(--color-surface)">
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted)">Field</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted)">Purchase Order</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted)">Invoice</th>
+        <th style="padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--color-text-muted);text-align:right">Status</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+function buildInvoiceDetails(inv) {
+  const st = INV_OUTCOME_STYLE[inv.outcome] || INV_OUTCOME_STYLE.full_rejected;
+
+  // Outcome banner
+  const banner = `<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:${INV_BANNER_BG[st.cls]};margin-bottom:16px">
+    <i class="bi ${st.icon}" style="font-size:22px;color:${INV_BANNER_FG[st.cls]}"></i>
+    <div>
+      <div style="font-size:14px;font-weight:800;color:${INV_BANNER_FG[st.cls]}">${st.label}</div>
+      <div class="fs-sm" style="color:var(--color-text);opacity:.85">${inv.totalLines ? `${inv.approvedCount} of ${inv.totalLines} line item(s) validated${inv.rejectedCount ? ` · ${inv.rejectedCount} rejected` : ''}` : (inv.poNotFoundMessage || 'AI validation complete')}</div>
+    </div>
+  </div>`;
+
+  // Summary fields
+  const fields =
+    detailField('Invoice Ref',    inv.invoiceNumber) +
+    detailField('Submitted By',   inv.userName) +
+    detailField('Vendor Email',   inv.vendorEmail) +
+    detailField('Associated PO',  inv.poNumber) +
+    detailField('Extracted PO',   inv.poNumberExtracted) +
+    detailField('File',           inv.fileName) +
+    detailField('AI Verdict',     st.label) +
+    detailField('Line Items',     inv.totalLines ? `${inv.approvedCount} validated · ${inv.rejectedCount} rejected` : '—') +
+    detailField('Submitted',      UI.formatDate(inv.submittedAt));
+
+  const reason = inv.reason
+    ? `<div class="mt-2"><label class="form-label mb-1" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--color-text-muted)">Submitter's Justification</label>
+        <textarea class="form-control form-control-sm" rows="2" disabled>${inv.reason}</textarea></div>`
+    : '';
+
+  // Header comparison
+  const headerBlock = (inv.headerFields && inv.headerFields.length)
+    ? `<div class="mb-3"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--color-text-muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--color-border)">PO Header Comparison</div>${invCompareTable(inv.headerFields)}</div>`
+    : '';
+
+  // Line items
+  const lineBlocks = (inv.lineItemResults || []).map((li, idx) => {
+    const stColor = li.status === 'approved' ? 'var(--color-success)' : li.status === 'rejected' ? 'var(--color-danger)' : 'var(--color-text-muted)';
+    return `<div style="border:1px solid var(--color-border);border-radius:10px;overflow:hidden;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--color-surface);border-left:4px solid ${stColor}">
+          <span style="font-size:11px;font-weight:700;background:var(--color-border-light);border-radius:6px;padding:2px 8px">Line ${escapeHtml(li.line_num || String(idx + 1))}</span>
+          <span class="fs-sm fw-700" style="flex:1">Part ${escapeHtml(li.part || '—')}</span>
+          ${invStatusPill(li.status)}
+        </div>
+        ${li.reason ? `<div style="padding:8px 14px 0"><span style="font-size:11px;color:var(--color-danger);background:var(--color-danger-light);border-radius:6px;padding:3px 8px;display:inline-flex;align-items:center;gap:5px"><i class="bi bi-info-circle"></i>${escapeHtml(li.reason)}</span></div>` : ''}
+        <div style="padding:10px 14px">${invCompareTable(li.fields)}</div>
+      </div>`;
+  }).join('');
+
+  const lineBlock = lineBlocks
+    ? `<div class="mb-2"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--color-text-muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--color-border)">Line Items</div>${lineBlocks}</div>`
+    : '';
+
+  const issuesHtml = buildInvoiceIssuesHtml(inv);
+
+  return banner + issuesHtml + detailSection('Invoice Details', fields, reason) + headerBlock + lineBlock;
+}
+
 // ── Bind Modals ────────────────────────────────────────────
 function bindModals() {
   // Create task
@@ -630,6 +909,10 @@ function bindModals() {
       data = await API.put(`/api/purchase-orders/${activeTask.metadata.poId}/approve`);
     } else if (activeTask.metadata?.mrqId) {
       data = await API.put(`/api/material-requisitions/${activeTask.metadata.mrqId}/approve`);
+    } else if (activeTask.metadata?.invoiceId) {
+      data = await API.put(`/api/invoices/${activeTask.metadata.invoiceId}/approve`);
+    } else if (activeTask.metadata?.travelId) {
+      data = await API.put(`/api/travel/${activeTask.metadata.travelId}`, { status: 'approved' });
     } else return;
     if (data?.success) { UI.toast('Approved', 'success'); taskDetailModal().hide(); await loadTasks(); }
     else UI.toast(data?.message || 'Error approving', 'danger');
@@ -650,6 +933,10 @@ function bindModals() {
       data = await API.put(`/api/purchase-orders/${activeTask.metadata.poId}/reject`);
     } else if (activeTask.metadata?.mrqId) {
       data = await API.put(`/api/material-requisitions/${activeTask.metadata.mrqId}/reject`);
+    } else if (activeTask.metadata?.invoiceId) {
+      data = await API.put(`/api/invoices/${activeTask.metadata.invoiceId}/reject`);
+    } else if (activeTask.metadata?.travelId) {
+      data = await API.put(`/api/travel/${activeTask.metadata.travelId}`, { status: 'rejected' });
     } else return;
     if (data?.success) { UI.toast('Rejected', 'warning'); taskDetailModal().hide(); await loadTasks(); }
     else UI.toast(data?.message || 'Error rejecting', 'danger');
@@ -660,6 +947,12 @@ function bindModals() {
     if (!activeTask || activeTask._isHelpdeskTicket) return;
     const data = await API.put(`/api/tasks/${activeTask.id}`, { status: 'completed', note: 'Marked as complete' });
     if (data?.success) { UI.toast('Task marked complete', 'success'); taskDetailModal().hide(); await loadTasks(); }
+  });
+
+  // Preview the invoice PDF filed in CMS (opens the inline view in a new tab)
+  document.getElementById('btnPreviewInvoice')?.addEventListener('click', () => {
+    if (!activeInvoiceDocId) return;
+    window.open(`/unifiedwp/api/ems/documents/${activeInvoiceDocId}/versions/1/view`, '_blank');
   });
 
   // Enter document review mode

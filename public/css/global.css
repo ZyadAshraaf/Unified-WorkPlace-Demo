@@ -216,8 +216,8 @@ body {
   border-bottom: 1px solid var(--topbar-border);
   display: flex;
   align-items: center;
-  padding: 0 24px;
-  gap: 16px;
+  padding: 0 28px;
+  gap: 18px;
   position: sticky;
   top: 0;
   z-index: 1030;
@@ -230,10 +230,10 @@ body {
   justify-content: center;
   background: none;
   border: none;
-  font-size: 22px;
+  font-size: 23px;
   color: var(--color-text);
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 6px 8px;
   border-radius: var(--radius-sm);
   line-height: 1;
   flex-shrink: 0;
@@ -243,18 +243,10 @@ body {
 .topbar-toggle:hover { background: var(--color-surface); }
 
 .topbar-logo {
-  height: 36px;
+  height: 48px;
   width: auto;
   object-fit: contain;
   flex-shrink: 0;
-}
-
-.page-title {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--color-text);
-  margin: 0;
-  flex: 1;
 }
 
 .topbar-right {
@@ -263,6 +255,17 @@ body {
   gap: 10px;
   margin-left: auto;
 }
+
+.topbar-oracle-badge {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  opacity: 0.94;
+  transition: opacity 0.15s;
+}
+
+.topbar-oracle-badge:hover { opacity: 1; }
 
 .topbar-search {
   display: flex;
@@ -689,7 +692,6 @@ body.sidebar-collapsed .main-wrapper {
 
 @media (max-width: 575px) {
   .topbar-search { display: none; }
-  .page-title { font-size: var(--font-size-md); }
 }
 
 /* ── Utilities ───────────────────────────────────────────── */

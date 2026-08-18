@@ -405,5 +405,27 @@
         "note": ""
       }
     ]
+  },
+  {
+    "id": "HD87460CDA",
+    "ticketNo": "TKT-2026-014",
+    "title": "Laptop restarts suddenly while working",
+    "description": "Laptop restarts suddenly while working, without any error messages, and this is happening frequently.",
+    "category": "Hardware",
+    "priority": "critical",
+    "status": "open",
+    "submittedBy": "u001",
+    "assignedTo": null,
+    "createdAt": "2026-07-19T06:21:04.999Z",
+    "updatedAt": "2026-07-19T06:21:04.999Z",
+    "comments": [],
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-07-19T06:21:04.999Z",
+        "note": "Ticket submitted via My Assistant"
+      }
+    ]
   }
 ]

@@ -2209,5 +2209,60 @@
     "userName": "Ahmed Al-Rashidi",
     "details": "Added annotation: \"Hello\"",
     "timestamp": "2026-05-02T05:35:41.490Z"
+  },
+  {
+    "id": "AUDCF3E3DBE",
+    "action": "document.delete",
+    "entityType": "document",
+    "entityId": "DOCA5391BC0",
+    "entityName": "Saudi Downtown",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Moved to trash",
+    "timestamp": "2026-08-18T10:27:38.104Z"
+  },
+  {
+    "id": "AUD4DBAA037",
+    "action": "document.delete",
+    "entityType": "document",
+    "entityId": "DOC1A2B3C01",
+    "entityName": "Q1 2026 Vendor Invoice - Acme Corp",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Moved to trash",
+    "timestamp": "2026-08-18T10:27:41.420Z"
+  },
+  {
+    "id": "AUDA06F7639",
+    "action": "document.upload",
+    "entityType": "document",
+    "entityId": "DOC170BD47F",
+    "entityName": "Invoice INV-2026-0002 — SA-120923",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Filed from Invoice Validator",
+    "timestamp": "2026-08-18T10:28:30.785Z"
+  },
+  {
+    "id": "AUD48EE6F8F",
+    "action": "document.upload",
+    "entityType": "document",
+    "entityId": "DOCE18FDDB1",
+    "entityName": "Invoice INV-2026-0003 — SA-120923",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Filed from Invoice Validator",
+    "timestamp": "2026-08-18T11:22:28.830Z"
+  },
+  {
+    "id": "AUD6FC89459",
+    "action": "document.upload",
+    "entityType": "document",
+    "entityId": "DOC52587101",
+    "entityName": "Invoice INV-2026-0004 — SA-120923",
+    "userId": "u001",
+    "userName": "Ahmed Al-Rashidi",
+    "details": "Filed from Invoice Validator",
+    "timestamp": "2026-08-18T12:32:42.087Z"
   }
 ]

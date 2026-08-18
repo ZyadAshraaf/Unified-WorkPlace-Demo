@@ -16,7 +16,7 @@
     "status": "active",
     "createdBy": "u002",
     "createdAt": "2026-03-15T10:00:00Z",
-    "updatedAt": "2026-05-02T00:35:40.483Z",
+    "updatedAt": "2026-08-18T10:27:41.419Z",
     "currentVersion": 1,
     "versions": [
       {
@@ -39,9 +39,10 @@
     },
     "annotations": [],
     "starred": [],
-    "trashedAt": null,
+    "trashedAt": "2026-08-18T10:27:41.419Z",
     "lockedBy": null,
-    "lockedAt": null
+    "lockedAt": null,
+    "trashedBy": "u001"
   },
   {
     "id": "DOC1A2B3C02",
@@ -621,7 +622,7 @@
     "status": "active",
     "createdBy": "u003",
     "createdAt": "2026-04-14T14:48:27.883Z",
-    "updatedAt": "2026-05-02T04:32:08.884Z",
+    "updatedAt": "2026-08-18T10:27:38.102Z",
     "currentVersion": 1,
     "versions": [
       {
@@ -644,9 +645,10 @@
     },
     "annotations": [],
     "starred": [],
-    "trashedAt": null,
+    "trashedAt": "2026-08-18T10:27:38.101Z",
     "lockedBy": null,
-    "lockedAt": null
+    "lockedAt": null,
+    "trashedBy": "u001"
   },
   {
     "id": "DOC46E279DD",
@@ -1674,6 +1676,135 @@
         "createdAt": "2026-05-02T05:35:41.487Z"
       }
     ],
+    "starred": [],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
+  },
+  {
+    "id": "DOC170BD47F",
+    "title": "Invoice INV-2026-0002 — SA-120923",
+    "description": "Vendor invoice submitted via Invoice Validator. Vendor: zyad.ashraf@wind-is.com. AI verdict: Currency Mismatch.",
+    "folderId": "FLD1A2B3C02",
+    "docTypeId": "DT001",
+    "metadata": {
+      "vendorEmail": "zyad.ashraf@wind-is.com",
+      "poNumber": "SA-120923",
+      "aiVerdict": "Currency Mismatch",
+      "approvalNumber": "APR-3JOT7LXGJ9",
+      "invoiceId": "INVC3CA7CE8"
+    },
+    "status": "active",
+    "createdBy": "u001",
+    "createdAt": "2026-08-18T10:28:30.785Z",
+    "updatedAt": "2026-08-18T10:28:30.785Z",
+    "currentVersion": 1,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "Invoice SA-329023 - PO SA-120923_1.pdf",
+        "storagePath": "uploads/ems/DOC170BD47F_v1.pdf",
+        "mimeType": "application/pdf",
+        "size": 257758,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-08-18T10:28:30.785Z",
+        "notes": "Filed automatically from Invoice Validator"
+      }
+    ],
+    "signatures": [],
+    "watermark": {
+      "enabled": false,
+      "text": "CONFIDENTIAL",
+      "opacity": 0.15,
+      "angle": -30
+    },
+    "annotations": [],
+    "starred": [],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
+  },
+  {
+    "id": "DOCE18FDDB1",
+    "title": "Invoice INV-2026-0003 — SA-120923",
+    "description": "Vendor invoice submitted via Invoice Validator. Vendor: vendor@acme.com. AI verdict: Partially Rejected.",
+    "folderId": "FLD1A2B3C02",
+    "docTypeId": "DT001",
+    "metadata": {
+      "vendorEmail": "vendor@acme.com",
+      "poNumber": "SA-120923",
+      "aiVerdict": "Partially Rejected",
+      "approvalNumber": "APR-XRSNNUS9C4",
+      "invoiceId": "INV469422DB"
+    },
+    "status": "active",
+    "createdBy": "u001",
+    "createdAt": "2026-08-18T11:22:28.830Z",
+    "updatedAt": "2026-08-18T11:22:28.830Z",
+    "currentVersion": 1,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "Wrong Quant for SA-120923.pdf",
+        "storagePath": "uploads/ems/DOCE18FDDB1_v1.pdf",
+        "mimeType": "application/pdf",
+        "size": 196757,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-08-18T11:22:28.830Z",
+        "notes": "Filed automatically from Invoice Validator"
+      }
+    ],
+    "signatures": [],
+    "watermark": {
+      "enabled": false,
+      "text": "CONFIDENTIAL",
+      "opacity": 0.15,
+      "angle": -30
+    },
+    "annotations": [],
+    "starred": [],
+    "trashedAt": null,
+    "lockedBy": null,
+    "lockedAt": null
+  },
+  {
+    "id": "DOC52587101",
+    "title": "Invoice INV-2026-0004 — SA-120923",
+    "description": "Vendor invoice submitted via Invoice Validator. Vendor: zyad.ashraf@wind-is.com. AI verdict: Currency Mismatch.",
+    "folderId": "FLD1A2B3C02",
+    "docTypeId": "DT001",
+    "metadata": {
+      "vendorEmail": "zyad.ashraf@wind-is.com",
+      "poNumber": "SA-120923",
+      "aiVerdict": "Currency Mismatch",
+      "approvalNumber": "APR-T1YAA9Y5LV",
+      "invoiceId": "INVCA4E5114"
+    },
+    "status": "active",
+    "createdBy": "u001",
+    "createdAt": "2026-08-18T12:32:42.087Z",
+    "updatedAt": "2026-08-18T12:32:42.087Z",
+    "currentVersion": 1,
+    "versions": [
+      {
+        "version": 1,
+        "filename": "Invoice SA-329023 - PO SA-120923_1.pdf",
+        "storagePath": "uploads/ems/DOC52587101_v1.pdf",
+        "mimeType": "application/pdf",
+        "size": 257758,
+        "uploadedBy": "u001",
+        "uploadedAt": "2026-08-18T12:32:42.087Z",
+        "notes": "Filed automatically from Invoice Validator"
+      }
+    ],
+    "signatures": [],
+    "watermark": {
+      "enabled": false,
+      "text": "CONFIDENTIAL",
+      "opacity": 0.15,
+      "angle": -30
+    },
+    "annotations": [],
     "starred": [],
     "trashedAt": null,
     "lockedBy": null,

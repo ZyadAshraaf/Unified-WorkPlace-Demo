@@ -71,12 +71,8 @@
       </div>
       <div class="nav-section"><div class="nav-section-label">Insights</div>
         <a href="/unifiedwp/analytics" class="nav-item" data-page="analytics"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
-        <a href="/unifiedwp/goals" class="nav-item" data-page="goals"><i class="bi bi-bullseye"></i><span>Goals &amp; OKR</span></a>
-        <a href="/unifiedwp/appraisal" class="nav-item" data-page="appraisal"><i class="bi bi-bar-chart-steps"></i><span>Performance</span></a>
-        <a href="/unifiedwp/attendance" class="nav-item" data-page="attendance"><i class="bi bi-clock-history"></i><span>Attendance</span></a>
       </div>
       <div class="nav-section"><div class="nav-section-label">Support</div>
-        <a href="/unifiedwp/policy" class="nav-item" data-page="policy"><i class="bi bi-robot"></i><span>Policy AI</span></a>
         <a href="/unifiedwp/helpdesk" class="nav-item" data-page="helpdesk"><i class="bi bi-headset"></i><span>Help Desk</span></a>
         <a href="/unifiedwp/directory" class="nav-item" data-page="directory"><i class="bi bi-people"></i><span>Directory</span></a>
       </div>
@@ -87,6 +83,12 @@
         <a href="/unifiedwp/proposal-eval" class="nav-item" data-page="proposal-eval"><i class="bi bi-file-earmark-check"></i><span>Proposal Evaluator</span></a>
         <a href="/unifiedwp/resume-eval" class="nav-item" data-page="resume-eval"><i class="bi bi-person-lines-fill"></i><span>Talent Assessor</span></a>
         <a href="/unifiedwp/doc-chat" class="nav-item" data-page="doc-chat"><i class="bi bi-chat-square-text"></i><span>Knowledge Assistant</span></a>
+        <a href="/unifiedwp/invoice-matcher" class="nav-item" data-page="invoice-matcher"><i class="bi bi-receipt-cutoff"></i><span>Invoice Validator</span></a>
+      </div>
+      <div class="nav-section"><div class="nav-section-label">Performance</div>
+        <a href="/unifiedwp/goals" class="nav-item" data-page="goals"><i class="bi bi-bullseye"></i><span>Goals &amp; OKR</span></a>
+        <a href="/unifiedwp/appraisal" class="nav-item" data-page="appraisal"><i class="bi bi-bar-chart-steps"></i><span>Performance</span></a>
+        <a href="/unifiedwp/attendance" class="nav-item" data-page="attendance"><i class="bi bi-clock-history"></i><span>Attendance</span></a>
       </div>
       <div class="nav-section"><div class="nav-section-label">Enterprise</div>
         <a href="/unifiedwp/ems" class="nav-item" data-page="ems"><i class="bi bi-building-gear"></i><span>CMS</span></a>
@@ -100,6 +102,7 @@
           <div class="sidebar-user-role" id="sidebarUserRole">--</div>
         </div>
       </div>
+      <a href="/unifiedwp/customize" class="sidebar-logout" title="Customize"><i class="bi bi-palette2"></i></a>
       <a href="/unifiedwp/api/auth/logout" class="sidebar-logout" title="Sign Out"><i class="bi bi-box-arrow-right"></i></a>
     </div>
   </aside>
@@ -109,24 +112,8 @@
     <header class="topbar">
       <button class="topbar-toggle" id="sidebarToggle"><i class="bi bi-list"></i></button>
       <img src="/unifiedwp/assets/logo.png" alt="Logo" class="topbar-logo" id="topbarLogo">
-      <h1 class="page-title">ERP Dialogue</h1>
-      <div class="topbar-right">
-        <div class="topbar-search"><i class="bi bi-search"></i><input type="text" placeholder="Search..."></div>
-        <button class="icon-btn"><i class="bi bi-bell"></i><span class="notif-dot d-none" id="notifDot"></span></button>
-        <div class="dropdown">
-          <div class="topbar-user" data-bs-toggle="dropdown">
-            <div class="user-avatar-sm" id="topbarAvatar">A</div>
-            <span class="topbar-user-name" id="topbarUserName">User</span>
-            <i class="bi bi-chevron-down fs-xs text-muted ms-1"></i>
-          </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            <li><a class="dropdown-item" href="/unifiedwp/customize"><i class="bi bi-palette2 me-2" style="color:var(--color-primary)"></i>Customize</a></li>
-            <li><hr class="dropdown-divider my-1"></li>
-            <li><a class="dropdown-item" href="/unifiedwp/api/auth/logout"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Sign Out</a></li>
-          </ul>
-        </div>
-      </div>
-    </header>
+      <div class="topbar-right"><img src="/unifiedwp/assets/powered-by-oracle.png" alt="Powered by Oracle" class="topbar-oracle-badge"></div>
+      </header>
 
     <main class="content">
       <div class="page-hero" style="margin-bottom:18px">

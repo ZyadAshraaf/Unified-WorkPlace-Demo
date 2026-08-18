@@ -1,0 +1,1204 @@
+[
+  {
+    "id": "INV901340F5",
+    "invoiceNumber": "INV-2026-0001",
+    "userId": "u001",
+    "vendorEmail": "zyad.ashraf@wind-is.com",
+    "poNumber": "SA-120923",
+    "poNumberExtracted": "SA-120923",
+    "fileName": "Correct Full for SA-120923.pdf",
+    "outcome": "full_match",
+    "outcomeLabel": "Fully Approved",
+    "approvalNumber": "APR-FOIOIYCBLJ",
+    "reason": "",
+    "poNotFoundMessage": "",
+    "headerFields": [
+      {
+        "field_name": "po_number",
+        "display_name": "PO Number",
+        "db_value": "SA-120923",
+        "invoice_value": "SA-120923",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "contact_name",
+        "display_name": "Contact Name",
+        "db_value": "Yasser Gassem",
+        "invoice_value": "Yasser Gassem",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "po_date",
+        "display_name": "PO Date",
+        "db_value": "2023-04-30T22:00:00Z",
+        "invoice_value": "2023-05-01",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "tax_card",
+        "display_name": "Tax Card",
+        "db_value": "518-786-382",
+        "invoice_value": "518-786-382",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "comm_reg",
+        "display_name": "Commercial Register",
+        "db_value": "92203",
+        "invoice_value": "92203",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "to_customer",
+        "display_name": "Customer",
+        "db_value": "Demo Customer, 33 King Fahd Street, King Fahd St, P.O. Box: 7451, Riyadh, Saudi Arabia",
+        "invoice_value": "Demo Customer, 33 King Fahd Street, King Fahd St, P.O. Box: 7451, Riyadh, Saudi Arabia",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "total_exc_vat",
+        "display_name": "Total Excl. VAT",
+        "db_value": "258,000.00",
+        "invoice_value": "258,000.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "percent_vat",
+        "display_name": "VAT Amount",
+        "db_value": "15.00",
+        "invoice_value": "15.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "grand_total_vat",
+        "display_name": "Grand Total (incl. VAT)",
+        "db_value": "296,700.00",
+        "invoice_value": "296,700.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "currency_type",
+        "display_name": "Currency",
+        "db_value": "USD",
+        "invoice_value": "USD",
+        "status": "approved",
+        "reason": null
+      }
+    ],
+    "lineItemResults": [
+      {
+        "part": "3587",
+        "line_num": "1.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "3587",
+            "invoice_value": "3587",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Training service for WebLogic",
+            "invoice_value": "Training service for WebLogic",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "10",
+            "invoice_value": "10.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "300.00",
+            "invoice_value": "300.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "3,000.00",
+            "invoice_value": "3,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "approved",
+        "reason": null
+      },
+      {
+        "part": "9846",
+        "line_num": "2.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "9846",
+            "invoice_value": "9846",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "HR self-service implementation for 15 business service",
+            "invoice_value": "HR self-service implementation for 15 business service",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "15",
+            "invoice_value": "15.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "10,000.00",
+            "invoice_value": "10,000.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "150,000.00",
+            "invoice_value": "150,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "approved",
+        "reason": null
+      },
+      {
+        "part": "9876",
+        "line_num": "3.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "9876",
+            "invoice_value": "9876",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Outsource 1 resource for 6 months",
+            "invoice_value": "Outsource 1 resource for 6 months",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "6",
+            "invoice_value": "6.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "10,000.00",
+            "invoice_value": "10,000.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "60,000.00",
+            "invoice_value": "60,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "approved",
+        "reason": null
+      },
+      {
+        "part": "23043619",
+        "line_num": "3.2",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "23043619",
+            "invoice_value": "23043619",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Warranty and support for 1 year",
+            "invoice_value": "Warranty and support for 1 year",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "1",
+            "invoice_value": "1.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "45,000.00",
+            "invoice_value": "45,000.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "45,000.00",
+            "invoice_value": "45,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "approved",
+        "reason": null
+      }
+    ],
+    "totalLines": 4,
+    "approvedCount": 4,
+    "rejectedCount": 0,
+    "status": "approved",
+    "taskId": "T38548C5D",
+    "submittedAt": "2026-08-18T09:36:49.859Z",
+    "reviewedBy": "u001",
+    "reviewedAt": "2026-08-18T09:37:46.889Z",
+    "reviewNote": ""
+  },
+  {
+    "id": "INVC3CA7CE8",
+    "invoiceNumber": "INV-2026-0002",
+    "userId": "u001",
+    "vendorEmail": "zyad.ashraf@wind-is.com",
+    "poNumber": "SA-120923",
+    "poNumberExtracted": "SA-120923",
+    "fileName": "Invoice SA-329023 - PO SA-120923_1.pdf",
+    "outcome": "wrong_currency",
+    "outcomeLabel": "Currency Mismatch",
+    "approvalNumber": "APR-3JOT7LXGJ9",
+    "reason": "l;mlmlml",
+    "poNotFoundMessage": "",
+    "headerFields": [
+      {
+        "field_name": "po_number",
+        "display_name": "PO Number",
+        "db_value": "SA-120923",
+        "invoice_value": "SA-120923",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "contact_name",
+        "display_name": "Contact Name",
+        "db_value": "Yasser Gassem",
+        "invoice_value": "Yasser Gassem",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "po_date",
+        "display_name": "PO Date",
+        "db_value": "2023-04-30T22:00:00Z",
+        "invoice_value": "2026-08-17",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "tax_card",
+        "display_name": "Tax Card",
+        "db_value": "518-786-382",
+        "invoice_value": "518-786-382",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "comm_reg",
+        "display_name": "Commercial Register",
+        "db_value": "92203",
+        "invoice_value": "92203",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "to_customer",
+        "display_name": "Customer",
+        "db_value": "Demo Customer, 33 King Fahd Street, King Fahd St, P.O. Box: 7451, Riyadh, Saudi Arabia",
+        "invoice_value": "Demo Customer, 33 King Fahd Street, King Fahd St, P.O. Box 7451, Riyadh, Saudi Arabia",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "total_exc_vat",
+        "display_name": "Total Excl. VAT",
+        "db_value": "258,000.00",
+        "invoice_value": "258,000.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "percent_vat",
+        "display_name": "VAT Amount",
+        "db_value": "15.00",
+        "invoice_value": "0.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "grand_total_vat",
+        "display_name": "Grand Total (incl. VAT)",
+        "db_value": "296,700.00",
+        "invoice_value": "258,000.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "currency_type",
+        "display_name": "Currency",
+        "db_value": "USD",
+        "invoice_value": "EUR",
+        "status": "rejected",
+        "reason": "Invoice currency (EUR) is not the same as PO (USD)"
+      }
+    ],
+    "lineItemResults": [
+      {
+        "part": "3587",
+        "line_num": "1.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "3587",
+            "invoice_value": "3587",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Training service for WebLogic",
+            "invoice_value": "Training service for WebLogic",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "10",
+            "invoice_value": "10.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "300.00",
+            "invoice_value": "300.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "3,000.00",
+            "invoice_value": "3,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "rejected",
+        "reason": "Invoice currency (EUR) is not the same as PO (USD)"
+      },
+      {
+        "part": "64597",
+        "line_num": "2.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "9846",
+            "invoice_value": "64597",
+            "status": "rejected",
+            "reason": "Part doesn't exist in PO"
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "HR self-service implementation for 15 business service",
+            "invoice_value": "HR self-service implementation for 15 business services",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "15",
+            "invoice_value": "15.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "10,000.00",
+            "invoice_value": "10,000.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "150,000.00",
+            "invoice_value": "150,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "rejected",
+        "reason": "Part doesn't exist in PO"
+      },
+      {
+        "part": "89652",
+        "line_num": "3.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "9876",
+            "invoice_value": "89652",
+            "status": "rejected",
+            "reason": "Part doesn't exist in PO"
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Outsource 1 resource for 6 months",
+            "invoice_value": "Outsource 1 resource for 6 months",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "6",
+            "invoice_value": "6.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "10,000.00",
+            "invoice_value": "10,000.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "60,000.00",
+            "invoice_value": "60,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "rejected",
+        "reason": "Part doesn't exist in PO"
+      },
+      {
+        "part": "078695",
+        "line_num": "3.2",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "23043619",
+            "invoice_value": "078695",
+            "status": "rejected",
+            "reason": "Part doesn't exist in PO"
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Warranty and support for 1 year",
+            "invoice_value": "Warranty and support for 1 year",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "1",
+            "invoice_value": "1.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "45,000.00",
+            "invoice_value": "45,000.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "45,000.00",
+            "invoice_value": "45,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "rejected",
+        "reason": "Part doesn't exist in PO"
+      }
+    ],
+    "totalLines": 4,
+    "approvedCount": 0,
+    "rejectedCount": 4,
+    "status": "pending",
+    "taskId": "T7EE647FC",
+    "emsDocId": "DOC170BD47F",
+    "emsDocTitle": "Invoice INV-2026-0002 — SA-120923",
+    "submittedAt": "2026-08-18T10:28:30.783Z",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "reviewNote": ""
+  },
+  {
+    "id": "INV469422DB",
+    "invoiceNumber": "INV-2026-0003",
+    "userId": "u001",
+    "vendorEmail": "vendor@acme.com",
+    "poNumber": "SA-120923",
+    "poNumberExtracted": "SA-120923",
+    "fileName": "Wrong Quant for SA-120923.pdf",
+    "outcome": "partial_rejected",
+    "outcomeLabel": "Partially Rejected",
+    "approvalNumber": "APR-XRSNNUS9C4",
+    "reason": "nbjhb",
+    "poNotFoundMessage": "",
+    "headerFields": [
+      {
+        "field_name": "po_number",
+        "display_name": "PO Number",
+        "db_value": "SA-120923",
+        "invoice_value": "SA-120923",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "contact_name",
+        "display_name": "Contact Name",
+        "db_value": "Yasser Gassem",
+        "invoice_value": "Yasser Gassem",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "po_date",
+        "display_name": "PO Date",
+        "db_value": "2023-04-30T22:00:00Z",
+        "invoice_value": null,
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "tax_card",
+        "display_name": "Tax Card",
+        "db_value": "518-786-382",
+        "invoice_value": "518-786-382",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "comm_reg",
+        "display_name": "Commercial Register",
+        "db_value": "92203",
+        "invoice_value": "99203",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "to_customer",
+        "display_name": "Customer",
+        "db_value": "Demo Customer, 33 King Fahd Street, King Fahd St, P.O. Box: 7451, Riyadh, Saudi Arabia",
+        "invoice_value": "Demo Customer, 33 King Fahd Street, King Fahd St, P.O. Box: 7451, Riyadh, Saudi Arabia",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "total_exc_vat",
+        "display_name": "Total Excl. VAT",
+        "db_value": "258,000.00",
+        "invoice_value": "278,600.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "percent_vat",
+        "display_name": "VAT Amount",
+        "db_value": "15.00",
+        "invoice_value": "15.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "grand_total_vat",
+        "display_name": "Grand Total (incl. VAT)",
+        "db_value": "296,700.00",
+        "invoice_value": "320,390.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "currency_type",
+        "display_name": "Currency",
+        "db_value": "USD",
+        "invoice_value": "USD",
+        "status": "approved",
+        "reason": null
+      }
+    ],
+    "lineItemResults": [
+      {
+        "part": "3587",
+        "line_num": "1.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "3587",
+            "invoice_value": "3587",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Training service for WebLogic",
+            "invoice_value": "Training service for WebLogic",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "10",
+            "invoice_value": "12.00",
+            "status": "rejected",
+            "reason": "Invoice quantity is more than PO quantity"
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "300.00",
+            "invoice_value": "300.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "3,000.00",
+            "invoice_value": "3,600.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "rejected",
+        "reason": null
+      },
+      {
+        "part": "9846",
+        "line_num": "2.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "9846",
+            "invoice_value": "9846",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "HR self-service implementation for 15 business service",
+            "invoice_value": "HR self-service implementation for 15 business service",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "15",
+            "invoice_value": "17.00",
+            "status": "rejected",
+            "reason": "Invoice quantity is more than PO quantity"
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "10,000.00",
+            "invoice_value": "10,000.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "150,000.00",
+            "invoice_value": "170,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "rejected",
+        "reason": null
+      },
+      {
+        "part": "9876",
+        "line_num": "3.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "9876",
+            "invoice_value": "9876",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Outsource 1 resource for 6 months",
+            "invoice_value": "Outsource 1 resource for 6 months",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "6",
+            "invoice_value": "6.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "10,000.00",
+            "invoice_value": "10,000.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "60,000.00",
+            "invoice_value": "60,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "approved",
+        "reason": null
+      },
+      {
+        "part": "23043619",
+        "line_num": "3.2",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "23043619",
+            "invoice_value": "23043619",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Warranty and support for 1 year",
+            "invoice_value": "Warranty and support for 1 year",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "1",
+            "invoice_value": "1.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "45,000.00",
+            "invoice_value": "45,000.00",
+            "status": "approved",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "45,000.00",
+            "invoice_value": "45,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "approved",
+        "reason": null
+      }
+    ],
+    "totalLines": 4,
+    "approvedCount": 2,
+    "rejectedCount": 2,
+    "status": "pending",
+    "taskId": "T894E3BE9",
+    "emsDocId": "DOCE18FDDB1",
+    "emsDocTitle": "Invoice INV-2026-0003 — SA-120923",
+    "submittedAt": "2026-08-18T11:22:28.829Z",
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "reviewNote": ""
+  },
+  {
+    "id": "INVCA4E5114",
+    "invoiceNumber": "INV-2026-0004",
+    "userId": "u001",
+    "vendorEmail": "zyad.ashraf@wind-is.com",
+    "poNumber": "SA-120923",
+    "poNumberExtracted": "SA-120923",
+    "fileName": "Invoice SA-329023 - PO SA-120923_1.pdf",
+    "outcome": "wrong_currency",
+    "outcomeLabel": "Currency Mismatch",
+    "approvalNumber": "APR-T1YAA9Y5LV",
+    "reason": "ghcgh",
+    "poNotFoundMessage": "",
+    "headerFields": [
+      {
+        "field_name": "po_number",
+        "display_name": "PO Number",
+        "db_value": "SA-120923",
+        "invoice_value": "SA-120923",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "contact_name",
+        "display_name": "Contact Name",
+        "db_value": "Yasser Gassem",
+        "invoice_value": "Yasser Gassem",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "po_date",
+        "display_name": "PO Date",
+        "db_value": "2023-04-30T22:00:00Z",
+        "invoice_value": "2026-08-17",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "tax_card",
+        "display_name": "Tax Card",
+        "db_value": "518-786-382",
+        "invoice_value": "518-786-382",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "comm_reg",
+        "display_name": "Commercial Register",
+        "db_value": "92203",
+        "invoice_value": "92203",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "to_customer",
+        "display_name": "Customer",
+        "db_value": "Demo Customer, 33 King Fahd Street, King Fahd St, P.O. Box: 7451, Riyadh, Saudi Arabia",
+        "invoice_value": "Demo Customer, 33 King Fahd Street, King Fahd St, P.O. Box 7451, Riyadh, Saudi Arabia",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "total_exc_vat",
+        "display_name": "Total Excl. VAT",
+        "db_value": "258,000.00",
+        "invoice_value": "258,000.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "percent_vat",
+        "display_name": "VAT Amount",
+        "db_value": "15.00",
+        "invoice_value": "0.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "grand_total_vat",
+        "display_name": "Grand Total (incl. VAT)",
+        "db_value": "296,700.00",
+        "invoice_value": "258,000.00",
+        "status": "info",
+        "reason": null
+      },
+      {
+        "field_name": "currency_type",
+        "display_name": "Currency",
+        "db_value": "USD",
+        "invoice_value": "EUR",
+        "status": "rejected",
+        "reason": "Invoice currency (EUR) is not the same as PO (USD)"
+      }
+    ],
+    "lineItemResults": [
+      {
+        "part": "3587",
+        "line_num": "1.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "3587",
+            "invoice_value": "3587",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Training service for WebLogic",
+            "invoice_value": "Training service for WebLogic",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "10",
+            "invoice_value": "10.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "300.00",
+            "invoice_value": "300.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "3,000.00",
+            "invoice_value": "3,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "rejected",
+        "reason": "Invoice currency (EUR) is not the same as PO (USD)"
+      },
+      {
+        "part": "64597",
+        "line_num": "2.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "9846",
+            "invoice_value": "64597",
+            "status": "rejected",
+            "reason": "Part doesn't exist in PO"
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "HR self-service implementation for 15 business service",
+            "invoice_value": "HR self-service implementation for 15 business services",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "15",
+            "invoice_value": "15.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "10,000.00",
+            "invoice_value": "10,000.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "150,000.00",
+            "invoice_value": "150,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "rejected",
+        "reason": "Part doesn't exist in PO"
+      },
+      {
+        "part": "89652",
+        "line_num": "3.1",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "9876",
+            "invoice_value": "89652",
+            "status": "rejected",
+            "reason": "Part doesn't exist in PO"
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Outsource 1 resource for 6 months",
+            "invoice_value": "Outsource 1 resource for 6 months",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "6",
+            "invoice_value": "6.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "10,000.00",
+            "invoice_value": "10,000.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "60,000.00",
+            "invoice_value": "60,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "rejected",
+        "reason": "Part doesn't exist in PO"
+      },
+      {
+        "part": "078695",
+        "line_num": "3.2",
+        "fields": [
+          {
+            "field_name": "part",
+            "display_name": "Part #",
+            "db_value": "23043619",
+            "invoice_value": "078695",
+            "status": "rejected",
+            "reason": "Part doesn't exist in PO"
+          },
+          {
+            "field_name": "description",
+            "display_name": "Description",
+            "db_value": "Warranty and support for 1 year",
+            "invoice_value": "Warranty and support for 1 year",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "qty",
+            "display_name": "Quantity",
+            "db_value": "1",
+            "invoice_value": "1.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "unit_price",
+            "display_name": "Unit Price",
+            "db_value": "45,000.00",
+            "invoice_value": "45,000.00",
+            "status": "info",
+            "reason": null
+          },
+          {
+            "field_name": "amount",
+            "display_name": "Total Amount",
+            "db_value": "45,000.00",
+            "invoice_value": "45,000.00",
+            "status": "info",
+            "reason": null
+          }
+        ],
+        "status": "rejected",
+        "reason": "Part doesn't exist in PO"
+      }
+    ],
+    "totalLines": 4,
+    "approvedCount": 0,
+    "rejectedCount": 4,
+    "status": "approved",
+    "taskId": "T0A5616EA",
+    "emsDocId": "DOC52587101",
+    "emsDocTitle": "Invoice INV-2026-0004 — SA-120923",
+    "submittedAt": "2026-08-18T12:32:42.085Z",
+    "reviewedBy": "u001",
+    "reviewedAt": "2026-08-18T12:33:13.716Z",
+    "reviewNote": ""
+  }
+]

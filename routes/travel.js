@@ -425,4 +425,21 @@ router.get('/policy', requireAuth, (req, res) => {
   });
 });
 
+// GET /api/travel/:id — single travel request (must stay after literal-path routes above)
+router.get('/:id', requireAuth, (req, res) => {
+  const user    = req.session.user;
+  const records = readTravel();
+  const users   = readUsers();
+  const userMap = {};
+  users.forEach(u => userMap[u.id] = u.name);
+
+  const record = records.find(r => r.id === req.params.id);
+  if (!record) return res.status(404).json({ success: false, message: 'Travel request not found' });
+  if (user.role === 'employee' && record.userId !== user.id) {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+
+  res.json({ success: true, travel: { ...record, userName: userMap[record.userId] || 'Unknown', reviewerName: userMap[record.reviewedBy] || null } });
+});
+
 module.exports = router;

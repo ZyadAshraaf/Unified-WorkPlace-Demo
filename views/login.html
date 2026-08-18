@@ -75,10 +75,12 @@
       align-items: center;
       gap: 10px;
     }
-    .itb-brand img { height: 28px; filter: brightness(0) invert(1); opacity: 0.95; }
-    .itb-brand span { color: #fff; font-weight: 800; font-size: 13px; letter-spacing: 0.08em; opacity: 0.9; }
+    .itb-brand img { height: 54px; opacity: 1; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
 
-    .itb-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.2); margin: 0 16px; }
+    .itb-powered { display: flex; align-items: center; }
+    .itb-powered img { height: 42px; opacity: 1; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+
+    .itb-sep { width: 1px; height: 49px; align-self: center; background: rgba(255,255,255,0.95); margin: 0 16px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
 
     .itb-chip {
       display: flex;
@@ -100,21 +102,6 @@
     .itb-right {
       margin-left: auto;
       text-align: right;
-    }
-    .itb-clock {
-      font-size: 22px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: 0.06em;
-      font-variant-numeric: tabular-nums;
-      line-height: 1;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.3);
-    }
-    .itb-date {
-      font-size: 11px;
-      color: rgba(255,255,255,0.55);
-      margin-top: 2px;
-      font-weight: 500;
     }
 
     /* ── Page layout ───────────────────────────────────────── */
@@ -223,6 +210,23 @@
     .pt.cur .pt-n { color: var(--color-primary-lighter); opacity: 0.7; }
     .pt.cur .pt-t { color: var(--color-primary-lighter); }
 
+    .wp-clock { margin-top: 16px; }
+    .wp-clock-time {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.06em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .wp-clock-date {
+      font-size: 11px;
+      color: rgba(255,255,255,0.55);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
     /* ── Right: Floating glass card ────────────────────────── */
     .card-area {
       display: flex;
@@ -255,11 +259,10 @@
       margin-bottom: 24px;
     }
     .lc-logo img {
-      height: 44px;
+      height: 56px;
       width: auto;
       display: block;
       margin: 0 auto 10px;
-      filter: brightness(0) saturate(100%) invert(44%) sepia(96%) saturate(372%) hue-rotate(139deg) brightness(96%);
     }
     .lc-logo h1 {
       color: #1a2332;
@@ -474,15 +477,15 @@
   <!-- ── Floating top bar ───────────────────────────────────── -->
   <div class="img-topbar">
     <div class="itb-brand">
-      <img src="/unifiedwp/assets/logo.png" alt="WIND-IS">
-      <span>WIND-IS</span>
+      <img src="/unifiedwp/assets/wind-sbm-white.png" alt="WIND | SBM">
     </div>
     <div class="itb-sep"></div>
     <div class="itb-chip"><i class="bi bi-geo-alt-fill"></i> Riyadh, KSA</div>
     <div class="itb-chip"><i class="bi bi-cloud-sun-fill" style="color:#f0c040"></i> 29°C</div>
     <div class="itb-right">
-      <div class="itb-clock" id="topClock">--:--</div>
-      <div class="itb-date" id="topDate">--</div>
+      <div class="itb-powered">
+        <img src="/unifiedwp/assets/oracle-powered-white.png" alt="Powered by Oracle">
+      </div>
     </div>
   </div>
 
@@ -532,6 +535,11 @@
           <div class="pt" id="ptIshaWrap"><div class="pt-n">Isha</div><div class="pt-t" id="ptIsha">—</div></div>
         </div>
       </div>
+
+      <div class="wp-clock">
+        <div class="wp-clock-time" id="topClock">--:--</div>
+        <div class="wp-clock-date" id="topDate">--</div>
+      </div>
     </div>
 
     <!-- Right: Floating glass login card -->
@@ -578,15 +586,15 @@
         <div class="lc-or">Quick Access</div>
 
         <div class="demo-grid">
-          <div class="demo-chip" onclick="fillDemo('ahmed@company.com','demo123')">
+          <div class="demo-chip" onclick="fillDemo('ahmed@company.com')">
             <div class="dc-avatar">A</div>
             <div><div class="dc-name">Ahmed Al-Rashidi</div><div class="dc-role">CEO</div></div>
           </div>
-          <div class="demo-chip" onclick="fillDemo('khalid@company.com','demo123')">
+          <div class="demo-chip" onclick="fillDemo('khalid@company.com')">
             <div class="dc-avatar">K</div>
             <div><div class="dc-name">Khalid Al-Mansouri</div><div class="dc-role">Manager</div></div>
           </div>
-          <div class="demo-chip full-width" onclick="fillDemo('sara@company.com','demo123')">
+          <div class="demo-chip full-width" onclick="fillDemo('sara@company.com')">
             <div class="dc-avatar">S</div>
             <div><div class="dc-name">Sara Hassan</div><div class="dc-role">Employee</div></div>
           </div>
@@ -619,9 +627,9 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    function fillDemo(email, pass) {
-      document.getElementById('email').value    = email;
-      document.getElementById('password').value = pass;
+    function fillDemo(email) {
+      document.getElementById('email').value = email;
+      document.getElementById('password').focus();
     }
 
     document.getElementById('togglePass').addEventListener('click', function () {

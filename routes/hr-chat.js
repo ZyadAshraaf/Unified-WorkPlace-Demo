@@ -41,7 +41,7 @@ router.post('/ask', async (req, res) => {
         'Authorization': `Bearer ${GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model:       'llama-3.3-70b-versatile',
+        model:       'openai/gpt-oss-120b',
         messages: [
           { role: 'system', content: buildSystemPrompt() },
           { role: 'user',   content: question.trim() }

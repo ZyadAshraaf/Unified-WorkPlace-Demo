@@ -1,0 +1,533 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-08-16T14:48:41.103Z",
+      "error_message": "Incorrect value in code",
+      "file": "data/users.json",
+      "root_cause": "Had \"demo123\"",
+      "fix": "Changed to \"wind2020$$\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "json"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-08-16T14:48:42.845Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-08-17T14:48:57.831Z",
+      "error_message": "CSS fix: height",
+      "file": "public/css/global.css",
+      "root_cause": "height: 36px → 24px",
+      "fix": "Changed height: 36px → 24px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-17T14:48:57.831Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-08-17T15:06:08.744Z",
+      "error_message": "CSS fix: height",
+      "file": "public/css/global.css",
+      "root_cause": "height: 36px → 42px",
+      "fix": "Changed height: 36px → 42px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-17T15:06:08.744Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-08-17T15:15:53.147Z",
+      "error_message": "Wrong reference: 62px should be 72px",
+      "file": "public/css/variables.css",
+      "root_cause": "Used \"62px\" instead of \"72px\"",
+      "fix": "Changed 62px → 72px",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-17T15:15:53.147Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-08-17T15:29:14.714Z",
+      "error_message": "Significant refactor of ",
+      "file": "views/ems/index.html",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 7→4 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-17T15:29:14.714Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-08-17T15:34:14.753Z",
+      "error_message": "Wrong reference: 28px should be 42px",
+      "file": "views/login.html",
+      "root_cause": "Used \"28px\" instead of \"42px\"",
+      "fix": "Changed 28px → 42px",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-17T15:34:14.753Z"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-08-17T15:34:55.317Z",
+      "error_message": "Significant refactor of ",
+      "file": "views/login.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7→6 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-17T15:34:55.317Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-08-18T09:08:29.674Z",
+      "error_message": "Missing import: ./routes/invoices",
+      "file": "server.js",
+      "root_cause": "Module(s) not imported: ./routes/invoices",
+      "fix": "Added import(s) for ./routes/invoices",
+      "tags": [
+        "auto-detected",
+        "missing-import",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T09:08:29.674Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-08-18T09:09:04.797Z",
+      "error_message": "Missing await",
+      "file": "public/js/invoice-matcher.js",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T09:09:04.797Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-08-18T09:09:59.584Z",
+      "error_message": "Null/undefined access in ",
+      "file": "public/js/tasks.js",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T09:09:59.584Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-08-18T10:08:33.856Z",
+      "error_message": "Incorrect value in code",
+      "file": "routes/invoices.js",
+      "root_cause": "Had 'Fully Approved'",
+      "fix": "Changed to 'Fully Validated'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-08-18T10:08:38.674Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-08-18T10:08:45.731Z",
+      "error_message": "Incorrect value in code",
+      "file": "public/js/tasks.js",
+      "root_cause": "Had 'Fully Approved'",
+      "fix": "Changed to 'Fully Validated'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-08-18T10:09:02.300Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-08-18T10:08:57.254Z",
+      "error_message": "Wrong reference: approved$ should be validated$",
+      "file": "public/js/tasks.js",
+      "root_cause": "Used \"approved$\" instead of \"validated$\"",
+      "fix": "Changed approved$ → validated$",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T10:08:57.254Z"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-08-18T10:09:08.822Z",
+      "error_message": "Incorrect value in code",
+      "file": "public/js/invoice-matcher.js",
+      "root_cause": "Had 'Invoice Fully Approved'",
+      "fix": "Changed to 'Invoice Fully Validated'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-08-18T10:09:29.611Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-08-18T10:09:47.686Z",
+      "error_message": "Wrong reference: approved should be validated",
+      "file": "views/invoice-matcher.html",
+      "root_cause": "Used \"approved\" instead of \"validated\"",
+      "fix": "Changed approved → validated",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T10:09:47.686Z"
+    },
+    {
+      "id": "bug-016",
+      "timestamp": "2026-08-18T10:22:51.058Z",
+      "error_message": "Missing error handling in fileInvoiceInCms",
+      "file": "routes/invoices.js",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T10:22:51.058Z"
+    },
+    {
+      "id": "bug-017",
+      "timestamp": "2026-08-18T10:23:34.178Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "public/js/invoice-matcher.js",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T10:23:34.178Z"
+    },
+    {
+      "id": "bug-018",
+      "timestamp": "2026-08-18T10:29:53.274Z",
+      "error_message": "Incorrect value in code",
+      "file": "views/tasks.html",
+      "root_cause": "Had \"btn btn-danger d-none\"",
+      "fix": "Changed to \"btn btn-outline-primary d-none\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T10:29:53.274Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-08-18T10:30:49.414Z",
+      "error_message": "Missing guard clause",
+      "file": "public/js/tasks.js",
+      "root_cause": "No early return/throw for edge case: !activeInvoiceDocId",
+      "fix": "Added guard clause: if (!activeInvoiceDocId)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T10:30:49.414Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-08-18T11:15:08.347Z",
+      "error_message": "Missing guard clause",
+      "file": "public/js/invoice-matcher.js",
+      "root_cause": "No early return/throw for edge case: !reason",
+      "fix": "Added guard clause: if (!reason)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T11:15:08.347Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-08-18T11:15:48.973Z",
+      "error_message": "Missing guard clause",
+      "file": "public/js/tasks.js",
+      "root_cause": "No early return/throw for edge case: status === 'info'",
+      "fix": "Added guard clause: if (status === 'info')",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T11:15:48.973Z"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-08-18T11:16:06.121Z",
+      "error_message": "Wrong return value",
+      "file": "public/js/tasks.js",
+      "root_cause": "Was returning: banner + detailSection('Invoice Details', fields, ",
+      "fix": "Now returns: banner + issuesHtml + detailSection('Invoice Detai",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T11:16:06.121Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-08-18T12:54:01.261Z",
+      "error_message": "Significant refactor of ",
+      "file": "views/login.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 8→4 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T12:54:01.261Z"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-08-18T13:09:45.324Z",
+      "error_message": "Significant refactor of ",
+      "file": "views/login.html",
+      "root_cause": "13 lines replaced/restructured",
+      "fix": "Rewrote 19→4 lines (13 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T13:09:45.324Z"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-08-18T14:29:52.397Z",
+      "error_message": "Missing guard clause",
+      "file": "routes/travel.js",
+      "root_cause": "No early return/throw for edge case: !record",
+      "fix": "Added guard clause: if (!record)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T14:29:52.397Z"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-08-18T14:32:39.284Z",
+      "error_message": "Null/undefined access in ",
+      "file": "public/js/tasks.js",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T14:32:39.284Z"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-08-18T14:40:36.672Z",
+      "error_message": "Significant refactor of ",
+      "file": "views/travel.html",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 8→16 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T14:40:36.672Z"
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-08-18T14:50:12.594Z",
+      "error_message": "Significant refactor of ",
+      "file": "views/landing.html",
+      "root_cause": "40 lines replaced/restructured",
+      "fix": "Rewrote 67→26 lines (40 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T14:50:12.594Z"
+    },
+    {
+      "id": "bug-029",
+      "timestamp": "2026-08-18T14:50:24.704Z",
+      "error_message": "Incorrect value in code",
+      "file": "views/landing.html",
+      "root_cause": "Had '/api/news'",
+      "fix": "Changed to '/unifiedwp/api/news'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T14:50:24.704Z"
+    },
+    {
+      "id": "bug-030",
+      "timestamp": "2026-08-18T14:50:54.180Z",
+      "error_message": "Wrong return value",
+      "file": "views/landing.html",
+      "root_cause": "Was returning: { init, switchTab };",
+      "fix": "Now returns: { init, switchTab, askQuestion };",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T14:50:54.180Z"
+    },
+    {
+      "id": "bug-031",
+      "timestamp": "2026-08-18T15:40:26.413Z",
+      "error_message": "Incorrect value in code",
+      "file": "routes/hr-chat.js",
+      "root_cause": "Had 'llama-3.3-70b-versatile'",
+      "fix": "Changed to 'openai/gpt-oss-120b'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T15:40:26.413Z"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-08-18T15:40:59.029Z",
+      "error_message": "Incorrect value in code",
+      "file": "routes/leave-assistant.js",
+      "root_cause": "Had 'llama-3.3-70b-versatile'",
+      "fix": "Changed to 'openai/gpt-oss-120b'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T15:40:59.029Z"
+    },
+    {
+      "id": "bug-033",
+      "timestamp": "2026-08-18T16:15:48.753Z",
+      "error_message": "Wrong reference: helpdesk should be unifiedwp",
+      "file": "views/landing.html",
+      "root_cause": "Used \"helpdesk\" instead of \"unifiedwp\"",
+      "fix": "Changed helpdesk → unifiedwp",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-08-18T16:15:59.644Z"
+    }
+  ]
+}

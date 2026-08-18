@@ -73,8 +73,8 @@
     "category": "Operational",
     "startDate": "2026-01-01",
     "dueDate": "2026-03-31",
-    "progress": 80,
-    "status": "at-risk",
+    "progress": 95,
+    "status": "completed",
     "keyResults": [
       {
         "id": "kr007",
@@ -96,7 +96,7 @@
       }
     ],
     "createdAt": "2026-01-01T08:00:00Z",
-    "updatedAt": "2026-04-01T12:05:47.450Z"
+    "updatedAt": "2026-07-18T19:58:07.288Z"
   },
   {
     "id": "g004",

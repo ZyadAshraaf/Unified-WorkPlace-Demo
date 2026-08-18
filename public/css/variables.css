@@ -61,7 +61,7 @@
   --sidebar-border:        rgba(255,255,255,0.14);
 
   /* ── Topbar ──────────────────────────────────────────────── */
-  --topbar-height:         62px;
+  --topbar-height:         72px;
   --topbar-bg:             #FFFFFF;
   --topbar-border:         var(--color-border);
 

@@ -443,12 +443,12 @@
     "sourceSystem": "HR",
     "type": "approval",
     "priority": "medium",
-    "status": "pending",
+    "status": "approved",
     "assignedTo": "u001",
     "createdBy": "u001",
     "dueDate": "2026-04-24",
     "createdAt": "2026-04-14T12:36:28.957Z",
-    "updatedAt": "2026-04-14T12:36:28.957Z",
+    "updatedAt": "2026-08-18T14:37:22.973Z",
     "metadata": {
       "travelId": "TR-56B5C5E1"
     },
@@ -458,6 +458,12 @@
         "by": "u001",
         "at": "2026-04-14T12:36:28.957Z",
         "note": "Business travel request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-08-18T14:37:22.973Z",
+        "note": "Travel request approved"
       }
     ],
     "comments": [],
@@ -1627,6 +1633,130 @@
         "by": "u001",
         "at": "2026-05-06T07:29:44.916Z",
         "note": "Leave request rejected"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T38548C5D",
+    "title": "Approve Invoice — SA-120923",
+    "description": "Ahmed Al-Rashidi submitted an invoice for zyad.ashraf@wind-is.com against PO SA-120923. AI validation: Fully Approved. 4/4 line item(s) approved.",
+    "sourceSystem": "Accounting",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-08-18T09:36:49.859Z",
+    "updatedAt": "2026-08-18T09:37:46.889Z",
+    "metadata": {
+      "invoiceId": "INV901340F5"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-08-18T09:36:49.859Z",
+        "note": "Invoice submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-08-18T09:37:46.889Z",
+        "note": "Invoice approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T7EE647FC",
+    "title": "Approve Invoice — SA-120923",
+    "description": "Ahmed Al-Rashidi submitted an invoice for zyad.ashraf@wind-is.com against PO SA-120923. AI validation: Currency Mismatch. 0/4 line item(s) validated, 4 rejected.",
+    "sourceSystem": "Accounting",
+    "type": "approval",
+    "priority": "high",
+    "status": "pending",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-08-18T10:28:30.787Z",
+    "updatedAt": "2026-08-18T10:28:30.787Z",
+    "metadata": {
+      "invoiceId": "INVC3CA7CE8"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-08-18T10:28:30.787Z",
+        "note": "Invoice submitted for approval"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T894E3BE9",
+    "title": "Approve Invoice — SA-120923",
+    "description": "Ahmed Al-Rashidi submitted an invoice for vendor@acme.com against PO SA-120923. AI validation: Partially Rejected. 2/4 line item(s) validated, 2 rejected.",
+    "sourceSystem": "Accounting",
+    "type": "approval",
+    "priority": "high",
+    "status": "pending",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-08-18T11:22:28.834Z",
+    "updatedAt": "2026-08-18T11:22:28.834Z",
+    "metadata": {
+      "invoiceId": "INV469422DB"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-08-18T11:22:28.834Z",
+        "note": "Invoice submitted for approval"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "T0A5616EA",
+    "title": "Approve Invoice — SA-120923",
+    "description": "Ahmed Al-Rashidi submitted an invoice for zyad.ashraf@wind-is.com against PO SA-120923. AI validation: Currency Mismatch. 0/4 line item(s) validated, 4 rejected.",
+    "sourceSystem": "Accounting",
+    "type": "approval",
+    "priority": "high",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": null,
+    "createdAt": "2026-08-18T12:32:42.090Z",
+    "updatedAt": "2026-08-18T12:33:13.716Z",
+    "metadata": {
+      "invoiceId": "INVCA4E5114"
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-08-18T12:32:42.090Z",
+        "note": "Invoice submitted for approval"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-08-18T12:33:13.716Z",
+        "note": "Invoice approved"
       }
     ],
     "comments": [],

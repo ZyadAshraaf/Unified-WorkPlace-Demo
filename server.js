@@ -161,6 +161,7 @@ app.use('/unifiedwp/api/doceval-proxy',   require('./routes/doceval'));
 app.use('/unifiedwp/api/travel',                require('./routes/travel'));
 app.use('/unifiedwp/api/purchase-orders',       require('./routes/purchase-orders'));
 app.use('/unifiedwp/api/material-requisitions', require('./routes/material-requisitions'));
+app.use('/unifiedwp/api/invoices',              require('./routes/invoices'));
 app.use('/unifiedwp/api/ems',      require('./routes/ems/index'));
 
 app.get('/unifiedwp/api/me', requireAuth, (req, res) => {
@@ -195,7 +196,7 @@ app.get('/unifiedwp/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-const pages = ['', 'tasks', 'leaves', 'wfh', 'services', 'analytics', 'goals', 'appraisal', 'attendance', 'policy', 'helpdesk', 'directory', 'customize', 'erp-dialogue', 'leave-assistant', 'voice-agent', 'quick-services', 'proposal-eval', 'resume-eval', 'doc-chat', 'travel', 'purchase-orders', 'material-requisitions'];
+const pages = ['', 'tasks', 'leaves', 'wfh', 'services', 'analytics', 'goals', 'appraisal', 'attendance', 'policy', 'helpdesk', 'directory', 'customize', 'erp-dialogue', 'leave-assistant', 'voice-agent', 'quick-services', 'proposal-eval', 'resume-eval', 'doc-chat', 'travel', 'purchase-orders', 'material-requisitions', 'invoice-matcher'];
 
 pages.forEach(page => {
   const route = page === '' ? '/unifiedwp/' : `/unifiedwp/${page}`;

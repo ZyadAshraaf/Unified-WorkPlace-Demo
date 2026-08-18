@@ -1,0 +1,104 @@
+{
+  "info": {
+    "_postman_id": "c3836f19-fa9e-4d93-9206-c0723a0b273f",
+    "name": "po matcher",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "33594687"
+  },
+  "item": [
+    {
+      "name": "po ai apis",
+      "item": [
+        {
+          "name": "https://invoicematchingai-5aef4363adb6.herokuapp.com/api/validate-invoice",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "",
+                "value": "",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "758991e7-0cd4-46c4-a549-f4c35dfe6602",
+                  "src": "postman-cloud:///1f199690-c26a-40f0-855d-1e9b52124e9c"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://invoicematchingai-5aef4363adb6.herokuapp.com/api/validate-invoice",
+              "protocol": "https",
+              "host": [
+                "invoicematchingai-5aef4363adb6",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "api",
+                "validate-invoice"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "https://invoicematchingai-5aef4363adb6.herokuapp.com/api/validate-invoice",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "",
+            "value": "",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "multipart/form-data",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "uuid": "758991e7-0cd4-46c4-a549-f4c35dfe6602",
+              "src": "postman-cloud:///1f199690-c26a-40f0-855d-1e9b52124e9c"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://invoicematchingai-5aef4363adb6.herokuapp.com/api/validate-invoice",
+          "protocol": "https",
+          "host": [
+            "invoicematchingai-5aef4363adb6",
+            "herokuapp",
+            "com"
+          ],
+          "path": [
+            "api",
+            "validate-invoice"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

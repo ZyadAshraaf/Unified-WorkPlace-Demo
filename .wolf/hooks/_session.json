@@ -1,0 +1,582 @@
+{
+  "session_id": "session-2026-08-18-1200",
+  "started": "2026-08-18T09:00:54.880Z",
+  "files_read": {
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/invoice-matcher.html": {
+      "count": 1,
+      "tokens": 9743,
+      "first_read": "2026-08-18T09:01:18.068Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js": {
+      "count": 1,
+      "tokens": 5940,
+      "first_read": "2026-08-18T09:01:22.525Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/tasks.js": {
+      "count": 1,
+      "tokens": 1929,
+      "first_read": "2026-08-18T09:07:02.671Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/purchase-orders.js": {
+      "count": 1,
+      "tokens": 2012,
+      "first_read": "2026-08-18T09:07:03.626Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js": {
+      "count": 4,
+      "tokens": 14774,
+      "first_read": "2026-08-18T09:07:09.437Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/.env": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-08-18T10:03:37.495Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/ems/documents.js": {
+      "count": 1,
+      "tokens": 9230,
+      "first_read": "2026-08-18T10:19:55.783Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/tasks.html": {
+      "count": 1,
+      "tokens": 7168,
+      "first_read": "2026-08-18T10:29:46.117Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/assets/powered_by_oracle_logo_white.png": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-08-18T12:40:49.212Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html": {
+      "count": 3,
+      "tokens": 6711,
+      "first_read": "2026-08-18T12:41:04.068Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/auth.js": {
+      "count": 1,
+      "tokens": 369,
+      "first_read": "2026-08-18T12:47:19.765Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html": {
+      "count": 4,
+      "tokens": 16244,
+      "first_read": "2026-08-18T13:13:46.880Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/travel.js": {
+      "count": 1,
+      "tokens": 5837,
+      "first_read": "2026-08-18T14:29:38.923Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/travel.html": {
+      "count": 1,
+      "tokens": 8179,
+      "first_read": "2026-08-18T14:38:38.773Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/css/global.css": {
+      "count": 2,
+      "tokens": 5144,
+      "first_read": "2026-08-18T14:39:21.971Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/css/ems.css": {
+      "count": 1,
+      "tokens": 9833,
+      "first_read": "2026-08-18T14:40:04.850Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/hr-chat.js": {
+      "count": 1,
+      "tokens": 828,
+      "first_read": "2026-08-18T15:40:14.595Z"
+    },
+    "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/leave-assistant.js": {
+      "count": 1,
+      "tokens": 5124,
+      "first_read": "2026-08-18T15:40:43.451Z"
+    }
+  },
+  "files_written": [
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/data/invoices.json",
+      "action": "create",
+      "tokens": 1,
+      "at": "2026-08-18T09:07:53.328Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/invoices.js",
+      "action": "create",
+      "tokens": 2194,
+      "at": "2026-08-18T09:08:24.828Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/server.js",
+      "action": "edit",
+      "tokens": 49,
+      "at": "2026-08-18T09:08:29.673Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js",
+      "action": "edit",
+      "tokens": 31,
+      "at": "2026-08-18T09:08:43.602Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js",
+      "action": "edit",
+      "tokens": 44,
+      "at": "2026-08-18T09:08:48.511Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js",
+      "action": "edit",
+      "tokens": 701,
+      "at": "2026-08-18T09:09:04.795Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 106,
+      "at": "2026-08-18T09:09:12.491Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 102,
+      "at": "2026-08-18T09:09:18.196Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 2208,
+      "at": "2026-08-18T09:09:59.582Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 71,
+      "at": "2026-08-18T09:10:11.708Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 62,
+      "at": "2026-08-18T09:10:18.418Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 134,
+      "at": "2026-08-18T09:10:25.593Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 134,
+      "at": "2026-08-18T09:10:32.360Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/invoices.js",
+      "action": "edit",
+      "tokens": 24,
+      "at": "2026-08-18T10:08:33.855Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/invoices.js",
+      "action": "edit",
+      "tokens": 34,
+      "at": "2026-08-18T10:08:38.672Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 60,
+      "at": "2026-08-18T10:08:45.729Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 36,
+      "at": "2026-08-18T10:08:50.907Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 36,
+      "at": "2026-08-18T10:08:57.252Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 36,
+      "at": "2026-08-18T10:09:02.298Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js",
+      "action": "edit",
+      "tokens": 11,
+      "at": "2026-08-18T10:09:08.821Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js",
+      "action": "edit",
+      "tokens": 12,
+      "at": "2026-08-18T10:09:13.893Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js",
+      "action": "edit",
+      "tokens": 35,
+      "at": "2026-08-18T10:09:20.957Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js",
+      "action": "edit",
+      "tokens": 12,
+      "at": "2026-08-18T10:09:25.165Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js",
+      "action": "edit",
+      "tokens": 26,
+      "at": "2026-08-18T10:09:29.609Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/invoice-matcher.html",
+      "action": "edit",
+      "tokens": 30,
+      "at": "2026-08-18T10:09:47.685Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/invoices.js",
+      "action": "edit",
+      "tokens": 1278,
+      "at": "2026-08-18T10:22:51.057Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/invoices.js",
+      "action": "edit",
+      "tokens": 166,
+      "at": "2026-08-18T10:23:00.104Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/invoices.js",
+      "action": "edit",
+      "tokens": 140,
+      "at": "2026-08-18T10:23:11.326Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js",
+      "action": "edit",
+      "tokens": 365,
+      "at": "2026-08-18T10:23:34.176Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js",
+      "action": "edit",
+      "tokens": 212,
+      "at": "2026-08-18T10:23:48.543Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/tasks.html",
+      "action": "edit",
+      "tokens": 125,
+      "at": "2026-08-18T10:29:53.273Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 54,
+      "at": "2026-08-18T10:30:13.460Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 72,
+      "at": "2026-08-18T10:30:20.990Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 43,
+      "at": "2026-08-18T10:30:30.433Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 69,
+      "at": "2026-08-18T10:30:36.171Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 74,
+      "at": "2026-08-18T10:30:43.113Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 118,
+      "at": "2026-08-18T10:30:49.412Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/invoice-matcher.js",
+      "action": "edit",
+      "tokens": 729,
+      "at": "2026-08-18T11:15:08.345Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/invoice-matcher.html",
+      "action": "edit",
+      "tokens": 295,
+      "at": "2026-08-18T11:15:21.216Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 923,
+      "at": "2026-08-18T11:15:48.971Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 46,
+      "at": "2026-08-18T11:16:06.119Z"
+    },
+    {
+      "file": "/Users/zyad/.claude/projects/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/memory/invoice-validator-api-schema.md",
+      "action": "create",
+      "tokens": 491,
+      "at": "2026-08-18T11:21:41.397Z"
+    },
+    {
+      "file": "/Users/zyad/.claude/projects/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/memory/MEMORY.md",
+      "action": "create",
+      "tokens": 48,
+      "at": "2026-08-18T11:21:57.917Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 124,
+      "at": "2026-08-18T12:44:55.037Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 67,
+      "at": "2026-08-18T12:45:04.808Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 101,
+      "at": "2026-08-18T12:53:33.519Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 109,
+      "at": "2026-08-18T12:53:49.326Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 20,
+      "at": "2026-08-18T12:54:01.259Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 19,
+      "at": "2026-08-18T12:54:13.469Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 33,
+      "at": "2026-08-18T12:56:37.412Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 106,
+      "at": "2026-08-18T12:59:13.721Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 33,
+      "at": "2026-08-18T13:00:54.714Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 47,
+      "at": "2026-08-18T13:05:26.002Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 150,
+      "at": "2026-08-18T13:09:19.835Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 87,
+      "at": "2026-08-18T13:09:31.709Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 21,
+      "at": "2026-08-18T13:09:45.323Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/login.html",
+      "action": "edit",
+      "tokens": 154,
+      "at": "2026-08-18T13:09:58.773Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html",
+      "action": "edit",
+      "tokens": 79,
+      "at": "2026-08-18T13:13:59.581Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html",
+      "action": "edit",
+      "tokens": 83,
+      "at": "2026-08-18T13:15:56.309Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/travel.js",
+      "action": "edit",
+      "tokens": 226,
+      "at": "2026-08-18T14:29:52.396Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 92,
+      "at": "2026-08-18T14:31:50.954Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 120,
+      "at": "2026-08-18T14:32:05.234Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 2057,
+      "at": "2026-08-18T14:32:39.282Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 116,
+      "at": "2026-08-18T14:32:52.590Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/public/js/tasks.js",
+      "action": "edit",
+      "tokens": 116,
+      "at": "2026-08-18T14:33:04.668Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/travel.html",
+      "action": "edit",
+      "tokens": 280,
+      "at": "2026-08-18T14:40:36.670Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html",
+      "action": "edit",
+      "tokens": 72,
+      "at": "2026-08-18T14:49:15.520Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html",
+      "action": "edit",
+      "tokens": 283,
+      "at": "2026-08-18T14:49:39.664Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html",
+      "action": "edit",
+      "tokens": 304,
+      "at": "2026-08-18T14:50:12.592Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html",
+      "action": "edit",
+      "tokens": 30,
+      "at": "2026-08-18T14:50:24.703Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html",
+      "action": "edit",
+      "tokens": 88,
+      "at": "2026-08-18T14:50:36.932Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html",
+      "action": "edit",
+      "tokens": 14,
+      "at": "2026-08-18T14:50:54.178Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html",
+      "action": "edit",
+      "tokens": 0,
+      "at": "2026-08-18T14:51:37.613Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/hr-chat.js",
+      "action": "edit",
+      "tokens": 13,
+      "at": "2026-08-18T15:40:26.411Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/routes/leave-assistant.js",
+      "action": "edit",
+      "tokens": 13,
+      "at": "2026-08-18T15:40:59.028Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html",
+      "action": "edit",
+      "tokens": 26,
+      "at": "2026-08-18T16:15:48.751Z"
+    },
+    {
+      "file": "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/views/landing.html",
+      "action": "edit",
+      "tokens": 25,
+      "at": "2026-08-18T16:15:59.642Z"
+    }
+  ],
+  "edit_counts": {
+    "data/invoices.json": 1,
+    "routes/invoices.js": 6,
+    "server.js": 1,
+    "public/js/invoice-matcher.js": 11,
+    "public/js/tasks.js": 24,
+    "views/invoice-matcher.html": 2,
+    "views/tasks.html": 1,
+    "../../../../.claude/projects/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/memory/invoice-validator-api-schema.md": 1,
+    "../../../../.claude/projects/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/memory/MEMORY.md": 1,
+    "views/login.html": 14,
+    "views/landing.html": 11,
+    "routes/travel.js": 1,
+    "views/travel.html": 1,
+    "routes/hr-chat.js": 1,
+    "routes/leave-assistant.js": 1
+  },
+  "anatomy_hits": 16,
+  "anatomy_misses": 2,
+  "repeated_reads_warned": 9,
+  "cerebrum_warnings": 0,
+  "stop_count": 23
+}

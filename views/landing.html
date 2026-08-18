@@ -332,12 +332,8 @@
       </div>
       <div class="nav-section"><div class="nav-section-label">Insights</div>
         <a href="/unifiedwp/analytics" class="nav-item" data-page="analytics"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
-        <a href="/unifiedwp/goals" class="nav-item" data-page="goals"><i class="bi bi-bullseye"></i><span>Goals &amp; OKR</span></a>
-        <a href="/unifiedwp/appraisal" class="nav-item" data-page="appraisal"><i class="bi bi-bar-chart-steps"></i><span>Performance</span></a>
-        <a href="/unifiedwp/attendance" class="nav-item" data-page="attendance"><i class="bi bi-clock-history"></i><span>Attendance</span></a>
       </div>
       <div class="nav-section"><div class="nav-section-label">Support</div>
-        <a href="/unifiedwp/policy" class="nav-item" data-page="policy"><i class="bi bi-robot"></i><span>Policy AI</span></a>
         <a href="/unifiedwp/helpdesk" class="nav-item" data-page="helpdesk"><i class="bi bi-headset"></i><span>Help Desk</span></a>
         <a href="/unifiedwp/directory" class="nav-item" data-page="directory"><i class="bi bi-people"></i><span>Directory</span></a>
       </div>
@@ -346,6 +342,12 @@
         <a href="/unifiedwp/proposal-eval" class="nav-item" data-page="proposal-eval"><i class="bi bi-file-earmark-check"></i><span>Proposal Evaluator</span></a>
         <a href="/unifiedwp/resume-eval" class="nav-item" data-page="resume-eval"><i class="bi bi-person-lines-fill"></i><span>Talent Assessor</span></a>
         <a href="/unifiedwp/doc-chat" class="nav-item" data-page="doc-chat"><i class="bi bi-chat-square-text"></i><span>Knowledge Assistant</span></a>
+        <a href="/unifiedwp/invoice-matcher" class="nav-item" data-page="invoice-matcher"><i class="bi bi-receipt-cutoff"></i><span>Invoice Validator</span></a>
+      </div>
+      <div class="nav-section"><div class="nav-section-label">Performance</div>
+        <a href="/unifiedwp/goals" class="nav-item" data-page="goals"><i class="bi bi-bullseye"></i><span>Goals &amp; OKR</span></a>
+        <a href="/unifiedwp/appraisal" class="nav-item" data-page="appraisal"><i class="bi bi-bar-chart-steps"></i><span>Performance</span></a>
+        <a href="/unifiedwp/attendance" class="nav-item" data-page="attendance"><i class="bi bi-clock-history"></i><span>Attendance</span></a>
       </div>
       <div class="nav-section"><div class="nav-section-label">Enterprise</div>
         <a href="/unifiedwp/ems" class="nav-item" data-page="ems"><i class="bi bi-building-gear"></i><span>CMS</span></a>
@@ -359,6 +361,7 @@
           <div class="sidebar-user-role" id="sidebarUserRole">--</div>
         </div>
       </div>
+      <a href="/unifiedwp/customize" class="sidebar-logout" title="Customize"><i class="bi bi-palette2"></i></a>
       <a href="/unifiedwp/api/auth/logout" class="sidebar-logout" title="Sign Out"><i class="bi bi-box-arrow-right"></i></a>
     </div>
   </aside>
@@ -369,30 +372,8 @@
     <header class="topbar">
       <button class="topbar-toggle" id="sidebarToggle"><i class="bi bi-list"></i></button>
       <img src="/unifiedwp/assets/logo.png" alt="Logo" class="topbar-logo" id="topbarLogo">
-      <h1 class="page-title">Home</h1>
-      <div class="topbar-right">
-        <div class="topbar-search">
-          <i class="bi bi-search"></i>
-          <input type="text" placeholder="Search...">
-        </div>
-        <button class="icon-btn" title="Notifications">
-          <i class="bi bi-bell"></i>
-          <span class="notif-dot d-none" id="notifDot"></span>
-        </button>
-        <div class="dropdown">
-          <div class="topbar-user" data-bs-toggle="dropdown">
-            <div class="user-avatar-sm" id="topbarAvatar">A</div>
-            <span class="topbar-user-name" id="topbarUserName">User</span>
-            <i class="bi bi-chevron-down fs-xs text-muted ms-1"></i>
-          </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            <li><a class="dropdown-item" href="/unifiedwp/customize"><i class="bi bi-palette2 me-2" style="color:var(--color-primary)"></i>Customize</a></li>
-            <li><hr class="dropdown-divider my-1"></li>
-            <li><a class="dropdown-item" href="/unifiedwp/api/auth/logout"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Sign Out</a></li>
-          </ul>
-        </div>
-      </div>
-    </header>
+      <div class="topbar-right"><img src="/unifiedwp/assets/powered-by-oracle.png" alt="Powered by Oracle" class="topbar-oracle-badge"></div>
+      </header>
 
     <main class="content">
       <!-- ── Hero ──────────────────────────────────────────── -->
@@ -634,8 +615,8 @@
   .w-header-top { display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px }
   .w-header-greeting { color:#fff }
   .w-header-greeting .hello { font-size:22px;font-weight:800;line-height:1.1 }
-  .w-header-logo { width:52px;height:52px;background:rgba(255,255,255,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px) }
-  .w-header-logo img { width:36px;height:36px;object-fit:contain;filter:brightness(0) invert(1) }
+  .w-header-logo { width:64px;height:64px;margin-top:10px;background:rgba(255,255,255,.15);border-radius:16px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px) }
+  .w-header-logo img { width:48px;height:48px;object-fit:contain;filter:brightness(0) invert(1) }
   .w-close { position:absolute;top:14px;right:14px;background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:background .15s }
   .w-close:hover { background:rgba(255,255,255,.3) }
   .w-search { background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:12px;display:flex;align-items:center;gap:8px;padding:9px 14px;backdrop-filter:blur(4px) }
@@ -678,10 +659,6 @@
   .w-input-bar { padding:10px 12px;border-top:1px solid #e2e8f0;display:flex;gap:6px;align-items:flex-end;flex-shrink:0;background:#fff }
   .w-input { flex:1;border:1px solid #e2e8f0;border-radius:12px;padding:9px 12px;font-size:12.5px;resize:none;outline:none;font-family:inherit;max-height:80px;transition:border-color .15s }
   .w-input:focus { border-color:var(--color-primary);box-shadow:0 0 0 3px rgba(var(--color-primary-rgb),.1) }
-  .w-mic-btn-sm { width:36px;height:36px;border:none;flex-shrink:0;background:#f1f5f9;color:#64748b;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s }
-  .w-mic-btn-sm:hover { background:var(--color-primary-faint);color:var(--color-primary) }
-  .w-mic-btn-sm.recording { background:#fde8ea;color:#ef4444;animation:wMicPulse 1s infinite }
-  @keyframes wMicPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
   .w-send { width:36px;height:36px;border:none;flex-shrink:0;background:linear-gradient(135deg,var(--color-primary-darker),var(--color-primary));color:#fff;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:opacity .15s }
   .w-send:hover { opacity:.88 } .w-send:disabled { opacity:.4;cursor:not-allowed }
   .w-news-list { padding:12px 14px;display:flex;flex-direction:column;gap:10px }
@@ -745,11 +722,11 @@
           <div class="w-section-item-left"><div class="w-section-item-icon green"><i class="bi bi-question-circle"></i></div><div><div class="w-section-item-title">Quick Help</div><div class="w-section-item-sub">Common questions answered</div></div></div>
           <i class="bi bi-chevron-right w-section-item-arrow"></i>
         </div>
-        <div class="w-section-item" onclick="window.location.href='/helpdesk'">
+        <div class="w-section-item" onclick="window.location.href='/unifiedwp/helpdesk'">
           <div class="w-section-item-left"><div class="w-section-item-icon coral"><i class="bi bi-headset"></i></div><div><div class="w-section-item-title">Help Desk</div><div class="w-section-item-sub">Submit or track a support ticket</div></div></div>
           <i class="bi bi-chevron-right w-section-item-arrow"></i>
         </div>
-        <div class="w-section-item" onclick="window.location.href='/leaves'">
+        <div class="w-section-item" onclick="window.location.href='/unifiedwp/leaves'">
           <div class="w-section-item-left"><div class="w-section-item-icon purple"><i class="bi bi-calendar2-check"></i></div><div><div class="w-section-item-title">Leave Requests</div><div class="w-section-item-sub">Apply or manage your leave</div></div></div>
           <i class="bi bi-chevron-right w-section-item-arrow"></i>
         </div>
@@ -766,7 +743,6 @@
       </div>
       <div class="w-input-bar">
         <textarea class="w-input" id="wInput" rows="1" placeholder="Ask about HR policies..." maxlength="400"></textarea>
-        <button class="w-mic-btn-sm" id="wMicBtn" title="Voice input"><i class="bi bi-mic-fill" id="wMicIcon"></i></button>
         <button class="w-send" id="wSend"><i class="bi bi-send-fill"></i></button>
       </div>
     </div>
@@ -915,8 +891,6 @@ async function loadNews() {
 const WWidget = (() => {
   let panelOpen = false;
   let chatBusy  = false;
-  let voiceActive = false;
-  let recognition = null;
   let newsLoaded  = false;
   let currentTab  = 'home';
 
@@ -934,7 +908,7 @@ const WWidget = (() => {
   // ── Tab switching ──
   function switchTab(tab) {
     currentTab = tab;
-    ['home','message','voice','updates'].forEach(t => {
+    ['home','message','help','updates'].forEach(t => {
       document.getElementById('wTab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
       document.getElementById('wNav'  + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
     });
@@ -974,7 +948,7 @@ const WWidget = (() => {
     appendMsg('user', text);
     showTyping();
     try {
-      const res  = await fetch('/api/hr-chat/ask', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ question: text }) });
+      const res  = await fetch('/unifiedwp/api/hr-chat/ask', { method: 'POST', headers: {'Content-Type':'application/json'}, credentials: 'include', body: JSON.stringify({ question: text }) });
       const data = await res.json();
       removeTyping();
       appendMsg('bot', data.answer || data.message || 'Something went wrong.');
@@ -982,61 +956,20 @@ const WWidget = (() => {
     finally { chatBusy = false; document.getElementById('wSend').disabled = false; }
   }
 
-  // ── Voice ──
-  function setVoiceState(on) {
-    voiceActive = on;
-    document.getElementById('wMicBtn').classList.toggle('active', on);
-    document.getElementById('wMicRing').classList.toggle('listening', on);
-    document.getElementById('wWaveform').classList.toggle('visible', on);
-    document.getElementById('wMicIcon').className = on ? 'bi bi-stop-fill' : 'bi bi-mic-fill';
-    document.getElementById('wVoiceStatus').textContent = on ? 'Listening...' : 'Tap the mic to speak';
-    document.getElementById('wVoiceSub').textContent    = on ? 'Speak clearly — I\'m listening' : 'Ask your HR question by voice';
-  }
-
-  function addTranscript(role, text) {
-    const t = document.getElementById('wTranscript');
-    t.classList.add('has-content');
-    const div = document.createElement('div');
-    div.className = `w-tr-msg ${role}`;
-    div.innerHTML = `<div class="w-tr-avatar"><i class="bi ${role==='bot'?'bi-robot':'bi-person'}"></i></div><div class="w-tr-bubble">${text}</div>`;
-    t.appendChild(div); t.scrollTop = t.scrollHeight;
-  }
-
-  async function processVoice(spoken) {
-    addTranscript('user', spoken);
-    setVoiceState(false);
-    document.getElementById('wVoiceStatus').textContent = 'Processing...';
-    document.getElementById('wMicIcon').className = 'bi bi-hourglass-split';
-    try {
-      const res  = await fetch('/api/hr-chat/ask', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ question: spoken }) });
-      const data = await res.json();
-      addTranscript('bot', data.answer || data.message || 'Something went wrong.');
-    } catch { addTranscript('bot', 'Unable to reach the HR assistant.'); }
-    document.getElementById('wVoiceStatus').textContent = 'Tap the mic to speak';
-    document.getElementById('wMicIcon').className = 'bi bi-mic-fill';
-  }
-
-  function toggleVoice() {
-    if (voiceActive) { if (recognition) recognition.stop(); setVoiceState(false); return; }
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SR) {
-      recognition = new SR(); recognition.lang = 'en-US'; recognition.interimResults = false;
-      recognition.onstart  = () => setVoiceState(true);
-      recognition.onresult = e  => processVoice(e.results[0][0].transcript);
-      recognition.onerror  = () => { setVoiceState(false); document.getElementById('wVoiceStatus').textContent = 'Could not hear you — try again'; };
-      recognition.onend    = () => { if (voiceActive) setVoiceState(false); };
-      recognition.start();
-    } else {
-      setVoiceState(true);
-      setTimeout(() => processVoice('What is the dress code policy?'), 2200);
-    }
+  // ── FAQ shortcuts (Help tab) ──
+  function askQuestion(question) {
+    switchTab('message');
+    setTimeout(() => {
+      document.getElementById('wInput').value = question;
+      sendChat();
+    }, 150);
   }
 
   // ── News ──
   async function loadNews() {
     newsLoaded = true;
     try {
-      const data = await fetch('/api/news').then(r => r.json());
+      const data = await fetch('/unifiedwp/api/news', { credentials: 'include' }).then(r => r.json());
       const list = document.getElementById('wNewsList');
       if (!data?.success || !data.news?.length) { list.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:13px">No announcements.</div>'; return; }
       list.innerHTML = data.news.map(n => {
@@ -1078,7 +1011,6 @@ const WWidget = (() => {
     document.getElementById('wBubble').addEventListener('click', togglePanel);
     document.getElementById('wClose').addEventListener('click',  togglePanel);
     document.getElementById('wSend').addEventListener('click',   sendChat);
-    document.getElementById('wMicBtn').addEventListener('click', toggleVoice);
     document.getElementById('wInput').addEventListener('keydown', e => {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
     });
@@ -1089,7 +1021,7 @@ const WWidget = (() => {
     initSearch();
   }
 
-  return { init, switchTab };
+  return { init, switchTab, askQuestion };
 })();
 
 document.addEventListener('DOMContentLoaded', () => WWidget.init());

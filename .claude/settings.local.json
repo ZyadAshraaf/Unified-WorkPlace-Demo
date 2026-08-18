@@ -279,7 +279,30 @@
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(doc['title']\\) for doc in d]\")",
       "PowerShell(\\(Get-Content \"D:\\\\Pre Sales\\\\Generic Demos\\\\Unified Workplace Demo\\\\data\\\\tasks.json\" -Raw | ConvertFrom-Json\\).Count)",
       "PowerShell(\\(Get-Content \"D:\\\\Pre Sales\\\\Generic Demos\\\\Unified Workplace Demo\\\\data\\\\ems-documents.json\" -Raw | ConvertFrom-Json\\).Count)",
-      "PowerShell(Remove-Item *)"
+      "PowerShell(Remove-Item *)",
+      "Bash(curl -s -X POST \"https://invoicematchingai-5aef4363adb6.herokuapp.com/api/validate-invoice\" -F \"file=@/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/po samples/Correct Full for SA-120923.pdf\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s -X POST \"https://invoicematchingai-5aef4363adb6.herokuapp.com/api/validate-invoice\" -F \"file=@Wrong Currency for SA-120923.pdf\")",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -I -X OPTIONS \"https://invoicematchingai-5aef4363adb6.herokuapp.com/api/validate-invoice\" -H \"Origin: http://localhost:3000\" -H \"Access-Control-Request-Method: POST\" -H \"Access-Control-Request-Headers: content-type\")",
+      "Bash(curl -s -D - -o /dev/null -X POST \"https://invoicematchingai-5aef4363adb6.herokuapp.com/api/validate-invoice\" -H \"Origin: http://localhost:3000\" -F \"file=@/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/po samples/Correct Full for SA-120923.pdf\")",
+      "Bash(curl -s -X POST \"https://invoicematchingai-5aef4363adb6.herokuapp.com/api/validate-invoice\" -F \"file=@Wrong PO for SA-120923.pdf\")",
+      "Bash(curl *)",
+      "Bash(lsof -ti:3000)",
+      "Bash(xargs kill -9)",
+      "Bash(nohup npm start)",
+      "Bash(cp public/assets/logo.png public/assets/logo-original-backup.png)",
+      "Bash(xargs kill)",
+      "Bash(npm start *)",
+      "Bash(open *)",
+      "Bash(rm -f uploads/ems/DOC2752743D_v1.pdf uploads/ems/tmp_*)",
+      "Bash(echo \"remaining invoices: $\\(node -pe \"require\\('./data/invoices.json'\\).map\\(i=>i.invoiceNumber\\).join\\(','\\)\" \\)\")",
+      "Bash(sips -g pixelWidth -g pixelHeight -g hasAlpha powered_by_oracle_logo_white.png)",
+      "Bash(sips -g pixelWidth -g pixelHeight powered-by-oracle.png)",
+      "Bash(magick powered_by_oracle_logo_white.png -trim info:)",
+      "Bash(convert powered_by_oracle_logo_white.png -trim info:)",
+      "Bash(python3 -)",
+      "Bash(sips -g pixelWidth -g pixelHeight powered-by-oracle-white.png)"
     ]
   }
 }
