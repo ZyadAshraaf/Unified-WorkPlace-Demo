@@ -28,7 +28,7 @@
       "first_read": "2026-08-18T09:07:09.437Z"
     },
     "/Users/zyad/Documents/Pre Sales/Demo Projects/Unified Workplace Demo/.env": {
-      "count": 1,
+      "count": 2,
       "tokens": 0,
       "first_read": "2026-08-18T10:03:37.495Z"
     },
@@ -576,7 +576,7 @@
   },
   "anatomy_hits": 16,
   "anatomy_misses": 2,
-  "repeated_reads_warned": 9,
+  "repeated_reads_warned": 10,
   "cerebrum_warnings": 0,
-  "stop_count": 23
+  "stop_count": 25
 }
