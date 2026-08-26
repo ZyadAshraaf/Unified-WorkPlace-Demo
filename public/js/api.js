@@ -93,7 +93,7 @@ const Layout = {
     title.id = 'topbarTitle';
     title.setAttribute('aria-label', appName);
     title.innerHTML =
-      `<span class="topbar-title-eyebrow">Enterprise Portal</span>` +
+      `<span class="topbar-title-mark"><i class="bi bi-diagram-3-fill"></i></span>` +
       `<span class="topbar-title-text">${textHtml}</span>`;
     topbar.appendChild(title);
   },

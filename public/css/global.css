@@ -224,8 +224,7 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-/* Centered product identity — pure typography so it reads as a label,
-   not a third logo competing with the company + Oracle marks in the bar.
+/* Centered product identity — gradient app-icon glyph beside the wordmark.
    Sized so the wordmark's cap-height matches the flanking logos' presence. */
 .topbar-title {
   position: absolute;
@@ -233,22 +232,27 @@ body {
   top: 50%;
   transform: translate(-50%, -50%);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 4px;
+  gap: 11px;
   pointer-events: none;
   user-select: none;
   white-space: nowrap;
-  text-align: center;
 }
 
-.topbar-title-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--color-text-light);
-  line-height: 1;
+.topbar-title-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 17px;
+  background: linear-gradient(140deg, var(--color-primary-light) 0%, var(--color-primary) 52%, var(--color-primary-dark) 100%);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.32),
+              inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
 .topbar-title-text {

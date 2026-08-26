@@ -250,3 +250,21 @@ views/login.html wp-headline changed "Your Unified / <accent>Workspace</accent> 
 | 14:24 | Session end: 22 writes across 14 files (invoice-matcher.html, invoice-matcher.js, global.css, api.js, settings.json) | 14 reads | ~25620 tok |
 | 14:30 | Session end: 22 writes across 14 files (invoice-matcher.html, invoice-matcher.js, global.css, api.js, settings.json) | 14 reads | ~25620 tok |
 | 14:58 | Session end: 22 writes across 14 files (invoice-matcher.html, invoice-matcher.js, global.css, api.js, settings.json) | 14 reads | ~25620 tok |
+| 15:41 | Edited public/css/global.css | 28→24 lines | ~146 |
+| 15:41 | Edited public/js/api.js | 3→3 lines | ~47 |
+| 15:42 | Created ../../../../../../private/tmp/claude-501/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/ee264ee7-ff44-44a0-bd0b-463c17cb834c/scratchpad/logo.html | — | ~614 |
+
+## Topbar brand lockup — iteration 4 (logo beside wordmark, drop eyebrow)
+Per user: removed the "Enterprise Portal" eyebrow above "Unified Workflow"; replaced with a logo BESIDE the wordmark (horizontal). global.css `.topbar-title` column->row, gap 10px; new `.topbar-title-logo` (height 30px) replaced `.topbar-title-eyebrow`; kept two-tone `.topbar-title-text` + 1199px hide. api.js renderAppTitle() now emits `<img class=topbar-title-logo src=${BASE}/assets/pwa-icon.png>` + wordmark. pwa-icon.png = the WIND symbol-only mark (teal swoosh). NOTE: this mark also appears on the left as part of the full WIND/SBM topbar logo, so the same swoosh now shows twice in the bar — user explicitly requested it; offered alternative marks. Verified clearance at 1440 + 1200 via puppeteer.
+| 15:48 | Session end: 25 writes across 15 files (invoice-matcher.html, invoice-matcher.js, global.css, api.js, settings.json) | 17 reads | ~26470 tok |
+| 15:49 | Edited public/css/global.css | expanded (+8 lines) | ~247 |
+| 15:49 | Edited public/js/api.js | 3→3 lines | ~47 |
+
+## Topbar brand lockup — iteration 5 (square glyph beside wordmark)
+User rejected the pwa-icon WIND mark ("dont put wind logo, you putted something else before it saw square shaped"). Reverted to the gradient square app-icon glyph: global.css `.topbar-title-mark` (34px rounded square, teal gradient + shadow, white bi-diagram-3-fill icon (flowchart = workflow)) replaced `.topbar-title-logo`; kept row layout gap 11px. api.js renderAppTitle() emits `<span class=topbar-title-mark><i class="bi bi-columns-gap"></i></span>` + wordmark. Note: reintroduces bootstrap-icons dependency for the title (all content pages load it). This is the [square glyph] + "Unified Workflow" horizontal lockup, no eyebrow.
+| 15:51 | Session end: 27 writes across 15 files (invoice-matcher.html, invoice-matcher.js, global.css, api.js, settings.json) | 18 reads | ~26764 tok |
+| 15:53 | Edited public/js/api.js | inline fix | ~25 |
+
+## Topbar glyph icon — iteration 6 (workflow-related icon)
+User asked for a logo more related to the name. Compared 8 bootstrap-icons in the glyph via puppeteer; chose `bi-diagram-3-fill` (flowchart/node tree) over columns-gap — best represents "Workflow" (connected process steps) + "Unified" (converging to one node), and renders crisply at 17px. Only api.js icon class changed (columns-gap -> diagram-3-fill); glyph CSS unchanged.
+| 15:54 | Session end: 28 writes across 15 files (invoice-matcher.html, invoice-matcher.js, global.css, api.js, settings.json) | 19 reads | ~26789 tok |

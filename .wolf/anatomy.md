@@ -1,12 +1,13 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-26T07:35:46.315Z
-> Files: 188 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-26T12:53:17.179Z
+> Files: 189 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/ee264ee7-ff44-44a0-bd0b-463c17cb834c/scratchpad/
 
 - `compare.html` (~1540 tok)
 - `final.html` — Declares render (~950 tok)
+- `logo.html` — Declares PWA (~614 tok)
 - `preview.html` — Declares render (~989 tok)
 - `real.html` — Declares appName (~643 tok)
 - `shot.js` — Declares puppeteer (~276 tok)
@@ -83,14 +84,14 @@
 ## public/css/
 
 - `ems.css` — Styles: 95 rules (~9880 tok)
-- `global.css` — Styles: 75 rules (~6366 tok)
+- `global.css` — Styles: 73 rules (~6418 tok)
 - `pages.css` — Styles: 57 rules (~2277 tok)
 - `variables.css` — Styles: 58 vars (~979 tok)
 
 ## public/js/
 
 - `analytics.js` — API routes: GET (10 endpoints) (~6094 tok)
-- `api.js` — API routes: GET, PUT (4 endpoints) (~3698 tok)
+- `api.js` — API routes: GET, PUT (4 endpoints) (~3702 tok)
 - `appraisal.js` — API routes: GET (1 endpoints) (~8703 tok)
 - `attendance.js` — API routes: GET (2 endpoints) (~1234 tok)
 - `customize.js` — API routes: GET, PUT, POST (3 endpoints) (~3415 tok)

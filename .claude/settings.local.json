@@ -318,7 +318,14 @@
       "Bash(cp data/wfh.json __TRACKED_VAR__/wfh.backup.json)",
       "Bash(cp data/tasks.json __TRACKED_VAR__/tasks.backup.json)",
       "Bash(lsof -nP -iTCP:3000 -sTCP:LISTEN)",
-      "Bash(lsof -nP -iTCP:3001 -sTCP:LISTEN)"
+      "Bash(lsof -nP -iTCP:3001 -sTCP:LISTEN)",
+      "Bash(git push *)",
+      "Bash(grep -iE '\\\\.\\(png|svg|jpg|ico|webp\\)$')",
+      "Bash(rm -f __TRACKED_VAR__/glyph.html __TRACKED_VAR__/glyph.png __TRACKED_VAR__/shot7.js)",
+      "Bash(cat)",
+      "Bash(rm -f __TRACKED_VAR__/icons.html __TRACKED_VAR__/icons.png __TRACKED_VAR__/shot8.js)",
+      "Bash(sed -i '' 's/bi-columns-gap icon/bi-diagram-3-fill icon \\(flowchart = workflow\\)/' .wolf/memory.md)",
+      "Bash(git commit -q -m ' *)"
     ]
   }
 }

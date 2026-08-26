@@ -688,6 +688,70 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-26T07:30:47.708Z"
+    },
+    {
+      "id": "bug-044",
+      "timestamp": "2026-08-26T12:41:38.061Z",
+      "error_message": "CSS fix: flex-direction, gap",
+      "file": "public/css/global.css",
+      "root_cause": "flex-direction: column → row; gap: 4px → 10px",
+      "fix": "Changed flex-direction: column → row; gap: 4px → 10px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T12:41:38.061Z"
+    },
+    {
+      "id": "bug-045",
+      "timestamp": "2026-08-26T12:41:55.968Z",
+      "error_message": "Incorrect value in code",
+      "file": "public/js/api.js",
+      "root_cause": "Had `<span class=\"",
+      "fix": "Changed to `<img class=\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T12:41:55.968Z"
+    },
+    {
+      "id": "bug-046",
+      "timestamp": "2026-08-26T12:49:04.930Z",
+      "error_message": "CSS fix: gap, width, height",
+      "file": "public/css/global.css",
+      "root_cause": "gap: 10px → 11px; width: auto → 34px; height: 30px → 34px",
+      "fix": "Changed gap: 10px → 11px; width: auto → 34px; height: 30px → 34px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T12:49:04.930Z"
+    },
+    {
+      "id": "bug-047",
+      "timestamp": "2026-08-26T12:49:26.186Z",
+      "error_message": "Incorrect value in code",
+      "file": "public/js/api.js",
+      "root_cause": "Had `<img class=\"",
+      "fix": "Changed to `<span class=\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T12:49:26.186Z"
     }
   ]
 }
