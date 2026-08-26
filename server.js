@@ -206,6 +206,9 @@ pages.forEach(page => {
   });
 });
 
+// Redirect the site root to the app so a hosted base URL lands correctly
+app.get('/', (req, res) => res.redirect('/unifiedwp/'));
+
 // Redirect bare /unifiedwp to /unifiedwp/
 app.get('/unifiedwp', (req, res) => res.redirect('/unifiedwp/'));
 

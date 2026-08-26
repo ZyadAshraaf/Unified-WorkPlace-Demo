@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-12T10:45:25.320Z",
   "lifetime": {
-    "total_tokens_estimated": 4041706,
-    "total_reads": 705,
-    "total_writes": 1879,
+    "total_tokens_estimated": 4048450,
+    "total_reads": 706,
+    "total_writes": 1880,
     "total_sessions": 9,
-    "anatomy_hits": 501,
+    "anatomy_hits": 502,
     "anatomy_misses": 204,
     "repeated_reads_blocked": 234,
-    "estimated_savings_vs_bare_cli": 2474365
+    "estimated_savings_vs_bare_cli": 2474565
   },
   "sessions": [
     {
@@ -14817,6 +14817,34 @@
         "writes_count": 28,
         "repeated_reads_blocked": 4,
         "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-08-26-1418",
+      "started": "2026-08-26T14:18:44.189Z",
+      "ended": "2026-08-26T14:21:05.026Z",
+      "reads": [
+        {
+          "file": "/home/user/Unified-WorkPlace-Demo/views/login.html",
+          "tokens_estimated": 6730,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/user/Unified-WorkPlace-Demo/views/login.html",
+          "tokens_estimated": 14,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 6730,
+        "output_tokens_estimated": 14,
+        "reads_count": 1,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
       }
     }
   ],

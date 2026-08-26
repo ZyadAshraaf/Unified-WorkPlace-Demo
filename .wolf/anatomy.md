@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-26T14:19:38.155Z
-> Files: 189 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-26T14:23:50.666Z
+> Files: 190 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/ee264ee7-ff44-44a0-bd0b-463c17cb834c/scratchpad/
 
@@ -29,7 +29,8 @@
 - `package-lock.json` — npm lock file (~16810 tok)
 - `package.json` — Node.js package manifest (~166 tok)
 - `README.md` — Project documentation (~8350 tok)
-- `server.js` — API routes: GET (14 endpoints) (~2947 tok)
+- `render.yaml` — Render.com Blueprint — free deploy of the Unified Workspace demo. (~208 tok)
+- `server.js` — API routes: GET (15 endpoints) (~2984 tok)
 - `start-tunnel.ps1` (~136 tok)
 - `test-server.log` (~0 tok)
 
