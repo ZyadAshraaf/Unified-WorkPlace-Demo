@@ -268,3 +268,9 @@ User rejected the pwa-icon WIND mark ("dont put wind logo, you putted something 
 ## Topbar glyph icon — iteration 6 (workflow-related icon)
 User asked for a logo more related to the name. Compared 8 bootstrap-icons in the glyph via puppeteer; chose `bi-diagram-3-fill` (flowchart/node tree) over columns-gap — best represents "Workflow" (connected process steps) + "Unified" (converging to one node), and renders crisply at 17px. Only api.js icon class changed (columns-gap -> diagram-3-fill); glyph CSS unchanged.
 | 15:54 | Session end: 28 writes across 15 files (invoice-matcher.html, invoice-matcher.js, global.css, api.js, settings.json) | 19 reads | ~26789 tok |
+
+## Session: 2026-08-26 14:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:19 | Edited views/login.html | inline fix | ~14 |

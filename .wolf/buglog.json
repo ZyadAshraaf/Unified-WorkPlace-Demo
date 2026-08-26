@@ -752,6 +752,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-26T12:49:26.186Z"
+    },
+    {
+      "id": "bug-048",
+      "timestamp": "2026-08-26T14:19:38.341Z",
+      "error_message": "Wrong reference: Workflow should be Workspace",
+      "file": "views/login.html",
+      "root_cause": "Used \"Workflow\" instead of \"Workspace\"",
+      "fix": "Changed Workflow → Workspace",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T14:19:38.341Z"
     }
   ]
 }

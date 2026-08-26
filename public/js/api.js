@@ -1,5 +1,5 @@
 /* ============================================================
-   UNIFIED WORKFLOW — Shared API & Layout Utility
+   UNIFIED WORKSPACE — Shared API & Layout Utility
    Every page controller imports this file first.
    ============================================================ */
 
@@ -75,7 +75,7 @@ const Layout = {
     const topbar = document.querySelector('.topbar');
     if (!topbar || document.getElementById('topbarTitle')) return;
 
-    let appName = 'Unified Workflow';
+    let appName = 'Unified Workspace';
     try {
       const data = await API.get('/api/customize/settings');
       if (data?.settings?.appName) appName = data.settings.appName;

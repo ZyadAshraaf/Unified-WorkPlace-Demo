@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-26T12:53:17.179Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-26T14:19:38.155Z
 > Files: 189 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/ee264ee7-ff44-44a0-bd0b-463c17cb834c/scratchpad/
@@ -253,7 +253,7 @@
 - `landing.html` — Home — Unified Workspace (~15538 tok)
 - `leave-assistant.html` — My Assistant — Unified Workspace (~5498 tok)
 - `leaves.html` — Leave Requests — Unified Workspace (~6048 tok)
-- `login.html` — Sign In — Unified Workflow (~6730 tok)
+- `login.html` — Sign In — Unified Workspace (~6731 tok)
 - `material-requisitions.html` — Material Requisitions — Unified Workspace (~6770 tok)
 - `policy.html` — Policy AI — Unified Workspace (~3468 tok)
 - `proposal-eval.html` — Proposal Evaluator — Unified Workspace (~10831 tok)

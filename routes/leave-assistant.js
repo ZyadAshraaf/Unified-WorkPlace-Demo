@@ -91,7 +91,7 @@ function buildSystemPrompt(user, balance, tickets) {
       ).join('\n')
     : '  (No tickets submitted yet)';
 
-  return `You are My Assistant — a smart, friendly workplace assistant embedded in the Unified Workflow platform.
+  return `You are My Assistant — a smart, friendly workplace assistant embedded in the Unified Workspace platform.
 
 TODAY: ${today}
 EMPLOYEE: ${user.name} | Role: ${user.role} | Dept: ${user.department || 'N/A'}

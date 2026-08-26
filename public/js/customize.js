@@ -105,7 +105,7 @@
     previewLink.style.color = primary;
 
     // App name in mini sidebar
-    previewAppName.textContent = appNameInput.value.trim() || 'Unified Workflow';
+    previewAppName.textContent = appNameInput.value.trim() || 'Unified Workspace';
 
     // Shade chips (inline)
     shadeDarker.style.background  = pDarker;
@@ -150,7 +150,7 @@
       pickSecondary.value  = currentSecondary;
       hexPrimary.value     = currentPrimary;
       hexSecondary.value   = currentSecondary;
-      appNameInput.value   = s.appName || 'Unified Workflow';
+      appNameInput.value   = s.appName || 'Unified Workspace';
 
       updatePreview(currentPrimary, currentSecondary);
     } catch (e) {
@@ -196,7 +196,7 @@
 
   // ── App name live preview ────────────────────────────────────────────────
   appNameInput.addEventListener('input', function () {
-    previewAppName.textContent = this.value.trim() || 'Unified Workflow';
+    previewAppName.textContent = this.value.trim() || 'Unified Workspace';
   });
 
   // ── Logo file handling ───────────────────────────────────────────────────
@@ -252,7 +252,7 @@
       const settingsRes = await API.put('/api/customize/settings', {
         primary:   currentPrimary,
         secondary: currentSecondary,
-        appName:   appNameInput.value.trim() || 'Unified Workflow'
+        appName:   appNameInput.value.trim() || 'Unified Workspace'
       });
       if (!settingsRes.success) throw new Error(settingsRes.message || 'Failed to save settings');
 
