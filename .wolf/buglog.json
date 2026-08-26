@@ -768,6 +768,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-26T14:19:38.341Z"
+    },
+    {
+      "id": "bug-049",
+      "timestamp": "2026-08-26T14:42:47.260Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "../../../tmp/claude-0/-home-user-Unified-WorkPlace-Demo/6dd0c9e1-69a0-5368-9a52-d3c23d0f8b5d/scratchpad/shot.js",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T14:42:47.260Z"
     }
   ]
 }

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-26T14:26:44.055Z
-> Files: 190 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-26T14:42:47.245Z
+> Files: 191 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/ee264ee7-ff44-44a0-bd0b-463c17cb834c/scratchpad/
 
@@ -17,6 +17,10 @@
 
 - `invoice-validator-api-schema.md` (~458 tok)
 - `MEMORY.md` (~42 tok)
+
+## ../../../tmp/claude-0/-home-user-Unified-WorkPlace-Demo/6dd0c9e1-69a0-5368-9a52-d3c23d0f8b5d/scratchpad/
+
+- `shot.js` — Declares EXE (~424 tok)
 
 ## ./
 
