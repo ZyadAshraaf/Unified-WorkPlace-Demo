@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-05-12T10:45:25.320Z",
   "lifetime": {
-    "total_tokens_estimated": 4068386,
-    "total_reads": 710,
-    "total_writes": 1886,
+    "total_tokens_estimated": 4078354,
+    "total_reads": 712,
+    "total_writes": 1889,
     "total_sessions": 9,
-    "anatomy_hits": 506,
+    "anatomy_hits": 508,
     "anatomy_misses": 204,
-    "repeated_reads_blocked": 238,
-    "estimated_savings_vs_bare_cli": 2487153
+    "repeated_reads_blocked": 240,
+    "estimated_savings_vs_bare_cli": 2493447
   },
   "sessions": [
     {
@@ -14895,6 +14895,50 @@
       "id": "session-2026-08-26-1418",
       "started": "2026-08-26T14:18:44.189Z",
       "ended": "2026-08-26T14:25:19.418Z",
+      "reads": [
+        {
+          "file": "/home/user/Unified-WorkPlace-Demo/views/login.html",
+          "tokens_estimated": 6730,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/home/user/Unified-WorkPlace-Demo/server.js",
+          "tokens_estimated": 2947,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/home/user/Unified-WorkPlace-Demo/views/login.html",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "/home/user/Unified-WorkPlace-Demo/server.js",
+          "tokens_estimated": 69,
+          "action": "edit"
+        },
+        {
+          "file": "/home/user/Unified-WorkPlace-Demo/render.yaml",
+          "tokens_estimated": 208,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9677,
+        "output_tokens_estimated": 291,
+        "reads_count": 2,
+        "writes_count": 3,
+        "repeated_reads_blocked": 2,
+        "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-08-26-1418",
+      "started": "2026-08-26T14:18:44.189Z",
+      "ended": "2026-08-26T14:25:33.378Z",
       "reads": [
         {
           "file": "/home/user/Unified-WorkPlace-Demo/views/login.html",
