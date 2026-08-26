@@ -1,5 +1,5 @@
 /* ============================================================
-   UNIFIED WORKSPACE — Shared API & Layout Utility
+   UNIFIED WORKFLOW — Shared API & Layout Utility
    Every page controller imports this file first.
    ============================================================ */
 
@@ -65,9 +65,37 @@ const Layout = {
 
     this.setActiveNav(activePage);
     this.populateUser();
+    this.renderAppTitle();
     this.bindSidebarToggle();
     await this.loadNotifications();
     Heartbeat.start();
+  },
+
+  async renderAppTitle() {
+    const topbar = document.querySelector('.topbar');
+    if (!topbar || document.getElementById('topbarTitle')) return;
+
+    let appName = 'Unified Workflow';
+    try {
+      const data = await API.get('/api/customize/settings');
+      if (data?.settings?.appName) appName = data.settings.appName;
+    } catch {}
+
+    // Two-tone wordmark: accent the final word (falls back to a plain name for single words)
+    const esc   = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const parts = appName.trim().split(/\s+/);
+    const textHtml = parts.length > 1
+      ? `${esc(parts.slice(0, -1).join(' '))} <b>${esc(parts[parts.length - 1])}</b>`
+      : esc(appName);
+
+    const title = document.createElement('div');
+    title.className = 'topbar-title';
+    title.id = 'topbarTitle';
+    title.setAttribute('aria-label', appName);
+    title.innerHTML =
+      `<span class="topbar-title-eyebrow">Enterprise Portal</span>` +
+      `<span class="topbar-title-text">${textHtml}</span>`;
+    topbar.appendChild(title);
   },
 
   setActiveNav(page) {

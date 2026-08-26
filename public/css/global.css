@@ -1,5 +1,5 @@
 /* ============================================================
-   UNIFIED WORKSPACE — GLOBAL STYLES
+   UNIFIED WORKFLOW — GLOBAL STYLES
    ============================================================ */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -222,6 +222,52 @@ body {
   top: 0;
   z-index: 1030;
   box-shadow: var(--shadow-sm);
+}
+
+/* Centered product identity — pure typography so it reads as a label,
+   not a third logo competing with the company + Oracle marks in the bar.
+   Sized so the wordmark's cap-height matches the flanking logos' presence. */
+.topbar-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.topbar-title-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+  line-height: 1;
+}
+
+.topbar-title-text {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  line-height: 1;
+  color: var(--color-text);
+}
+
+.topbar-title-text b {
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+/* Hide the centered identity on narrower viewports where the flanking
+   company + Oracle logos would otherwise crowd or overlap it. */
+@media (max-width: 1199px) {
+  .topbar-title { display: none; }
 }
 
 .topbar-toggle {
@@ -682,16 +728,90 @@ body.sidebar-collapsed .main-wrapper {
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 991px) {
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.show { transform: translateX(0); }
+  /* Desktop renders the whole app at zoom:.9 to fit more on screen.
+     On phones/tablets that just makes everything small — render at
+     true device scale instead, and undo the zoom-compensation hacks
+     (calc(.../0.9)) that assumed the .9 factor. */
+  body { zoom: 1; }
+  .modal, .modal-backdrop { width: 100vw !important; height: 100vh !important; }
+  #taskDetailModal.review-mode .modal-dialog,
+  #taskDetailModal.review-mode .modal-content {
+    width: 100vw !important; max-width: 100vw !important; height: 100vh !important;
+  }
+
+  /* Let the main column shrink below its content's intrinsic width
+     (flex items default to min-width:auto, which otherwise lets a wide
+     table stretch the whole page instead of scrolling inside its wrapper). */
+  .main-wrapper, .content { min-width: 0; max-width: 100%; }
+
+  /* Sidebar → off-canvas drawer */
+  .sidebar { transform: translateX(-100%); width: 82vw; max-width: 300px; }
+  .sidebar.show { transform: translateX(0); box-shadow: 0 12px 48px rgba(0,0,0,.35); }
   .sidebar-overlay.show { display: block; }
   .main-wrapper { margin-left: 0; }
-  .topbar-search { min-width: 160px; }
+
+  /* Compact topbar */
+  .topbar { height: 60px; padding: 0 14px; gap: 12px; }
+  .topbar-logo { height: 36px; max-width: 44vw; }
+  .topbar-oracle-badge { height: 28px; }
+  .topbar-search { min-width: 0; flex: 1 1 auto; }
+
+  /* Content breathing room */
   .content { padding: 16px; }
+
+  /* Page hero scales down */
+  .page-hero { padding: 18px 18px; margin-bottom: 18px; }
+  .page-hero-title { font-size: 17px; }
+  .page-hero-sub { font-size: 12px; }
+
+  /* Wide tables scroll horizontally instead of getting clipped */
+  .task-table-wrap, .dark-table-card,
+  .pm-card-body { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+  .table-custom { min-width: 600px; }
+
+  /* Filter / toolbar rows stack into full-width rows */
+  .filter-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+  .filter-bar > .form-control,
+  .filter-bar > .form-select,
+  .filter-bar > .search-input { width: 100% !important; min-width: 0; }
+  .filter-bar > .d-flex { flex-wrap: wrap; margin-left: 0 !important; }
+  .filter-bar > .ms-auto .btn { flex: 1; }
+
+  /* Modals never wider than the viewport */
+  .modal-dialog { max-width: calc(100vw - 20px); }
 }
 
 @media (max-width: 575px) {
-  .topbar-search { display: none; }
+  .content { padding: 12px; }
+  .topbar { gap: 10px; }
+  .topbar-oracle-badge, .topbar-search { display: none; }
+  .page-hero-title { font-size: 16px; }
+
+  /* Comfortable card padding on small screens */
+  .card-body { padding: 16px; }
+  .card-header { padding: 14px 16px; font-size: var(--font-size-md); }
+  .stat-card { padding: 16px; gap: 12px; }
+  .stat-icon { width: 44px; height: 44px; font-size: 20px; }
+  .stat-value { font-size: var(--font-size-xl); }
+
+  /* Full-bleed modals on tiny screens */
+  .modal-dialog { margin: 8px; }
+  .modal-footer { flex-wrap: wrap; }
+  .modal-footer .btn { flex: 1 1 auto; }
+
+  .table-custom { min-width: 560px; }
+}
+
+/* AI use-case pages (Proposal/Talent evaluators, Knowledge Assistant,
+   Invoice Validator) share a hero + horizontal wizard step bar.
+   Defined in each page's inline <style>, so overrides need !important. */
+@media (max-width: 640px) {
+  .ai-hero-body   { gap: 14px !important; }
+  .ai-hero-title  { font-size: 20px !important; }
+  .ai-hero-sub    { font-size: 12.5px !important; }
+  .wizard-track   { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .wizard-step    { flex-shrink: 0 !important; }
+  .wizard-step-desc { display: none !important; }
 }
 
 /* ── Utilities ───────────────────────────────────────────── */

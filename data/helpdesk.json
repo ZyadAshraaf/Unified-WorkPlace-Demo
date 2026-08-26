@@ -427,5 +427,27 @@
         "note": "Ticket submitted via My Assistant"
       }
     ]
+  },
+  {
+    "id": "HD6D0E814F",
+    "ticketNo": "TKT-2026-015",
+    "title": "Laptop won't connect to VPN.",
+    "description": "Laptop won't connect to VPN.",
+    "category": "Network",
+    "priority": "high",
+    "status": "open",
+    "submittedBy": "u001",
+    "assignedTo": null,
+    "createdAt": "2026-08-26T11:59:46.425Z",
+    "updatedAt": "2026-08-26T11:59:46.425Z",
+    "comments": [],
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-08-26T11:59:46.425Z",
+        "note": "Ticket submitted"
+      }
+    ]
   }
 ]

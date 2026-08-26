@@ -221,7 +221,7 @@ app.use((req, res) => {
 
 // ─── Start ────────────────────────────────────────────────────────────────────
 const server1 = app.listen(PORT, () => {
-  console.log(`\n  Unified Workspace running at http://localhost:${PORT}`);
+  console.log(`\n  Unified Workflow running at http://localhost:${PORT}`);
 });
 server1.keepAliveTimeout  = 120000;   // 2 min — prevents tunnel from dropping idle connections
 server1.headersTimeout    = 125000;   // slightly above keepAlive

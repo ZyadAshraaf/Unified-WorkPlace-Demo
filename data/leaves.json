@@ -354,5 +354,21 @@
     "reviewedBy": "u001",
     "reviewedAt": "2026-05-06T07:29:44.916Z",
     "reviewNote": ""
+  },
+  {
+    "id": "L74DF5339",
+    "userId": "u001",
+    "type": "annual",
+    "startDate": "2026-08-27",
+    "endDate": "2026-08-27",
+    "days": 1,
+    "reason": "family matters",
+    "customFields": {},
+    "status": "approved",
+    "taskId": "TFBA14D23",
+    "submittedAt": "2026-08-26T08:28:40.075Z",
+    "reviewedBy": "u001",
+    "reviewedAt": "2026-08-26T11:43:01.990Z",
+    "reviewNote": ""
   }
 ]

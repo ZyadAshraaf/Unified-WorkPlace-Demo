@@ -1045,48 +1045,6 @@
     "delegatedFrom": null
   },
   {
-    "id": "T187F3110",
-    "title": "Approve WFH Request — Ahmed Al-Rashidi",
-    "description": "Ahmed Al-Rashidi has requested to work from home for 1 day(s) (2026-04-24 to 2026-04-25). Reason: Not provided",
-    "sourceSystem": "HR",
-    "type": "approval",
-    "priority": "medium",
-    "status": "approved",
-    "assignedTo": "u001",
-    "createdBy": "u001",
-    "dueDate": "2026-04-24",
-    "createdAt": "2026-04-21T09:48:28.879Z",
-    "updatedAt": "2026-04-21T09:48:33.799Z",
-    "metadata": {
-      "wfhId": "W2CCB1BBF",
-      "requestDetails": {
-        "userName": "Ahmed Al-Rashidi",
-        "startDate": "2026-04-24",
-        "endDate": "2026-04-25",
-        "days": 1,
-        "reason": "",
-        "submittedAt": "2026-04-21T09:48:28.879Z"
-      }
-    },
-    "history": [
-      {
-        "action": "created",
-        "by": "u001",
-        "at": "2026-04-21T09:48:28.879Z",
-        "note": "WFH request submitted"
-      },
-      {
-        "action": "approved",
-        "by": "u001",
-        "at": "2026-04-21T09:48:33.799Z",
-        "note": "WFH request approved"
-      }
-    ],
-    "comments": [],
-    "escalated": false,
-    "delegatedFrom": null
-  },
-  {
     "id": "T742E1666",
     "title": "Approve Business Trip — Ahmed Al-Rashidi",
     "description": "Ahmed Al-Rashidi has requested a business trip to Abha for 4 day(s) (2026-05-01 to 2026-05-04). Purpose: klhkjh. Total estimated cost: SAR 3,160.",
@@ -1757,6 +1715,86 @@
         "by": "u001",
         "at": "2026-08-18T12:33:13.716Z",
         "note": "Invoice approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TFBA14D23",
+    "title": "Approve Leave Request — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested annual leave for 1 day(s) (2026-08-27 to 2026-08-27). Reason: family matters",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "approved",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-08-27",
+    "createdAt": "2026-08-26T08:28:40.075Z",
+    "updatedAt": "2026-08-26T11:43:01.990Z",
+    "metadata": {
+      "leaveId": "L74DF5339",
+      "requestDetails": {
+        "userName": "Ahmed Al-Rashidi",
+        "type": "annual",
+        "startDate": "2026-08-27",
+        "endDate": "2026-08-27",
+        "days": 1,
+        "reason": "family matters",
+        "customFields": {},
+        "submittedAt": "2026-08-26T08:28:40.075Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-08-26T08:28:40.075Z",
+        "note": "Leave request submitted"
+      },
+      {
+        "action": "approved",
+        "by": "u001",
+        "at": "2026-08-26T11:43:01.990Z",
+        "note": "Leave request approved"
+      }
+    ],
+    "comments": [],
+    "escalated": false,
+    "delegatedFrom": null
+  },
+  {
+    "id": "TB374F8A4",
+    "title": "Approve WFH Request — Ahmed Al-Rashidi",
+    "description": "Ahmed Al-Rashidi has requested to work from home for 1 day(s) (2026-08-27 to 2026-08-27). Reason: reason",
+    "sourceSystem": "HR",
+    "type": "approval",
+    "priority": "medium",
+    "status": "pending",
+    "assignedTo": "u001",
+    "createdBy": "u001",
+    "dueDate": "2026-08-27",
+    "createdAt": "2026-08-26T11:49:48.784Z",
+    "updatedAt": "2026-08-26T11:49:48.784Z",
+    "metadata": {
+      "wfhId": "WEABC8D2A",
+      "requestDetails": {
+        "userName": "Ahmed Al-Rashidi",
+        "startDate": "2026-08-27",
+        "endDate": "2026-08-27",
+        "days": 1,
+        "reason": "reason",
+        "submittedAt": "2026-08-26T11:49:48.784Z"
+      }
+    },
+    "history": [
+      {
+        "action": "created",
+        "by": "u001",
+        "at": "2026-08-26T11:49:48.784Z",
+        "note": "WFH request submitted"
       }
     ],
     "comments": [],

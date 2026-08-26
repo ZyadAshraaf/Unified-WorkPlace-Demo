@@ -51,7 +51,7 @@ router.post('/logo', requireAuth, (req, res) => {
 router.post('/reset', requireAuth, (req, res) => {
   const defaults = {
     colors: { primary: '#198D87', secondary: '#2C3E50' },
-    appName:  'Unified Workspace',
+    appName:  'Unified Workflow',
     logoPath: '/assets/logo.png'
   };
   writeSettings(defaults);

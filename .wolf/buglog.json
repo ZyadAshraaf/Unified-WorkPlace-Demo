@@ -528,6 +528,166 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-08-18T16:15:59.644Z"
+    },
+    {
+      "id": "bug-034",
+      "timestamp": "2026-08-25T13:21:47.787Z",
+      "error_message": "CSS fix: margin-left, min-width",
+      "file": "public/css/global.css",
+      "root_cause": "margin-left: 0 → 0 !important; min-width: 160px → 560px",
+      "fix": "Changed margin-left: 0 → 0 !important; min-width: 160px → 560px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-08-25T13:26:27.427Z"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-08-25T13:22:26.067Z",
+      "error_message": "CSS fix: height",
+      "file": "public/css/pages.css",
+      "root_cause": "height: 200px → auto",
+      "fix": "Changed height: 200px → auto",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-25T13:22:26.067Z"
+    },
+    {
+      "id": "bug-036",
+      "timestamp": "2026-08-25T13:22:50.374Z",
+      "error_message": "Significant refactor of ",
+      "file": "views/landing.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7→12 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-25T13:22:50.374Z"
+    },
+    {
+      "id": "bug-037",
+      "timestamp": "2026-08-26T06:47:14.850Z",
+      "error_message": "Significant refactor of ",
+      "file": "views/invoice-matcher.html",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 10→6 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T06:47:14.850Z"
+    },
+    {
+      "id": "bug-038",
+      "timestamp": "2026-08-26T06:51:52.258Z",
+      "error_message": "Missing error handling in renderAppTitle",
+      "file": "public/js/api.js",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T06:51:52.258Z"
+    },
+    {
+      "id": "bug-039",
+      "timestamp": "2026-08-26T06:52:19.053Z",
+      "error_message": "Incorrect value in code",
+      "file": "data/settings.json",
+      "root_cause": "Had \"Unified Workspace\"",
+      "fix": "Changed to \"Unified Workflow\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "json"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T06:52:19.053Z"
+    },
+    {
+      "id": "bug-040",
+      "timestamp": "2026-08-26T06:52:22.707Z",
+      "error_message": "Incorrect value in code",
+      "file": "routes/customize.js",
+      "root_cause": "Had 'Unified Workspace'",
+      "fix": "Changed to 'Unified Workflow'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T06:52:22.707Z"
+    },
+    {
+      "id": "bug-041",
+      "timestamp": "2026-08-26T06:53:58.680Z",
+      "error_message": "Incorrect value in code",
+      "file": "package.json",
+      "root_cause": "Had \"Unified Workspace Portal — Centralized enterprise",
+      "fix": "Changed to \"Unified Workflow Portal — Centralized enterprise ",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "json"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T06:53:58.680Z"
+    },
+    {
+      "id": "bug-042",
+      "timestamp": "2026-08-26T07:23:32.636Z",
+      "error_message": "CSS fix: gap, font-size",
+      "file": "public/css/global.css",
+      "root_cause": "gap: 11px → 3px; font-size: 17px → 16.5px",
+      "fix": "Changed gap: 11px → 3px; font-size: 17px → 16.5px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T07:23:32.636Z"
+    },
+    {
+      "id": "bug-043",
+      "timestamp": "2026-08-26T07:30:47.708Z",
+      "error_message": "Significant refactor of ",
+      "file": "public/css/global.css",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 38→45 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-26T07:30:47.708Z"
     }
   ]
 }

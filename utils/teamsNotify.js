@@ -10,7 +10,7 @@
  * 1. Register an Azure AD App:
  *    - Go to https://portal.azure.com → Azure Active Directory → App registrations
  *    - Click "New registration"
- *    - Name: "Unified Workspace Notifications"
+ *    - Name: "Unified Workflow Notifications"
  *    - Supported account types: "Accounts in this organizational directory only"
  *    - Click "Register"
  *

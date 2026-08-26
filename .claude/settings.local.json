@@ -302,7 +302,23 @@
       "Bash(magick powered_by_oracle_logo_white.png -trim info:)",
       "Bash(convert powered_by_oracle_logo_white.png -trim info:)",
       "Bash(python3 -)",
-      "Bash(sips -g pixelWidth -g pixelHeight powered-by-oracle-white.png)"
+      "Bash(sips -g pixelWidth -g pixelHeight powered-by-oracle-white.png)",
+      "Read(//Applications/Google Chrome.app/Contents/MacOS/**)",
+      "Read(//Applications/Chromium.app/Contents/MacOS/**)",
+      "Read(//Applications/Microsoft Edge.app/Contents/MacOS/**)",
+      "Read(//Users/zyad/.cache/**)",
+      "Bash(awk '{print $6}')",
+      "Bash(awk '{print $7}')",
+      "Bash(sed -i '' 's/UNIFIED WORKSPACE/UNIFIED WORKFLOW/g' public/css/variables.css public/css/pages.css public/css/global.css public/js/api.js)",
+      "Bash(sed -i '' 's/Unified Workspace/Unified Workflow/g' server.js utils/teamsNotify.js routes/hr-chat.js routes/leave-assistant.js data/policies.json)",
+      "Bash(grep -noE '\\(New Ticket|Raise|Create Ticket|Submit|btnNew[A-Za-z]*|id=\"ticket[A-Za-z]*\"|<option[^>]*>[^<]{2,24}</option>\\)' views/helpdesk.html)",
+      "Bash(grep -noiE '\\(RFP|proposal|evaluate|required|optional|drop|upload your\\)[^<>{}]{0,45}' views/proposal-eval.html)",
+      "Bash(grep -noiE '\\(job description|role|position|résumé|resume|drop|upload|candidate\\)[^<>{}]{0,40}' views/resume-eval.html)",
+      "Bash(grep -oE 'data-tab=\"[a-z-]+\"|>[A-Z][a-zA-Z ]{2,18}</button>' views/ems/index.html)",
+      "Bash(cp data/wfh.json __TRACKED_VAR__/wfh.backup.json)",
+      "Bash(cp data/tasks.json __TRACKED_VAR__/tasks.backup.json)",
+      "Bash(lsof -nP -iTCP:3000 -sTCP:LISTEN)",
+      "Bash(lsof -nP -iTCP:3001 -sTCP:LISTEN)"
     ]
   }
 }

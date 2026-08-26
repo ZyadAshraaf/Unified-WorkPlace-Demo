@@ -1,7 +1,16 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-18T16:15:59.630Z
-> Files: 182 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-26T07:35:46.315Z
+> Files: 188 tracked | Anatomy hits: 0 | Misses: 0
+
+## ../../../../../../private/tmp/claude-501/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/ee264ee7-ff44-44a0-bd0b-463c17cb834c/scratchpad/
+
+- `compare.html` (~1540 tok)
+- `final.html` — Declares render (~950 tok)
+- `preview.html` — Declares render (~989 tok)
+- `real.html` — Declares appName (~643 tok)
+- `shot.js` — Declares puppeteer (~276 tok)
+- `size.html` — P: bar (~934 tok)
 
 ## ../../../../.claude/projects/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/memory/
 
@@ -17,7 +26,7 @@
 - `cloudflared.log` (~89282 tok)
 - `MOBILE_PWA_PLAN.md` — Plan: Mobile PWA (6 pages — Login, Home, Tasks, Services, Leave, WFH) (~3326 tok)
 - `package-lock.json` — npm lock file (~16810 tok)
-- `package.json` — Node.js package manifest (~173 tok)
+- `package.json` — Node.js package manifest (~166 tok)
 - `README.md` — Project documentation (~8350 tok)
 - `server.js` — API routes: GET (14 endpoints) (~2947 tok)
 - `start-tunnel.ps1` (~136 tok)
@@ -73,15 +82,15 @@
 
 ## public/css/
 
-- `ems.css` — Styles: 94 rules (~9833 tok)
-- `global.css` — Styles: 77 rules (~5144 tok)
-- `pages.css` — Styles: 56 rules (~2146 tok)
+- `ems.css` — Styles: 95 rules (~9880 tok)
+- `global.css` — Styles: 75 rules (~6366 tok)
+- `pages.css` — Styles: 57 rules (~2277 tok)
 - `variables.css` — Styles: 58 vars (~979 tok)
 
 ## public/js/
 
 - `analytics.js` — API routes: GET (10 endpoints) (~6094 tok)
-- `api.js` — API routes: GET, PUT (3 endpoints) (~3482 tok)
+- `api.js` — API routes: GET, PUT (4 endpoints) (~3698 tok)
 - `appraisal.js` — API routes: GET (1 endpoints) (~8703 tok)
 - `attendance.js` — API routes: GET (2 endpoints) (~1234 tok)
 - `customize.js` — API routes: GET, PUT, POST (3 endpoints) (~3415 tok)
@@ -89,7 +98,7 @@
 - `doc-chat.js` — DOCEVAL_BASE: dePost, startLoadingStepCycle, stopLoadingStepCycle + 11 more (~3610 tok)
 - `goals.js` — API routes: GET, POST, PUT (3 endpoints) (~1747 tok)
 - `helpdesk.js` — API routes: GET, PUT, POST (4 endpoints) (~2636 tok)
-- `invoice-matcher.js` — INVOICE_API_URL: setRequestDate, isFormValid, validateEmailField + 11 more (~7178 tok)
+- `invoice-matcher.js` — INVOICE_API_URL: setRequestDate, isFormValid, validateEmailField + 11 more (~7491 tok)
 - `landing.js` — API routes: GET (5 endpoints) (~1755 tok)
 - `leave-assistant.js` — API routes: GET, POST (2 endpoints) (~2159 tok)
 - `leaves.js` — API routes: GET, POST, PUT (3 endpoints) (~5815 tok)
@@ -137,7 +146,7 @@
 - `appraisal.js` — API routes: GET, PUT, POST, DELETE (14 endpoints) (~3426 tok)
 - `attendance.js` — API routes: GET (3 endpoints) (~590 tok)
 - `auth.js` — API routes: POST, GET (3 endpoints) (~369 tok)
-- `customize.js` — API routes: GET, PUT, POST (4 endpoints) (~709 tok)
+- `customize.js` — API routes: GET, PUT, POST (4 endpoints) (~690 tok)
 - `directory.js` — API routes: GET (2 endpoints) (~460 tok)
 - `doceval.js` — express: sendToUpstream (~985 tok)
 - `finance.js` — API routes: GET (6 endpoints) (~446 tok)
@@ -231,7 +240,7 @@
 ## views/
 
 - `analytics.html` — Analytics — Unified Workspace (~6866 tok)
-- `appraisal.html` — Performance — Unified Workspace (~10817 tok)
+- `appraisal.html` — Performance — Unified Workspace (~10628 tok)
 - `attendance.html` — Attendance — Unified Workspace (~3346 tok)
 - `customize.html` — Customize — Unified Workspace (~5315 tok)
 - `directory.html` — Directory — Unified Workspace (~2689 tok)
@@ -239,11 +248,11 @@
 - `erp-dialogue.html` — ERP Dialogue — Unified Workspace (~4864 tok)
 - `goals.html` — Goals & OKR — Unified Workspace (~3119 tok)
 - `helpdesk.html` — Help Desk — Unified Workspace (~3500 tok)
-- `invoice-matcher.html` — Invoice Validator — Unified Workspace (~9792 tok)
-- `landing.html` — Home — Unified Workspace (~15391 tok)
+- `invoice-matcher.html` — Invoice Validator — Unified Workspace (~9708 tok)
+- `landing.html` — Home — Unified Workspace (~15538 tok)
 - `leave-assistant.html` — My Assistant — Unified Workspace (~5498 tok)
 - `leaves.html` — Leave Requests — Unified Workspace (~6048 tok)
-- `login.html` — Sign In — Unified Workspace (~6731 tok)
+- `login.html` — Sign In — Unified Workflow (~6730 tok)
 - `material-requisitions.html` — Material Requisitions — Unified Workspace (~6770 tok)
 - `policy.html` — Policy AI — Unified Workspace (~3468 tok)
 - `proposal-eval.html` — Proposal Evaluator — Unified Workspace (~10831 tok)

@@ -15,6 +15,9 @@ let lastFileName    = '';
 let _loadingStepInterval  = null;
 let _loadingProgressTimer = null;
 let emailTouched = false;
+let poListLoaded = false;
+
+const ASSOCIATED_POS = ['SA-120923', 'SA-982103', 'SA-440219', 'SA-773910'];
 
 document.addEventListener('DOMContentLoaded', async () => {
   await Layout.init('invoice-matcher');
@@ -47,6 +50,36 @@ function validateEmailField() {
   const bad   = emailTouched && val.length > 0 && !EMAIL_RE.test(val);
   input.classList.toggle('is-invalid-soft', bad);
   error.classList.toggle('show', bad);
+
+  if (EMAIL_RE.test(val)) {
+    if (!poListLoaded) loadAssociatedPOs();
+  } else {
+    resetPoOptions();
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   Associated PO list — gated behind a valid vendor email
+   ════════════════════════════════════════════════════════════ */
+function resetPoOptions() {
+  poListLoaded = false;
+  const select = document.getElementById('poSelect');
+  select.disabled = true;
+  select.innerHTML = '<option value="">Enter a valid vendor email to load POs...</option>';
+}
+
+function loadAssociatedPOs() {
+  const select = document.getElementById('poSelect');
+  select.disabled = true;
+  select.innerHTML = '<option value="">Loading purchase orders...</option>';
+
+  setTimeout(() => {
+    select.innerHTML = '<option value="">Select an associated PO...</option>' +
+      ASSOCIATED_POS.map(po => `<option value="${po}">${po}</option>`).join('');
+    select.disabled = false;
+    poListLoaded = true;
+    updateValidateBtn();
+  }, 450);
 }
 
 function updateValidateBtn() {

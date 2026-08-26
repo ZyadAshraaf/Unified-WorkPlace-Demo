@@ -13,7 +13,7 @@ function buildSystemPrompt() {
     `### ${p.title} (${p.category} — v${p.version}, effective ${p.effectiveDate})\n${p.content}`
   ).join('\n\n');
 
-  return `You are an HR Policy Assistant for WIND-IS (Unified Workspace platform).
+  return `You are an HR Policy Assistant for WIND-IS (Unified Workflow platform).
 
 Your ONLY job is to answer questions about WIND-IS company HR policies. You have access to the following official policies:
 

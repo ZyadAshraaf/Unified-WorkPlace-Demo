@@ -1,0 +1,267 @@
+[
+  {
+    "name": "landing",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "horizOverflow": 0,
+    "zoom": "1",
+    "overflowers": []
+  },
+  {
+    "name": "tasks",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "horizOverflow": 0,
+    "zoom": "1",
+    "overflowers": [
+      {
+        "tag": "table",
+        "cls": "table-custom",
+        "right": 963
+      },
+      {
+        "tag": "thead",
+        "cls": "",
+        "right": 963
+      },
+      {
+        "tag": "tr",
+        "cls": "",
+        "right": 963
+      },
+      {
+        "tag": "th",
+        "cls": "",
+        "right": 418
+      },
+      {
+        "tag": "tbody",
+        "cls": "",
+        "right": 963
+      },
+      {
+        "tag": "tr",
+        "cls": "task-row",
+        "right": 963
+      },
+      {
+        "tag": "td",
+        "cls": "",
+        "right": 418
+      },
+      {
+        "tag": "div",
+        "cls": "task-title-cell",
+        "right": 402
+      }
+    ]
+  },
+  {
+    "name": "leaves",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "horizOverflow": 0,
+    "zoom": "1",
+    "overflowers": [
+      {
+        "tag": "table",
+        "cls": "table-custom",
+        "right": 703
+      },
+      {
+        "tag": "thead",
+        "cls": "",
+        "right": 703
+      },
+      {
+        "tag": "tr",
+        "cls": "",
+        "right": 703
+      },
+      {
+        "tag": "th",
+        "cls": "",
+        "right": 420
+      },
+      {
+        "tag": "tbody",
+        "cls": "",
+        "right": 703
+      },
+      {
+        "tag": "td",
+        "cls": "fs-sm text-muted",
+        "right": 420
+      },
+      {
+        "tag": "td",
+        "cls": "",
+        "right": 523
+      },
+      {
+        "tag": "span",
+        "cls": "badge-custom badge-status-approved",
+        "right": 507
+      }
+    ]
+  },
+  {
+    "name": "analytics",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "horizOverflow": 0,
+    "zoom": "1",
+    "overflowers": []
+  },
+  {
+    "name": "helpdesk",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "horizOverflow": 0,
+    "zoom": "1",
+    "overflowers": []
+  },
+  {
+    "name": "directory",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "horizOverflow": 0,
+    "zoom": "1",
+    "overflowers": []
+  },
+  {
+    "name": "appraisal",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "horizOverflow": 0,
+    "zoom": "1",
+    "overflowers": [
+      {
+        "tag": "table",
+        "cls": "pm-tbl",
+        "right": 710
+      },
+      {
+        "tag": "thead",
+        "cls": "",
+        "right": 710
+      },
+      {
+        "tag": "tr",
+        "cls": "",
+        "right": 710
+      },
+      {
+        "tag": "th",
+        "cls": "",
+        "right": 461
+      },
+      {
+        "tag": "tbody",
+        "cls": "",
+        "right": 710
+      },
+      {
+        "tag": "td",
+        "cls": "text-center text-muted py-4",
+        "right": 710
+      }
+    ]
+  },
+  {
+    "name": "proposal-eval",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "horizOverflow": 0,
+    "zoom": "1",
+    "overflowers": [
+      {
+        "tag": "div",
+        "cls": "ai-hero-glow",
+        "right": 438
+      },
+      {
+        "tag": "div",
+        "cls": "wizard-step pending",
+        "right": 499
+      },
+      {
+        "tag": "div",
+        "cls": "wizard-step-info",
+        "right": 483
+      },
+      {
+        "tag": "div",
+        "cls": "wizard-step-label",
+        "right": 483
+      }
+    ]
+  },
+  {
+    "name": "leave-assistant",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "horizOverflow": 0,
+    "zoom": "1",
+    "overflowers": []
+  },
+  {
+    "name": "ems",
+    "scrollW": 390,
+    "clientW": 390,
+    "innerW": 390,
+    "horizOverflow": 0,
+    "zoom": "1",
+    "overflowers": [
+      {
+        "tag": "table",
+        "cls": "table table-hover mb-0 doc-table",
+        "right": 560
+      },
+      {
+        "tag": "thead",
+        "cls": "",
+        "right": 560
+      },
+      {
+        "tag": "tr",
+        "cls": "",
+        "right": 560
+      },
+      {
+        "tag": "th",
+        "cls": "",
+        "right": 460
+      },
+      {
+        "tag": "tbody",
+        "cls": "",
+        "right": 560
+      },
+      {
+        "tag": "div",
+        "cls": "kc-drawer",
+        "right": 780
+      },
+      {
+        "tag": "div",
+        "cls": "kc-drawer-header",
+        "right": 780
+      },
+      {
+        "tag": "div",
+        "cls": "kc-drawer-title-wrap",
+        "right": 613
+      }
+    ]
+  }
+]

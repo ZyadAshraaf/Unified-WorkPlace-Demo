@@ -1,7 +1,7 @@
 {
   "name": "unified-workspace",
   "version": "1.0.0",
-  "description": "Unified Workspace Portal — Centralized enterprise self-service portal",
+  "description": "Unified Workflow Portal — Centralized enterprise self-service portal",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
