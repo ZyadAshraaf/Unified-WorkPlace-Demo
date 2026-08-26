@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-26T14:42:47.245Z
-> Files: 191 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-26T14:47:32.191Z
+> Files: 192 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-zyad-Documents-Pre-Sales-Demo-Projects-Unified-Workplace-Demo/ee264ee7-ff44-44a0-bd0b-463c17cb834c/scratchpad/
 
@@ -21,6 +21,7 @@
 ## ../../../tmp/claude-0/-home-user-Unified-WorkPlace-Demo/6dd0c9e1-69a0-5368-9a52-d3c23d0f8b5d/scratchpad/
 
 - `shot.js` — Declares EXE (~424 tok)
+- `shot2.js` — Declares EXE (~435 tok)
 
 ## ./
 
