@@ -1,6 +1,6 @@
 {
-  "name": "Unified Workspace",
-  "short_name": "Workspace",
+  "name": "Unified Workflow",
+  "short_name": "Workflow",
   "start_url": "/unifiedwp/m/home",
   "scope": "/unifiedwp/",
   "display": "standalone",
